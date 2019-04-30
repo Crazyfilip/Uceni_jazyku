@@ -1,0 +1,42 @@
+﻿[language=Němčina|Čeština]
+[category=lecture(1A)]
+arbeiten-pracovat
+ich arbeite-pracuji
+der-ten
+die-ta
+das-to
+dir-tobě
+dir-ti
+du-ty
+fertig-hotový
+Freund-přítel
+Freundin-přítelkyně
+gut-dobrý
+gut-dobře
+ich-já
+ich bin-jsem
+mein-můj
+meine-moje
+mir-mně
+noch-ještě
+schon-už
+schon-již
+studieren-studovat
+ich studiere-studuji
+du studierst-studuješ
+und-a
+wer-kdo
+wir-my
+wir sind-jsme
+Hallo!-Ahoj!
+Wie geht's?-Jak se daří?
+Es geht.-Ujde to.
+seit langem-odedávna
+wir sind befreundet-přátelíme se
+wir sind befreundet-jsme přátelé
+nicht wahr-že ano
+Wer ist das?-Kdo je to?
+Guten Tag.-Dobrý den.
+Es freut mich.-Těší mě.
+Sehr angenehm.-Těší mě.
+Danke.-Děkuji.

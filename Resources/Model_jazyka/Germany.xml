@@ -1,0 +1,371 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<language>
+  <iso_code>de-DE</iso_code>
+  <language_name>
+    <name>Němčina</name>
+    <name>Germany</name>
+    <name>Deutsch</name>
+  </language_name>
+  <words>
+    <word>
+      <value>arbeiten</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">pracovat</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>Danke.</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">Děkuji.</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>das</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">to</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>der</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">ten</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>die</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">ta</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>dir</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">ti</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>dir</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">tobě</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>du</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">ty</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>du studierst</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">studuješ</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>Es freut mich.</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">Těší mě.</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>Es geht.</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">Ujde to.</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>fertig</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">hotový</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>Freund</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">přítel</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>Freundin</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">přítelkyně</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>gut</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">dobrý</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>gut</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">dobře</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>Guten Tag.</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">Dobrý den.</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>Hallo!</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">Ahoj!</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>ich</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">já</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>ich arbeite</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">pracuji</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>ich bin</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">jsem</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>ich studiere</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">studuji</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>mein</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">můj</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>meine</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">moje</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>mir</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">mně</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>nicht wahr</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">že ano</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>noch</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">ještě</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>schon</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">již</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>schon</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">už</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>Sehr angenehm.</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">Těší mě.</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>seit langem</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">odedávna</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>studieren</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">studovat</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>und</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">a</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>wer</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">kdo</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>Wer ist das?</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">Kdo je to?</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>Wie geht's?</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">Jak se daří?</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>wir</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">my</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>wir sind</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">jsme</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>wir sind befreundet</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">jsme přátelé</target_language>
+      </translation>
+    </word>
+    <word>
+      <value>wir sind befreundet</value>
+      <categories>
+        <category id="lecture">1A</category>
+      </categories>
+      <translation>
+        <target_language name="Čeština">přátelíme se</target_language>
+      </translation>
+    </word>
+  </words>
+</language>

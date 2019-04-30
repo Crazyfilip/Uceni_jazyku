@@ -1,0 +1,14 @@
+<eval>
+  <Testovy_priklad>
+    <vysledek>Spravne</vysledek>
+    <Zadani>Ahoj</Zadani>
+    <Ocekavana_odpoved>Hello</Ocekavana_odpoved>
+    <Odpoved>Hello</Odpoved>
+  </Testovy_priklad>
+  <Testovy_priklad>
+    <vysledek>Spravne</vysledek>
+    <Zadani>číslo</Zadani>
+    <Ocekavana_odpoved>number</Ocekavana_odpoved>
+    <Odpoved>number</Odpoved>
+  </Testovy_priklad>
+</eval>

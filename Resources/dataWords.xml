@@ -1,0 +1,10 @@
+<Data>
+  <Priklad>
+    <Zdrojovy_jazyk>Ahoj</Zdrojovy_jazyk>
+    <Cilovy_jazyk>Hello</Cilovy_jazyk>
+  </Priklad>
+  <Priklad>
+    <Zdrojovy_jazyk>číslo</Zdrojovy_jazyk>
+    <Cilovy_jazyk>number</Cilovy_jazyk>
+  </Priklad>
+</Data>
