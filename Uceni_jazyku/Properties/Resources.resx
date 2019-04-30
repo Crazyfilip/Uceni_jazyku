@@ -134,10 +134,10 @@
     <value>..\Resources\evaluation.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="Germany" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Germany.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>..\Resources\Model_jazyka\Germany.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="Germany___kopie" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Germany - kopie.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>..\Resources\Model_jazyka\Germany - kopie.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="lekce1_němčina" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\lekce1_němčina.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
@@ -149,6 +149,6 @@
     <value>..\Resources\user.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1250</value>
   </data>
   <data name="Čeština" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Čeština.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-16</value>
+    <value>..\Resources\Model_jazyka\Čeština.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-16</value>
   </data>
 </root>
