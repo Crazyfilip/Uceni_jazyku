@@ -100,14 +100,15 @@
     <None Include="Resources\user.xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Čeština.xml" />
+    <None Include="Resources\Model_jazyka\Čeština.xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Germany - kopie.txt" />
+    <None Include="Resources\Model_jazyka\Germany - kopie.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Germany.xml" />
+    <None Include="Resources\Model_jazyka\Germany.xml" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
