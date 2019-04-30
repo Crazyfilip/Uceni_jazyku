@@ -59,10 +59,54 @@
     <Compile Include="Priklad.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Tester.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\data.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\data.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dataWords.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dataWords.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\evaluation.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\lekce1_němčina.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Test_Odpovedi.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\user.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Čeština.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Germany - kopie.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Germany.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
