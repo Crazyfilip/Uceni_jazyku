@@ -19,6 +19,8 @@ namespace Uceni_jazyku.User_database
 
         private static bool VerifyUser(string username, string password)
         {
+            if (!File.Exists("./users/accounts.txt"))
+                return false;
             StreamReader reader = new StreamReader("./users/accounts.txt");
             string credentials = username + "|" + password;
             string line;
