@@ -14,7 +14,7 @@ namespace User_interface
 
         private void languageSetting_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-
+            new LanguageSettingPage().Show();
         }
 
         private void buttonExit_Click(object sender, EventArgs e)
@@ -33,9 +33,14 @@ namespace User_interface
                 new UserMenu(userSession).Show();
                 Hide();
             }
-            // TODO open uzivatelske menu
             else
                 MessageBox.Show("Přihlášení neúspěšné. Špatné uživatelské údaje.");
+        }
+
+        private void linkNewAccount_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            new NewAccount1().Show();
+            Hide();
         }
     }
 }

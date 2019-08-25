@@ -37,5 +37,10 @@ namespace User_interface
             new LoginPage().Show();
             Hide();
         }
+
+        private void linkLanguageSettings_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            new LanguageSettingPage().Show();
+        }
     }
 }

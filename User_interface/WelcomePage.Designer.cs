@@ -46,6 +46,7 @@
             this.linkLanguageSettings.TabIndex = 0;
             this.linkLanguageSettings.TabStop = true;
             this.linkLanguageSettings.Text = "Jazykové nastavení";
+            this.linkLanguageSettings.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLanguageSettings_LinkClicked);
             // 
             // labelWelcome
             // 
@@ -68,9 +69,11 @@
             // 
             // pictureBox1
             // 
+            this.pictureBox1.Image = global::User_interface.Properties.Resources.cz_flag;
             this.pictureBox1.Location = new System.Drawing.Point(15, 12);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(100, 50);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
             // 

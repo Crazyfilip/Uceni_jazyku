@@ -42,9 +42,11 @@
             // 
             // pictureBox1
             // 
+            this.pictureBox1.Image = global::User_interface.Properties.Resources.cz_flag;
             this.pictureBox1.Location = new System.Drawing.Point(13, 3);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(103, 57);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
@@ -104,12 +106,13 @@
             // linkNewAccount
             // 
             this.linkNewAccount.AutoSize = true;
-            this.linkNewAccount.Location = new System.Drawing.Point(143, 218);
+            this.linkNewAccount.Location = new System.Drawing.Point(147, 228);
             this.linkNewAccount.Name = "linkNewAccount";
             this.linkNewAccount.Size = new System.Drawing.Size(56, 13);
             this.linkNewAccount.TabIndex = 7;
             this.linkNewAccount.TabStop = true;
             this.linkNewAccount.Text = "Nový účet";
+            this.linkNewAccount.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkNewAccount_LinkClicked);
             // 
             // buttonExit
             // 
