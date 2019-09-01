@@ -52,6 +52,7 @@
             this.textboxName.Name = "textboxName";
             this.textboxName.Size = new System.Drawing.Size(121, 20);
             this.textboxName.TabIndex = 1;
+            this.textboxName.TextChanged += new System.EventHandler(this.textboxName_TextChanged);
             // 
             // labelPassword
             // 
@@ -68,6 +69,7 @@
             this.textboxPassword.Name = "textboxPassword";
             this.textboxPassword.Size = new System.Drawing.Size(121, 20);
             this.textboxPassword.TabIndex = 3;
+            this.textboxPassword.TextChanged += new System.EventHandler(this.textboxPassword_TextChanged);
             // 
             // labelNativeLanguage
             // 
@@ -91,6 +93,7 @@
             // 
             // buttonContinue
             // 
+            this.buttonContinue.Enabled = false;
             this.buttonContinue.Location = new System.Drawing.Point(106, 190);
             this.buttonContinue.Name = "buttonContinue";
             this.buttonContinue.Size = new System.Drawing.Size(99, 23);
@@ -113,6 +116,7 @@
             this.Controls.Add(this.labelName);
             this.Name = "NewAccount1";
             this.Text = "NewAccount1";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.NewAccount1_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 

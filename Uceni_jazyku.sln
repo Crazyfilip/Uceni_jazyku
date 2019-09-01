@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User_interface", "User_inte
 		{77846FE3-7DA2-434F-A2CC-C6A7645DE130} = {77846FE3-7DA2-434F-A2CC-C6A7645DE130}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{C89AFFD3-F67A-482C-A25B-8917B387FBEA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +26,10 @@ Global
 		{917A2A7A-EA7E-48AD-A6F5-A8567C4F5512}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{917A2A7A-EA7E-48AD-A6F5-A8567C4F5512}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{917A2A7A-EA7E-48AD-A6F5-A8567C4F5512}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C89AFFD3-F67A-482C-A25B-8917B387FBEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C89AFFD3-F67A-482C-A25B-8917B387FBEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C89AFFD3-F67A-482C-A25B-8917B387FBEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C89AFFD3-F67A-482C-A25B-8917B387FBEA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

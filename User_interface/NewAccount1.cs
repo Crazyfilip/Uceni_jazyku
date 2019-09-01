@@ -29,5 +29,20 @@ namespace User_interface
                 MessageBox.Show($"Uživatel se jménem: {textboxName.Text} už existuje, zvolte jiné jméno");
             }
         }
+
+        private void NewAccount1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            new LoginPage().Show();
+        }
+
+        private void textboxName_TextChanged(object sender, EventArgs e)
+        {
+            buttonContinue.Enabled = (textboxName.Text != "") && (textboxPassword.Text != "");
+        }
+
+        private void textboxPassword_TextChanged(object sender, EventArgs e)
+        {
+            buttonContinue.Enabled = (textboxName.Text != "") && (textboxPassword.Text != "");
+        }
     }
 }
