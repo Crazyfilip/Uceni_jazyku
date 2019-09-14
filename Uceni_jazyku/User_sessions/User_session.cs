@@ -2,6 +2,9 @@
 
 namespace Uceni_jazyku.User_sessions
 {
+    /// <summary>
+    /// User session class
+    /// </summary>
     public class User_session
     {
         public string username { get; private set;}
@@ -9,7 +12,12 @@ namespace Uceni_jazyku.User_sessions
 
         private static string activeSessionPath = "./sessions/user-active/session.txt";
             
-        public static bool UserSessionExists(out User_session session)
+        /// <summary>
+        /// Check if active session exists and return it via out parameter if does
+        /// </summary>
+        /// <param name="session"></param>
+        /// <returns>true if active session exists</returns>
+        public static bool ActiveSessionExists(out User_session session)
         {
             bool exists = File.Exists(activeSessionPath);
             if (exists)
@@ -19,16 +27,26 @@ namespace Uceni_jazyku.User_sessions
             return exists;
         }
 
+        /// <summary>
+        /// Get active session
+        /// </summary>
+        /// <returns>Active session</returns>
         private static User_session GetActiveSession()
         {
-            StreamReader reader = new StreamReader(activeSessionPath);
             User_session session = new User_session();
-            session.username = reader.ReadLine();
-            session.remaining_logins = int.Parse(reader.ReadLine());
-            reader.Close();
+            using (StreamReader reader = new StreamReader(activeSessionPath))
+            {
+                session.username = reader.ReadLine();
+                session.remaining_logins = int.Parse(reader.ReadLine());
+            }
             return session;
         }
 
+        /// <summary>
+        /// Create user's session (will be created as active session
+        /// </summary>
+        /// <param name="username">username</param>
+        /// <returns>User's session</returns>
         public static User_session CreateSession(string username)
         {
             User_session userSession = new User_session();
@@ -38,13 +56,17 @@ namespace Uceni_jazyku.User_sessions
             return userSession;
         }
 
+        /// <summary>
+        /// Save user's session as active session
+        /// </summary>
+        /// <param name="userSession">session to save</param>
         private static void SaveSession(User_session userSession)
         {
-            StreamWriter writer = new StreamWriter(activeSessionPath);
-            writer.WriteLine(userSession.username);
-            writer.WriteLine(userSession.remaining_logins);
-            writer.Flush();
-            writer.Close();
+            using (StreamWriter writer = new StreamWriter(activeSessionPath))
+            {
+                writer.WriteLine(userSession.username);
+                writer.WriteLine(userSession.remaining_logins);
+            }
         }
     }
 }

@@ -22,7 +22,11 @@ namespace User_interface
         {
             if (User_account.CreateUser(textboxName.Text,textboxPassword.Text))
             {
-                // TODO druhe okno vytvareni uctu
+                MessageBox.Show("Účet vytvořen. Nyní si nastavíte jazykový/-é kurz/-y");
+                NewAccount2 newAccount2 = new NewAccount2();
+                newAccount2.Show();
+                newAccount2.username = textboxName.Text;
+                Hide();
             }
             else
             {

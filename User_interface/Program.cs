@@ -17,7 +17,7 @@ namespace User_interface
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             User_session session;
-            if (!User_session.UserSessionExists(out session))
+            if (!User_session.ActiveSessionExists(out session))
                 Application.Run(new LoginPage());
             else
             {

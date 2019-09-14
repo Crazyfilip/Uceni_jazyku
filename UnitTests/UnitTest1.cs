@@ -26,14 +26,14 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestSessionExistence()
+        public void TestActiveSessionExistence()
         {
             User_session user_session;
-            bool result = User_session.UserSessionExists(out user_session);
+            bool result = User_session.ActiveSessionExists(out user_session);
             Assert.IsFalse(result);
             Assert.IsNull(user_session);
             User_session.CreateSession("unittest_testsessionexistence");
-            result = User_session.UserSessionExists(out user_session);
+            result = User_session.ActiveSessionExists(out user_session);
             Assert.IsTrue(result);
             Assert.IsNotNull(user_session);
         }
