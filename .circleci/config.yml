@@ -1,13 +1,12 @@
 version: 2.1
-executors:
-  dotnet:
-    docker:
-      - image: mcr.microsoft.com/dotnet/core/sdk:3.0
-    environment:
-      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+
+orbs:
+  win: circleci/windows@1.0.0
+
 jobs:
   build:
-    executor: dotnet
+    executor: 
+	name: win/vs2019
     steps:
       - checkout
       - run: dotnet restore
