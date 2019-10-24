@@ -6,7 +6,7 @@ orbs:
 jobs:
   build:
     executor: 
-	name: win/vs2019
+      name: win/vs2019
     steps:
       - checkout
       - run: dotnet restore
