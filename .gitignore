@@ -1,9 +1,9 @@
 *.suo
+.vs/
+*.user
 
 [Dd]ebug/
 [Bb]in/
 [Oo]bj/
-
-.vs/
-
 [Tt]est[Rr]esult*/
+
