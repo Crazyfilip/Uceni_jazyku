@@ -9,5 +9,4 @@ jobs:
       name: win/vs2019
     steps:
       - checkout
-      - run: dotnet restore
       - run: dotnet build
