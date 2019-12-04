@@ -21,8 +21,8 @@ namespace UnitTests
         {
             User_session user_session;
             user_session = User_session.CreateSession("UnitTest_TestSessionCreation");
-            Assert.AreEqual("UnitTest_TestSessionCreation", user_session.username);
-            Assert.AreEqual(3, user_session.remaining_logins);
+            Assert.AreEqual("UnitTest_TestSessionCreation", user_session.Username);
+            Assert.AreEqual(3, user_session.RemainingLogins);
         }
 
         [TestMethod]
