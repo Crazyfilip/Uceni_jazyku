@@ -17,7 +17,7 @@ namespace User_interface
         {
             InitializeComponent();
             userSession = session;
-            labelWelcome.Text = labelWelcome.Text.Replace("<username>",session.username);
+            labelWelcome.Text = labelWelcome.Text.Replace("<username>",session.Username);
         }
 
         private void buttonExit_Click(object sender, EventArgs e)
