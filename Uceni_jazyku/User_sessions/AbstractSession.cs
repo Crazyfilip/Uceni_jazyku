@@ -16,7 +16,6 @@ namespace Uceni_jazyku.User_sessions
         public string SessionId { get; set; }
 
         protected string path;
-        protected EventArgs e = null;
 
         public abstract void Update();
 

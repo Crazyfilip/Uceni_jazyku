@@ -6,9 +6,14 @@ namespace Uceni_jazyku.User_sessions
 {
     public class ActiveUserSession : UserSession
     {
-        public ActiveUserSession() : base("test", 3) // TODO refactor
+
+        public ActiveUserSession() => path = "./sessions/user-active/session.txt";
+
+        public ActiveUserSession(string name, int numberOfEvents)
         {
-            this.path = "./sessions/user-active/session.txt";
+            Username = name;
+            RemainingEvents = numberOfEvents;
+            path = "./sessions/user-active/session.txt";
         }
     }
 }

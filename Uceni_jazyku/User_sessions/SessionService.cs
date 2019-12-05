@@ -8,10 +8,12 @@ namespace Uceni_jazyku.User_sessions
     {
         private static SessionService instance;
 
-        private SessionDatabase database;
+        private readonly SessionDatabase database;
+        private readonly SessionFactory factory;
         private SessionService() {
             database = new SessionDatabase();
             database.Load();
+            factory = new SessionFactory();
         }
 
         public static SessionService GetInstance()
@@ -40,9 +42,9 @@ namespace Uceni_jazyku.User_sessions
             database.PutSession(session);
         }
 
-        public AbstractSession CreateSession() // TODO add parameters for session factory
+        public AbstractSession CreateSession(SessionType type, string name, int numberOfEvents ) // TODO add parameters for session factory
         {
-            AbstractSession session = new ActiveUserSession();
+            AbstractSession session = factory.GetSession(type, name, numberOfEvents);
             RegisterSession(session);
             return session;
         }

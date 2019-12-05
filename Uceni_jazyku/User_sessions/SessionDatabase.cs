@@ -7,7 +7,6 @@ namespace Uceni_jazyku.User_sessions
 {
     public class SessionDatabase
     {
-        [XmlIgnore]
         private readonly string path = "./sessions/service/database.xml";
 
         public List<AbstractSession> sessionsDatabase;
