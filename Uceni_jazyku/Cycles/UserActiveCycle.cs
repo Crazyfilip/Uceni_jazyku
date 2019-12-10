@@ -7,13 +7,13 @@ namespace Uceni_jazyku.Cycles
     public class UserActiveCycle : UserCycle
     {
 
-        public UserActiveCycle() => path = "./sessions/user-active/session.txt";
+        public UserActiveCycle() => path = "./cycles/user-active/activeCycle.txt";
 
         public UserActiveCycle(string name, int numberOfEvents)
         {
             Username = name;
             RemainingEvents = numberOfEvents;
-            path = "./sessions/user-active/session.txt";
+            path = "./cycles/user-active/activeCycle.txt";
         }
     }
 }
