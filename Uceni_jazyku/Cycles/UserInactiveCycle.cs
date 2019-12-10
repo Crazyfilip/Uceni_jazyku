@@ -6,13 +6,13 @@ namespace Uceni_jazyku.Cycles
 {
     class UserInactiveCycle : UserCycle
     {
-        public UserInactiveCycle() => path = "./sessions/user-inactive/";
+        public UserInactiveCycle() => path = "./cycles/user-inactive/";
 
         public UserInactiveCycle(string name, int numberOfEvents)
         {
             Username = name;
             RemainingEvents = numberOfEvents;
-            path = "./sessions/user-inactive/session.txt";
+            path = "./cycles/user-inactive/";
         }
 
         protected override void Serialize(string filepath) => base.Serialize(filepath + CycleID + ".xml");

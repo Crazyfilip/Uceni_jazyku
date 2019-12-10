@@ -6,13 +6,13 @@ namespace Uceni_jazyku.Cycles
 {
     public class UserFinishedCycle : UserCycle
     {
-        public UserFinishedCycle() => path = "./sessions/finished/user/";
+        public UserFinishedCycle() => path = "./cycles/finished/user/";
 
         public UserFinishedCycle(string name, int numberOfEvents)
         {
             Username = name;
             RemainingEvents = numberOfEvents;
-            path = "./sessions/user-inactive/session.txt";
+            path = "./cycles/finished/user/";
         }
     }
 }

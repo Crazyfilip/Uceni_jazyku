@@ -33,12 +33,12 @@ namespace Uceni_jazyku.Cycles
             return (AbstractCycle)serializer.Deserialize(sr);
         }
 
-        public void SaveSession()
+        public void SaveCycle()
         {
             Serialize(path);
         }
 
-        public AbstractCycle GetSession()
+        public AbstractCycle GetCycle()
         {
             return Deserialize(path);
         }

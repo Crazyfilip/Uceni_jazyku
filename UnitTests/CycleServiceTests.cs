@@ -5,7 +5,7 @@ using Uceni_jazyku.Cycles;
 namespace UnitTests
 {
     [TestClass]
-    public class SessionServiceTests
+    public class CycleServiceTests
     {
         CycleService service;
 
@@ -18,9 +18,9 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestCreateActiveSession()
+        public void TestCreateActiveCycle()
         {
-            AbstractCycle session = service.CreateSession(SessionType.ActiveUserSession,"test",3); // TODO adjust when session factory will be ready
+            AbstractCycle session = service.CreateCycle(CycleType.ActiveUserCycle,"test",3); // TODO adjust when session factory will be ready
             Assert.IsTrue(session is UserActiveCycle);
             Assert.AreEqual(session.Username,"test");
             Assert.AreEqual(session.RemainingEvents,3);

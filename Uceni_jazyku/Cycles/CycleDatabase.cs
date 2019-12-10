@@ -9,7 +9,7 @@ namespace Uceni_jazyku.Cycles
     {
         private readonly string path = "./sessions/service/database.xml";
 
-        public List<AbstractCycle> sessionsDatabase;
+        public List<AbstractCycle> database;
 
         public void Save()
         {
@@ -24,17 +24,17 @@ namespace Uceni_jazyku.Cycles
             if (File.Exists(path))
             {
                 using StreamReader sr = new StreamReader(path);
-                this.sessionsDatabase = ((CycleDatabase)serializer.Deserialize(sr)).sessionsDatabase;
+                this.database = ((CycleDatabase)serializer.Deserialize(sr)).database;
             } 
             else
             {
-                sessionsDatabase = new List<AbstractCycle>();
+                database = new List<AbstractCycle>();
             }
         }
 
-        public void PutSession(AbstractCycle session)
+        public void PutSession(AbstractCycle cycle)
         {
-            sessionsDatabase.Add(session);
+            database.Add(cycle);
             Save();
             //sessionsDatabase.Sort() sort by id
         }

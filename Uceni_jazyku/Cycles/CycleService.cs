@@ -8,11 +8,11 @@ namespace Uceni_jazyku.Cycles
     {
         private static CycleService instance;
 
-        private readonly CycleDatabase database;
+        private readonly CycleDatabase CycleDatabase;
         private readonly CycleFactory factory;
         private CycleService() {
-            database = new CycleDatabase();
-            database.Load();
+            CycleDatabase = new CycleDatabase();
+            CycleDatabase.Load();
             factory = new CycleFactory();
         }
 
@@ -25,33 +25,33 @@ namespace Uceni_jazyku.Cycles
 
         private static readonly string activeSessionPath = "./sessions/user-active/session.txt";
 
-        public bool ActiveUserSessionExists()
+        public bool ActiveUserCycleExists()
         {
             return File.Exists(activeSessionPath);
         }
 
-        public UserCycle GetActiveSession()
+        public UserCycle GetActiveCycle()
         {
             UserCycle userSession = new UserActiveCycle();
-            return (UserCycle)userSession.GetSession();
+            return (UserCycle)userSession.GetCycle();
         }
 
-        private void RegisterSession(AbstractCycle session)
+        private void RegisterCycle(AbstractCycle cycle)
         {
-            session.CycleID = GenerateNewId();
-            database.PutSession(session);
+            cycle.CycleID = GenerateNewId();
+            CycleDatabase.PutSession(cycle);
         }
 
-        public AbstractCycle CreateSession(SessionType type, string name, int numberOfEvents ) // TODO add parameters for session factory
+        public AbstractCycle CreateCycle(CycleType type, string name, int numberOfEvents )
         {
-            AbstractCycle session = factory.GetSession(type, name, numberOfEvents);
-            RegisterSession(session);
-            return session;
+            AbstractCycle cycle = factory.CreateCycle(type, name, numberOfEvents);
+            RegisterCycle(cycle);
+            return cycle;
         }
 
         private string GenerateNewId()
         {
-            return "session" + database.sessionsDatabase.Count;
+            return "cycle" + CycleDatabase.database.Count;
         }
     }
 }

@@ -10,4 +10,5 @@ jobs:
     steps:
       - checkout
       - run: dotnet build
-      - run: dotnet test --filter ClassName=UnitTests.SessionServiceTests
+      - run: dotnet test --filter ClassName=UnitTests.CycleServiceTests
+      - run: dotnet test --filter ClassName=UnitTests.CycleFactoryTests

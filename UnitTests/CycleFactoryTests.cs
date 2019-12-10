@@ -4,7 +4,7 @@ using Uceni_jazyku.Cycles;
 namespace UnitTests
 {
     [TestClass]
-    public class SessionFactoryTests
+    public class CycleFactoryTests
     {
         CycleFactory factory;
 
@@ -17,7 +17,7 @@ namespace UnitTests
         [TestMethod]
         public void CreateActiveSession()
         {
-            AbstractCycle session = factory.GetSession(SessionType.ActiveUserSession, "test", 5);
+            AbstractCycle session = factory.CreateCycle(CycleType.ActiveUserCycle, "test", 5);
             Assert.IsNotNull(session);
             Assert.IsTrue(session is UserActiveCycle);
             Assert.IsNull(session.CycleID);
