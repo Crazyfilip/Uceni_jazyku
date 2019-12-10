@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using Uceni_jazyku.User_database;
-using Uceni_jazyku.User_sessions;
+using Uceni_jazyku.Cycles;
 
 namespace User_interface
 {

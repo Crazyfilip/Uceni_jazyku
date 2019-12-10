@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Uceni_jazyku.User_sessions
+namespace Uceni_jazyku.Cycles
 {
-    public class ActiveUserSession : UserSession
+    public class UserActiveCycle : UserCycle
     {
 
-        public ActiveUserSession() => path = "./sessions/user-active/session.txt";
+        public UserActiveCycle() => path = "./sessions/user-active/session.txt";
 
-        public ActiveUserSession(string name, int numberOfEvents)
+        public UserActiveCycle(string name, int numberOfEvents)
         {
             Username = name;
             RemainingEvents = numberOfEvents;

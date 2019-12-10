@@ -1,31 +1,31 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
-using Uceni_jazyku.User_sessions;
+using Uceni_jazyku.Cycles;
 
 namespace UnitTests
 {
     [TestClass]
     public class SessionServiceTests
     {
-        SessionService service;
+        CycleService service;
 
         [TestInitialize]
         public void TestInitialization()
         {
             Directory.CreateDirectory("./sessions/user-active");
             Directory.CreateDirectory("./sessions/service");
-            service = SessionService.GetInstance();
+            service = CycleService.GetInstance();
         }
 
         [TestMethod]
         public void TestCreateActiveSession()
         {
-            AbstractSession session = service.CreateSession(SessionType.ActiveUserSession,"test",3); // TODO adjust when session factory will be ready
-            Assert.IsTrue(session is ActiveUserSession);
+            AbstractCycle session = service.CreateSession(SessionType.ActiveUserSession,"test",3); // TODO adjust when session factory will be ready
+            Assert.IsTrue(session is UserActiveCycle);
             Assert.AreEqual(session.Username,"test");
             Assert.AreEqual(session.RemainingEvents,3);
-            Assert.AreNotEqual(session.SessionId, "");
-            Assert.IsNotNull(session.SessionId);
+            Assert.AreNotEqual(session.CycleID, "");
+            Assert.IsNotNull(session.CycleID);
         }
 
         [TestCleanup]

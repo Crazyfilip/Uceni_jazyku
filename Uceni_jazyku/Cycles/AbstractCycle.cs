@@ -4,16 +4,16 @@ using System.Text;
 using System.IO;
 using System.Xml.Serialization;
 
-namespace Uceni_jazyku.User_sessions
+namespace Uceni_jazyku.Cycles
 {
 
-    [XmlInclude(typeof(ActiveUserSession))]
-    public abstract class AbstractSession
+    [XmlInclude(typeof(UserActiveCycle))]
+    public abstract class AbstractCycle
     {
 
         public string Username { get; set; }
         public int RemainingEvents { get; set; }
-        public string SessionId { get; set; }
+        public string CycleID { get; set; }
 
         protected string path;
 
@@ -26,11 +26,11 @@ namespace Uceni_jazyku.User_sessions
             serializer.Serialize(sw, this);
         }
 
-        protected virtual AbstractSession Deserialize(string filepath)
+        protected virtual AbstractCycle Deserialize(string filepath)
         {
             XmlSerializer serializer = new XmlSerializer(this.GetType());
             using StreamReader sr = new StreamReader(filepath);
-            return (AbstractSession)serializer.Deserialize(sr);
+            return (AbstractCycle)serializer.Deserialize(sr);
         }
 
         public void SaveSession()
@@ -38,7 +38,7 @@ namespace Uceni_jazyku.User_sessions
             Serialize(path);
         }
 
-        public AbstractSession GetSession()
+        public AbstractCycle GetSession()
         {
             return Deserialize(path);
         }

@@ -1,10 +1,12 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
-namespace Uceni_jazyku.User_sessions
+namespace Uceni_jazyku.Cycles
 {
     /// <summary>
     /// User session class
     /// </summary>
+    [Obsolete]
     public class User_session
     {
         public string Username { get; private set;}

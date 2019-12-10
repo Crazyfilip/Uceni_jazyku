@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using Uceni_jazyku.User_sessions;
+using Uceni_jazyku.Cycles;
 
 namespace Uceni_jazyku
 {
@@ -13,9 +13,9 @@ namespace Uceni_jazyku
         static void Main(string[] args)
         {
             Directory.CreateDirectory("./sessions/user-active");
-            AbstractSession session = new ActiveUserSession();
+            AbstractCycle session = new UserActiveCycle();
             session.SaveSession();
-            UserSession session2 = SessionService.GetInstance().GetActiveSession();
+            UserCycle session2 = CycleService.GetInstance().GetActiveSession();
             //LoadData load = new LoadData();
             //load.LoadDataToDatabase("lekce1_němčina.txt");
             //IGenerator gen = new Generator();

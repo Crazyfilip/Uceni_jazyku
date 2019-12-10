@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Uceni_jazyku.User_sessions
+namespace Uceni_jazyku.Cycles
 {
 
-    public class UserSession : AbstractSession
+    public class UserCycle : AbstractCycle
     {
-        public UserSession() { }
-        public UserSession(string username, int remainingEvents)
+        public UserCycle() { }
+        public UserCycle(string username, int remainingEvents)
         {
             this.Username = username;
             this.RemainingEvents = remainingEvents;

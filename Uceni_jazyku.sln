@@ -5,9 +5,14 @@ VisualStudioVersion = 16.0.29403.142
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "User_interface", "User_interface\User_interface.csproj", "{29116E25-2BB7-4A8C-A0AD-4AB6555F486D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{2813A7CA-1B81-4D1E-B051-A4A8E2A0A095}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{2813A7CA-1B81-4D1E-B051-A4A8E2A0A095}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uceni_jazyku", "Uceni_jazyku\Uceni_jazyku.csproj", "{DC32911D-1D08-4101-B2F6-49EB165C9E0E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uceni_jazyku", "Uceni_jazyku\Uceni_jazyku.csproj", "{DC32911D-1D08-4101-B2F6-49EB165C9E0E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E0716161-C4E5-4557-AE96-DE8AE36AABE1}"
+	ProjectSection(SolutionItems) = preProject
+		.circleci\config.yml = .circleci\config.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

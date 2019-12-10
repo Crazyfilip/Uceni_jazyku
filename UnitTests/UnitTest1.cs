@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uceni_jazyku.User_sessions;
+using Uceni_jazyku.Cycles;
 using System.IO;
 
 namespace UnitTests
