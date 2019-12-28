@@ -6,18 +6,18 @@ namespace User_interface
 {
     public partial class WelcomePage : Form
     {
-        private User_session userSession;
+        private UserCycle userCycle;
         
         public WelcomePage()
         {
             InitializeComponent();
         }
 
-        public WelcomePage(User_session session)
+        public WelcomePage(UserCycle cycle)
         {
             InitializeComponent();
-            userSession = session;
-            labelWelcome.Text = labelWelcome.Text.Replace("<username>",session.Username);
+            userCycle = cycle;
+            labelWelcome.Text = labelWelcome.Text.Replace("<username>",cycle.Username);
         }
 
         private void buttonExit_Click(object sender, EventArgs e)
@@ -27,7 +27,7 @@ namespace User_interface
 
         private void linkContinue_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            new UserMenu(userSession).Show();
+            new UserMenu(userCycle).Show();
             Hide();
         }
 

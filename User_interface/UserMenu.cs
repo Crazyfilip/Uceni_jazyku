@@ -6,17 +6,17 @@ namespace User_interface
 {
     public partial class UserMenu : Form
     {
-        private User_session userSession;
+        private UserCycle userCycle;
 
         public UserMenu()
         {
             InitializeComponent();
         }
 
-        public UserMenu(User_session userSession)
+        public UserMenu(UserCycle userCycle)
         {
             InitializeComponent();
-            this.userSession = userSession;
+            this.userCycle = userCycle;
         }
 
         private void buttonLogout_Click(object sender, EventArgs e)

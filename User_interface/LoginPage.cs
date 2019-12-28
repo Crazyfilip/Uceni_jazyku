@@ -30,7 +30,7 @@ namespace User_interface
             if (userSession != null)
             {
                 MessageBox.Show("Uživatel přihlášen.");
-                new UserMenu(userSession).Show();
+                // TODO new UserMenu(userSession).Show();
                 Hide();
             }
             else
