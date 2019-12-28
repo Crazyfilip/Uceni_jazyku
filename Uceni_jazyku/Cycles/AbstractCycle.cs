@@ -9,7 +9,7 @@ namespace Uceni_jazyku.Cycles
     {
 
         public string Username { get; set; }
-        public int RemainingEvents { get; set; }
+        public int? RemainingEvents { get; set; }
         public string CycleID { get; set; }
 
         protected string path;

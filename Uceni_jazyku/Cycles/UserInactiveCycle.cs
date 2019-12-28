@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Uceni_jazyku.Cycles
 {
-    class UserInactiveCycle : UserCycle
+    public class UserInactiveCycle : UserCycle
     {
         public UserInactiveCycle() => path = "./cycles/user-inactive/";
 

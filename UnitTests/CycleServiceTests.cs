@@ -20,7 +20,7 @@ namespace UnitTests
         [TestMethod]
         public void TestCreateActiveCycle()
         {
-            AbstractCycle session = service.CreateCycle(CycleType.ActiveUserCycle,"test",3); // TODO adjust when session factory will be ready
+            AbstractCycle session = service.CreateCycle(CycleType.UserActiveCycle,"test",3); // TODO adjust when session factory will be ready
             Assert.IsTrue(session is UserActiveCycle);
             Assert.AreEqual(session.Username,"test");
             Assert.AreEqual(session.RemainingEvents,3);
