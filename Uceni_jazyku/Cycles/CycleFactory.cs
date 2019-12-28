@@ -15,7 +15,12 @@ namespace Uceni_jazyku.Cycles
 
     public class CycleFactory
     {
-        public AbstractCycle CreateCycle(CycleType type, string name, int numberOfEvents)
+        public AbstractCycle CreateCycle(CycleType type, string name)
+        {
+            return CreateCycle(type, name, null);
+        }
+
+        public AbstractCycle CreateCycle(CycleType type, string name, int? numberOfEvents)
         {
             switch (type)
             {
@@ -32,23 +37,23 @@ namespace Uceni_jazyku.Cycles
             }
         }
 
-        protected virtual AbstractCycle CreateCycle(string name, int numberOfEvents) { throw new NotSupportedException(); }
+        protected virtual AbstractCycle CreateCycle(string name, int? numberOfEvents) { throw new NotSupportedException(); }
         protected virtual AbstractCycle CreateCycle(string name) { throw new NotSupportedException(); }
     }
 
     class UserActiveCycleFactory : CycleFactory
     {
-        protected override AbstractCycle CreateCycle(string name, int numberOfEvents)
+        protected override AbstractCycle CreateCycle(string name, int? numberOfEvents)
         {
-            return new UserActiveCycle(name, numberOfEvents);
+            return new UserActiveCycle(name, numberOfEvents.Value);
         }
     }
 
     class UserInactiveCycleFactory : CycleFactory
     {
-        protected override AbstractCycle CreateCycle(string name, int numberOfEvents)
+        protected override AbstractCycle CreateCycle(string name, int? numberOfEvents)
         {
-            throw new NotImplementedException();
+            return new UserInactiveCycle(name, numberOfEvents.Value);
         }
     }
 
@@ -56,7 +61,7 @@ namespace Uceni_jazyku.Cycles
     {
         protected override AbstractCycle CreateCycle(string name)
         {
-            throw new NotImplementedException();
+            return new UserNewCycle(name);
         }
     }
 
@@ -64,7 +69,7 @@ namespace Uceni_jazyku.Cycles
     {
         protected override AbstractCycle CreateCycle(string name)
         {
-            throw new NotImplementedException();
+            return new UserFinishedCycle(name);
         }
     }
 }

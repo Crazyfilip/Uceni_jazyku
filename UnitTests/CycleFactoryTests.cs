@@ -39,7 +39,7 @@ namespace UnitTests
         [TestMethod]
         public void CreateUserNewCycle()
         {
-            AbstractCycle session = factory.CreateCycle(CycleType.UserInactiveCycle, "test", 5);
+            AbstractCycle session = factory.CreateCycle(CycleType.UserNewCycle, "test", 5);
             Assert.IsNotNull(session);
             Assert.IsTrue(session is UserNewCycle);
             Assert.IsNull(session.CycleID);
@@ -50,7 +50,7 @@ namespace UnitTests
         [TestMethod]
         public void CreateUserFinishedCycle()
         {
-            AbstractCycle session = factory.CreateCycle(CycleType.UserInactiveCycle, "test", 5);
+            AbstractCycle session = factory.CreateCycle(CycleType.UserFinishedCycle, "test", null);
             Assert.IsNotNull(session);
             Assert.IsTrue(session is UserFinishedCycle);
             Assert.IsNull(session.CycleID);

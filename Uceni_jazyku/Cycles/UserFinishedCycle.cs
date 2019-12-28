@@ -8,10 +8,10 @@ namespace Uceni_jazyku.Cycles
     {
         public UserFinishedCycle() => path = "./cycles/finished/user/";
 
-        public UserFinishedCycle(string name, int numberOfEvents)
+        public UserFinishedCycle(string name)
         {
             Username = name;
-            RemainingEvents = numberOfEvents;
+            RemainingEvents = null;
             path = "./cycles/finished/user/";
         }
     }
