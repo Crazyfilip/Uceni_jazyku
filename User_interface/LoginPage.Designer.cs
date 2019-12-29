@@ -112,7 +112,7 @@
             this.linkNewAccount.TabIndex = 7;
             this.linkNewAccount.TabStop = true;
             this.linkNewAccount.Text = "Nový účet";
-            this.linkNewAccount.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkNewAccount_LinkClicked);
+            this.linkNewAccount.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkNewAccount_LinkClicked);
             // 
             // buttonExit
             // 

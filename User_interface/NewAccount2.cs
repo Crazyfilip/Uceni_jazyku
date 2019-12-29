@@ -6,11 +6,14 @@ namespace User_interface
 {
     public partial class NewAccount2 : Form
     {
+
+        private UserCycle userCycle;
         public string username { get; set; }
 
-        public NewAccount2()
+        public NewAccount2(UserCycle userCycle)
         {
             InitializeComponent();
+            this.userCycle = userCycle;
         }
 
         private void buttonFinish_Click(object sender, EventArgs e)
@@ -25,8 +28,9 @@ namespace User_interface
                 }
                 else
                 {
-                    new UserMenu().Show();
-                    User_session.CreateSession(username);
+                    CycleService cycleService = CycleService.GetInstance();
+                    // TODO cycleService.activate(userCycle)
+                    new UserMenu(userCycle).Show();
                     Hide();
                 }
             }

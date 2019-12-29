@@ -17,12 +17,10 @@ namespace User_interface
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             CycleService cycleService = CycleService.GetInstance();
-            
-            User_session session;
             if (!cycleService.ActiveUserCycleExists())
             {
-                // TODO new cycle type cycleService.CreateCycle(CycleType.UnknownUserCycle, "unknown");
-                Application.Run(new LoginPage());
+                UserCycle userCycle = (UserCycle)cycleService.CreateCycle(CycleType.UnknownUserCycle, null, null);
+                Application.Run(new LoginPage(userCycle));
             }
             else
             {

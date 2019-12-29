@@ -33,8 +33,10 @@ namespace User_interface
 
         private void linkDifferentUser_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            // TODO inactivate session
-            new LoginPage().Show();
+            // TODO inactivate cycle
+            CycleService cycleService = CycleService.GetInstance();
+            userCycle = (UserCycle) cycleService.CreateCycle(CycleType.UnknownUserCycle, null, null);
+            new LoginPage(userCycle).Show();
             Hide();
         }
 

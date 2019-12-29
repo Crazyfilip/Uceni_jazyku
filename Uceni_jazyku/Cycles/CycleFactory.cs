@@ -9,8 +9,8 @@ namespace Uceni_jazyku.Cycles
         UserNewCycle,
         UserActiveCycle,
         UserInactiveCycle,
-        UserFinishedCycle
-
+        UserFinishedCycle,
+        UnknownUserCycle
     }
 
     public class CycleFactory
@@ -32,6 +32,8 @@ namespace Uceni_jazyku.Cycles
                     return new UserNewCycleFactory().CreateCycle(name);
                 case CycleType.UserFinishedCycle:
                     return new UserFinishedCycleFactory().CreateCycle(name);
+                case CycleType.UnknownUserCycle:
+                    return new UnknownUserCycleFactory().CreateCycle();
                 default:
                     throw new ArgumentException("parametr type is not valid");
             }
@@ -39,6 +41,15 @@ namespace Uceni_jazyku.Cycles
 
         protected virtual AbstractCycle CreateCycle(string name, int? numberOfEvents) { throw new NotSupportedException(); }
         protected virtual AbstractCycle CreateCycle(string name) { throw new NotSupportedException(); }
+        protected virtual AbstractCycle CreateCycle() { throw new NotSupportedException(); }
+    }
+
+    class UnknownUserCycleFactory : CycleFactory
+    {
+        protected override AbstractCycle CreateCycle()
+        {
+            return new UnknownUserCycle();
+        }
     }
 
     class UserActiveCycleFactory : CycleFactory

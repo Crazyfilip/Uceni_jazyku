@@ -8,11 +8,6 @@ namespace User_interface
     {
         private UserCycle userCycle;
 
-        public UserMenu()
-        {
-            InitializeComponent();
-        }
-
         public UserMenu(UserCycle userCycle)
         {
             InitializeComponent();
@@ -21,7 +16,10 @@ namespace User_interface
 
         private void buttonLogout_Click(object sender, EventArgs e)
         {
-            new LoginPage().Show();
+            CycleService cycleService = CycleService.GetInstance();
+            // TODO inactivate active cycle
+            userCycle = (UserCycle)cycleService.CreateCycle(CycleType.UnknownUserCycle, null, null);
+            new LoginPage(userCycle).Show();
             Close();
         }
         // event for session update

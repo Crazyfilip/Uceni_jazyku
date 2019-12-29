@@ -7,9 +7,12 @@ namespace User_interface
 {
     public partial class LoginPage : Form
     {
-        public LoginPage()
+        UserCycle userCycle;
+
+        public LoginPage(UserCycle userCycle)
         {
             InitializeComponent();
+            this.userCycle = userCycle;
         }
 
         private void languageSetting_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -26,8 +29,9 @@ namespace User_interface
         {
             string username = textboxName.Text;
             string password = textboxPassword.Text;
-            User_session userSession = User_account.Login(username, password);
-            if (userSession != null)
+            UserAccountService userAccountService = UserAccountService.GetInstance();
+            userCycle = userAccountService.Login(username, password);
+            if (userCycle != null)
             {
                 MessageBox.Show("Uživatel přihlášen.");
                 // TODO new UserMenu(userSession).Show();
@@ -37,9 +41,9 @@ namespace User_interface
                 MessageBox.Show("Přihlášení neúspěšné. Špatné uživatelské údaje.");
         }
 
-        private void linkNewAccount_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void LinkNewAccount_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            new NewAccount1().Show();
+            new NewAccount1(userCycle).Show();
             Hide();
         }
     }

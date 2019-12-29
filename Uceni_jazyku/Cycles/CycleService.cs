@@ -25,6 +25,11 @@ namespace Uceni_jazyku.Cycles
 
         private static readonly string activeSessionPath = "./sessions/user-active/session.txt";
 
+        internal UserCycle GetUserCycle(string username)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool ActiveUserCycleExists()
         {
             return File.Exists(activeSessionPath);
@@ -42,7 +47,7 @@ namespace Uceni_jazyku.Cycles
             CycleDatabase.PutSession(cycle);
         }
 
-        public AbstractCycle CreateCycle(CycleType type, string name, int numberOfEvents )
+        public AbstractCycle CreateCycle(CycleType type, string name, int? numberOfEvents )
         {
             AbstractCycle cycle = factory.CreateCycle(type, name, numberOfEvents);
             RegisterCycle(cycle);
