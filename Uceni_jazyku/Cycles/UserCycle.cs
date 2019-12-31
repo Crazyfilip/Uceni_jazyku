@@ -4,16 +4,11 @@ using System.Text;
 
 namespace Uceni_jazyku.Cycles
 {
-
-    public class UserCycle : AbstractCycle
+    /// <summary>
+    /// Abstract class for user cycles
+    /// </summary>
+    public abstract class UserCycle : AbstractCycle
     {
-        public UserCycle() { }
-        public UserCycle(string username, int remainingEvents)
-        {
-            this.Username = username;
-            this.RemainingEvents = remainingEvents;
-        }
-
         public override void Update()
         {
             throw new NotImplementedException();

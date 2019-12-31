@@ -3,6 +3,9 @@ using Uceni_jazyku.Cycles;
 
 namespace UnitTests
 {
+    /// <summary>
+    /// Test for cycle factory
+    /// </summary>
     [TestClass]
     public class CycleFactoryTests
     {
@@ -14,6 +17,9 @@ namespace UnitTests
             factory = new CycleFactory();
         }
 
+        /// <summary>
+        /// Test of correct creation of UserActiveCycle
+        /// </summary>
         [TestMethod]
         public void CreateUserActiveCycle()
         {
@@ -25,6 +31,9 @@ namespace UnitTests
             Assert.AreEqual(session.RemainingEvents, 5);
         }
 
+        /// <summary>
+        /// Test of correct creation of UserInactiveCycle
+        /// </summary>
         [TestMethod]
         public void CreateUserInactiveCycle()
         {
@@ -36,6 +45,9 @@ namespace UnitTests
             Assert.AreEqual(session.RemainingEvents, 5);
         }
 
+        /// <summary>
+        /// Test of correct creation of UserNewCycle
+        /// </summary>
         [TestMethod]
         public void CreateUserNewCycle()
         {
@@ -47,6 +59,9 @@ namespace UnitTests
             Assert.IsNull(session.RemainingEvents);
         }
 
+        /// <summary>
+        /// Test of correct creation of UserFinishedCycle
+        /// </summary>
         [TestMethod]
         public void CreateUserFinishedCycle()
         {

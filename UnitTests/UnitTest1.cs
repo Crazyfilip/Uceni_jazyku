@@ -8,6 +8,7 @@ namespace UnitTests
     
 
     [TestClass]
+    [Obsolete]
     public class UnitTest1
     {
         [TestInitialize]

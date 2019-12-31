@@ -4,6 +4,10 @@ using System.IO;
 
 namespace Uceni_jazyku.Cycles
 {
+    /// <summary>
+    /// Cycle service class which handles creation, lifecycle and operations with cycles.
+    /// Implemented as singleton
+    /// </summary>
     public class CycleService
     {
         private static CycleService instance;
@@ -16,6 +20,10 @@ namespace Uceni_jazyku.Cycles
             factory = new CycleFactory();
         }
 
+        /// <summary>
+        /// Get instance of service
+        /// </summary>
+        /// <returns>instance <c>CycleService</c></returns>
         public static CycleService GetInstance()
         {
             if (instance == null)
@@ -23,13 +31,19 @@ namespace Uceni_jazyku.Cycles
             return instance;
         }
 
-        private static readonly string activeSessionPath = "./sessions/user-active/session.txt";
-
-        public bool ActiveUserCycleExists()
+        /// <summary>
+        /// test presence of UserActiveCycle
+        /// </summary>
+        /// <returns>true if there is ActiveUserCycle present</returns>
+        public bool UserActiveCycleExists()
         {
-            return File.Exists(activeSessionPath);
+            return UserActiveCycle.CycleExists();
         }
 
+        /// <summary>
+        /// Getter of UserActiveCycle;
+        /// </summary>
+        /// <returns>active cycle</returns>
         public UserCycle GetActiveCycle()
         {
             UserCycle userSession = new UserActiveCycle();
@@ -42,6 +56,13 @@ namespace Uceni_jazyku.Cycles
             CycleDatabase.PutSession(cycle);
         }
 
+        /// <summary>
+        /// Create cycle based on parameters
+        /// </summary>
+        /// <param name="type">cycle type</param>
+        /// <param name="name">cycle name</param>
+        /// <param name="numberOfEvents">number of events in cycle</param>
+        /// <returns>cycle instance</returns>
         public AbstractCycle CreateCycle(CycleType type, string name, int numberOfEvents )
         {
             AbstractCycle cycle = factory.CreateCycle(type, name, numberOfEvents);

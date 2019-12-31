@@ -4,6 +4,9 @@ using Uceni_jazyku.Cycles;
 
 namespace UnitTests
 {
+    /// <summary>
+    /// Tests for cycle service
+    /// </summary>
     [TestClass]
     public class CycleServiceTests
     {
@@ -17,6 +20,10 @@ namespace UnitTests
             service = CycleService.GetInstance();
         }
 
+        // TODO adjust as creation of specific types is tested for factory already
+        /// <summary>
+        /// test of creation of cycle via service 
+        /// </summary>
         [TestMethod]
         public void TestCreateActiveCycle()
         {
