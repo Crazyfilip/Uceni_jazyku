@@ -7,17 +7,17 @@ namespace Uceni_jazyku.Cycles
 {
     /// <summary>
     /// Database of cycles
-    /// In application as <c>List&lt;AbstractCycle&gt;</c>
+    /// In application as collection</c>
     /// Via xml-serialization saved to/loaded from file
     /// </summary>
     public class CycleDatabase
     {
-        private readonly string path = "./sessions/service/database.xml";
+        private readonly string path = "./cycles/service/database.xml";
 
         /// <summary>
         /// List of all cycles, user and language ones.
         /// </summary>
-        public List<AbstractCycle> database;
+        private SortedList<String,AbstractCycle> database;
 
         /// <summary>
         /// Save actual state database
@@ -42,7 +42,7 @@ namespace Uceni_jazyku.Cycles
             } 
             else
             {
-                database = new List<AbstractCycle>();
+                database = new SortedList<String,AbstractCycle>();
             }
         }
 
@@ -50,21 +50,29 @@ namespace Uceni_jazyku.Cycles
         /// Insert cycle to database
         /// </summary>
         /// <param name="cycle">inserted cycle</param>
-        public void PutSession(AbstractCycle cycle)
+        public void PutCycle(AbstractCycle cycle)
         {
-            database.Add(cycle);
+            database.Add(cycle.CycleID,cycle);
             Save();
-            //sessionsDatabase.Sort() sort by id
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public int getCyclesCount()
+        {
+            return database.Count;
         }
 
         /// <summary>
         /// Update cycle to its current state 
         /// </summary>
-        /// <param name="sessionId"></param>
-        /// <param name="updatedSession"></param>
-        public void UpdateSession(string sessionId, AbstractCycle updatedSession)
+        /// <param name="cycleID"></param>
+        /// <param name="updatedCycle"></param>
+        public void UpdateCycle(string cycleID, AbstractCycle updatedCycle)
         {
-            //sessionsDatabase.Remove()
+            database[cycleID] = updatedCycle;
         }
     }
 }

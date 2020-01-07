@@ -23,12 +23,12 @@ namespace UnitTests
         [TestMethod]
         public void CreateUserActiveCycle()
         {
-            AbstractCycle session = factory.CreateCycle(CycleType.UserActiveCycle, "test", 5);
-            Assert.IsNotNull(session);
-            Assert.IsTrue(session is UserActiveCycle);
-            Assert.IsNull(session.CycleID);
-            Assert.AreEqual(session.Username, "test");
-            Assert.AreEqual(session.RemainingEvents, 5);
+            AbstractCycle cycle = factory.CreateCycle(CycleType.UserActiveCycle, "test", 5);
+            Assert.IsNotNull(cycle);
+            Assert.IsTrue(cycle is UserActiveCycle);
+            Assert.IsNull(cycle.CycleID);
+            Assert.AreEqual(cycle.Username, "test");
+            Assert.AreEqual(cycle.RemainingEvents, 5);
         }
 
         /// <summary>
@@ -37,12 +37,12 @@ namespace UnitTests
         [TestMethod]
         public void CreateUserInactiveCycle()
         {
-            AbstractCycle session = factory.CreateCycle(CycleType.UserInactiveCycle, "test", 5);
-            Assert.IsNotNull(session);
-            Assert.IsTrue(session is UserInactiveCycle);
-            Assert.IsNull(session.CycleID);
-            Assert.AreEqual(session.Username, "test");
-            Assert.AreEqual(session.RemainingEvents, 5);
+            AbstractCycle cycle = factory.CreateCycle(CycleType.UserInactiveCycle, "test", 5);
+            Assert.IsNotNull(cycle);
+            Assert.IsTrue(cycle is UserInactiveCycle);
+            Assert.IsNull(cycle.CycleID);
+            Assert.AreEqual(cycle.Username, "test");
+            Assert.AreEqual(cycle.RemainingEvents, 5);
         }
 
         /// <summary>
@@ -51,12 +51,12 @@ namespace UnitTests
         [TestMethod]
         public void CreateUserNewCycle()
         {
-            AbstractCycle session = factory.CreateCycle(CycleType.UserNewCycle, "test", 5);
-            Assert.IsNotNull(session);
-            Assert.IsTrue(session is UserNewCycle);
-            Assert.IsNull(session.CycleID);
-            Assert.AreEqual(session.Username, "test");
-            Assert.IsNull(session.RemainingEvents);
+            AbstractCycle cycle = factory.CreateCycle(CycleType.UserNewCycle, "test", 5);
+            Assert.IsNotNull(cycle);
+            Assert.IsTrue(cycle is UserNewCycle);
+            Assert.IsNull(cycle.CycleID);
+            Assert.AreEqual(cycle.Username, "test");
+            Assert.IsNull(cycle.RemainingEvents);
         }
 
         /// <summary>
@@ -65,12 +65,12 @@ namespace UnitTests
         [TestMethod]
         public void CreateUserFinishedCycle()
         {
-            AbstractCycle session = factory.CreateCycle(CycleType.UserFinishedCycle, "test", null);
-            Assert.IsNotNull(session);
-            Assert.IsTrue(session is UserFinishedCycle);
-            Assert.IsNull(session.CycleID);
-            Assert.AreEqual(session.Username, "test");
-            Assert.IsNull(session.RemainingEvents);
+            AbstractCycle cycle = factory.CreateCycle(CycleType.UserFinishedCycle, "test", null);
+            Assert.IsNotNull(cycle);
+            Assert.IsTrue(cycle is UserFinishedCycle);
+            Assert.IsNull(cycle.CycleID);
+            Assert.AreEqual(cycle.Username, "test");
+            Assert.IsNull(cycle.RemainingEvents);
         }
     }
 }

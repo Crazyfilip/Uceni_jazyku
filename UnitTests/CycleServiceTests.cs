@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.IO;
 using Uceni_jazyku.Cycles;
 
@@ -11,34 +12,37 @@ namespace UnitTests
     public class CycleServiceTests
     {
         CycleService service;
+        CycleFactory factory;
 
         [TestInitialize]
         public void TestInitialization()
         {
-            Directory.CreateDirectory("./sessions/user-active");
-            Directory.CreateDirectory("./sessions/service");
+            Directory.CreateDirectory("./cycles/user-active");
+            Directory.CreateDirectory("./cycles/service");
             service = CycleService.GetInstance();
+            factory = new CycleFactory();
         }
 
-        // TODO adjust as creation of specific types is tested for factory already
-        /// <summary>
-        /// test of creation of cycle via service 
-        /// </summary>
         [TestMethod]
-        public void TestCreateActiveCycle()
+        public void TestActiveCycleExistsPositive()
         {
-            AbstractCycle session = service.CreateCycle(CycleType.UserActiveCycle,"test",3); // TODO adjust when session factory will be ready
-            Assert.IsTrue(session is UserActiveCycle);
-            Assert.AreEqual(session.Username,"test");
-            Assert.AreEqual(session.RemainingEvents,3);
-            Assert.AreNotEqual(session.CycleID, "");
-            Assert.IsNotNull(session.CycleID);
+            AbstractCycle cycle = factory.CreateCycle(CycleType.UserActiveCycle, "test", 3);
+            cycle.SaveCycle();
+            bool result = service.UserActiveCycleExists();
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void TestActiveCycleExistsNegative()
+        {
+            bool result = service.UserActiveCycleExists();
+            Assert.IsFalse(result);
         }
 
         [TestCleanup]
         public void TestCleanUp()
         {
-            Directory.Delete("./sessions", true);
+            Directory.Delete("./cycles", true);
         }
     }
 }

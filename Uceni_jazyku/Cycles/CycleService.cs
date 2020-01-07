@@ -5,7 +5,7 @@ using System.IO;
 namespace Uceni_jazyku.Cycles
 {
     /// <summary>
-    /// Cycle service class which handles creation, lifecycle and operations with cycles.
+    /// Cycle service class which handles lifecycle and operations with cycles.
     /// Implemented as singleton
     /// </summary>
     public class CycleService
@@ -46,33 +46,84 @@ namespace Uceni_jazyku.Cycles
         /// <returns>active cycle</returns>
         public UserCycle GetActiveCycle()
         {
-            UserCycle userSession = new UserActiveCycle();
-            return (UserCycle)userSession.GetCycle();
+            UserCycle userCycle = new UserActiveCycle();
+            return (UserCycle)userCycle.GetCycle();
         }
 
         private void RegisterCycle(AbstractCycle cycle)
         {
             cycle.CycleID = GenerateNewId();
-            CycleDatabase.PutSession(cycle);
-        }
-
-        /// <summary>
-        /// Create cycle based on parameters
-        /// </summary>
-        /// <param name="type">cycle type</param>
-        /// <param name="name">cycle name</param>
-        /// <param name="numberOfEvents">number of events in cycle</param>
-        /// <returns>cycle instance</returns>
-        public AbstractCycle CreateCycle(CycleType type, string name, int numberOfEvents )
-        {
-            AbstractCycle cycle = factory.CreateCycle(type, name, numberOfEvents);
-            RegisterCycle(cycle);
-            return cycle;
+            CycleDatabase.PutCycle(cycle);
+            cycle.SaveCycle();
         }
 
         private string GenerateNewId()
         {
-            return "cycle" + CycleDatabase.database.Count;
+            return "cycle" + CycleDatabase.getCyclesCount();
+        }
+
+        /// <summary>
+        /// Create new user cycle
+        /// Register cycle and assign to it cycleID
+        /// </summary>
+        /// <returns>instance of UserNewCycle</returns>
+        public UserNewCycle GetNewCycle(string username)
+        {
+            UserNewCycle newCycle = (UserNewCycle)factory.CreateCycle(CycleType.UserNewCycle, username);
+            newCycle.CycleID = GenerateNewId();
+            CycleDatabase.PutCycle(newCycle);
+            return newCycle;
+        }
+
+        /// <summary>
+        /// Convert UserNewCycle to UserActiveCycle.
+        /// </summary>
+        /// <param name="originCycle">new cycle which will be activated</param>
+        /// <returns>UserActiveCycle</returns>
+        // TODO add cycle program to cycle
+        public UserActiveCycle Activate(UserNewCycle originCycle)
+        {
+            // TODO from user setting get length of cycle
+            UserActiveCycle activeCycle = (UserActiveCycle)factory.CreateCycle(CycleType.UserActiveCycle, originCycle.Username, 3); // TODO not use 3 but length of cycle
+            activeCycle.CycleID = originCycle.CycleID;
+            // TODO assign cycle plan
+            return activeCycle;
+        }
+
+        /// <summary>
+        /// Convert UserInactiveCycle to UserActiveCycle
+        /// </summary>
+        /// <param name="originCycle">inactive cycle which will be activated</param>
+        /// <returns>UserActiveCycle</returns>
+        public UserActiveCycle Activate(UserInactiveCycle originCycle)
+        {
+            UserActiveCycle activeCycle = (UserActiveCycle)factory.CreateCycle(CycleType.UserActiveCycle, originCycle.Username, originCycle.RemainingEvents);
+            activeCycle.CycleID = originCycle.CycleID;
+            return activeCycle;
+        }
+
+        /// <summary>
+        /// Convert UserActiveCycle to UserInactiveCycle
+        /// </summary>
+        /// <param name="originCycle">active cycle which will be inactivated</param>
+        /// <returns>UserInactiveCycle</returns>
+        public UserInactiveCycle Inactive(UserActiveCycle originCycle)
+        {
+            UserInactiveCycle inactiveCycle = (UserInactiveCycle)factory.CreateCycle(CycleType.UserInactiveCycle, originCycle.Username, originCycle.RemainingEvents);
+            inactiveCycle.CycleID = originCycle.CycleID;
+            return inactiveCycle;
+        }
+
+        /// <summary>
+        /// Convert UserActiveCycle to UserFinishedCycle
+        /// </summary>
+        /// <param name="originCycle">active cycle which will be finished</param>
+        /// <returns>UserFinishedCycle</returns>
+        public UserFinishedCycle Finish(UserActiveCycle originCycle)
+        {
+            UserFinishedCycle finishedCycle = (UserFinishedCycle)factory.CreateCycle(CycleType.UserFinishedCycle, originCycle.Username);
+            finishedCycle.CycleID = originCycle.CycleID;
+            return finishedCycle;
         }
     }
 }
