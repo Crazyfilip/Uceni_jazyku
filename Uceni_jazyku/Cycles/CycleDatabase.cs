@@ -60,7 +60,7 @@ namespace Uceni_jazyku.Cycles
         /// 
         /// </summary>
         /// <returns></returns>
-        public int getCyclesCount()
+        public int GetCyclesCount()
         {
             return database.Count;
         }

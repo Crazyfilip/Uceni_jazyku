@@ -50,21 +50,14 @@ namespace Uceni_jazyku.Cycles
             return (UserCycle)userCycle.GetCycle();
         }
 
-        private void RegisterCycle(AbstractCycle cycle)
-        {
-            cycle.CycleID = GenerateNewId();
-            CycleDatabase.PutCycle(cycle);
-            cycle.SaveCycle();
-        }
-
         private string GenerateNewId()
         {
-            return "cycle" + CycleDatabase.getCyclesCount();
+            return "cycle" + CycleDatabase.GetCyclesCount();
         }
 
-        private UserCycle LifeCycleStep(CycleType targetType, UserCycle originCycle)
+        private AbstractCycle LifeCycleStep(CycleType targetType, UserCycle originCycle)
         {
-            UserCycle result = targetType switch
+            AbstractCycle result = targetType switch
             {
                 CycleType.UserActiveCycle => (UserActiveCycle)factory.CreateCycle(targetType, originCycle.Username, originCycle.RemainingEvents),
                 CycleType.UserInactiveCycle => (UserInactiveCycle)factory.CreateCycle(targetType, originCycle.Username, originCycle.RemainingEvents),
@@ -88,6 +81,7 @@ namespace Uceni_jazyku.Cycles
             UserNewCycle newCycle = (UserNewCycle)factory.CreateCycle(CycleType.UserNewCycle, username);
             newCycle.CycleID = GenerateNewId();
             CycleDatabase.PutCycle(newCycle);
+            newCycle.SaveCycle();
             return newCycle;
         }
 
