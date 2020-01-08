@@ -62,6 +62,22 @@ namespace Uceni_jazyku.Cycles
             return "cycle" + CycleDatabase.getCyclesCount();
         }
 
+        private UserCycle LifeCycleStep(CycleType targetType, UserCycle originCycle)
+        {
+            UserCycle result = targetType switch
+            {
+                CycleType.UserActiveCycle => (UserActiveCycle)factory.CreateCycle(targetType, originCycle.Username, originCycle.RemainingEvents),
+                CycleType.UserInactiveCycle => (UserInactiveCycle)factory.CreateCycle(targetType, originCycle.Username, originCycle.RemainingEvents),
+                CycleType.UserFinishedCycle => (UserFinishedCycle)factory.CreateCycle(targetType, originCycle.Username),
+                _ => throw new NotSupportedException("LifeCycleStep not supported")
+            };
+            result.CycleID = originCycle.CycleID;
+            CycleDatabase.UpdateCycle(originCycle.CycleID, result);
+            originCycle.DeleteCycleFile();
+            result.SaveCycle();
+            // TODO move plan
+            return result;
+        }
         /// <summary>
         /// Create new user cycle
         /// Register cycle and assign to it cycleID
@@ -83,11 +99,10 @@ namespace Uceni_jazyku.Cycles
         // TODO add cycle program to cycle
         public UserActiveCycle Activate(UserNewCycle originCycle)
         {
-            // TODO from user setting get length of cycle
-            UserActiveCycle activeCycle = (UserActiveCycle)factory.CreateCycle(CycleType.UserActiveCycle, originCycle.Username, 3); // TODO not use 3 but length of cycle
-            activeCycle.CycleID = originCycle.CycleID;
+            // TODO from user setting get length of cycle            
             // TODO assign cycle plan
-            return activeCycle;
+            originCycle.RemainingEvents = 3; // TODO not use 3 but length of cycle
+            return (UserActiveCycle)LifeCycleStep(CycleType.UserActiveCycle, originCycle);
         }
 
         /// <summary>
@@ -97,9 +112,7 @@ namespace Uceni_jazyku.Cycles
         /// <returns>UserActiveCycle</returns>
         public UserActiveCycle Activate(UserInactiveCycle originCycle)
         {
-            UserActiveCycle activeCycle = (UserActiveCycle)factory.CreateCycle(CycleType.UserActiveCycle, originCycle.Username, originCycle.RemainingEvents);
-            activeCycle.CycleID = originCycle.CycleID;
-            return activeCycle;
+            return (UserActiveCycle)factory.CreateCycle(CycleType.UserActiveCycle, originCycle.Username, originCycle.RemainingEvents);
         }
 
         /// <summary>
@@ -109,9 +122,7 @@ namespace Uceni_jazyku.Cycles
         /// <returns>UserInactiveCycle</returns>
         public UserInactiveCycle Inactive(UserActiveCycle originCycle)
         {
-            UserInactiveCycle inactiveCycle = (UserInactiveCycle)factory.CreateCycle(CycleType.UserInactiveCycle, originCycle.Username, originCycle.RemainingEvents);
-            inactiveCycle.CycleID = originCycle.CycleID;
-            return inactiveCycle;
+            return (UserInactiveCycle)factory.CreateCycle(CycleType.UserInactiveCycle, originCycle.Username, originCycle.RemainingEvents);
         }
 
         /// <summary>
@@ -121,9 +132,7 @@ namespace Uceni_jazyku.Cycles
         /// <returns>UserFinishedCycle</returns>
         public UserFinishedCycle Finish(UserActiveCycle originCycle)
         {
-            UserFinishedCycle finishedCycle = (UserFinishedCycle)factory.CreateCycle(CycleType.UserFinishedCycle, originCycle.Username);
-            finishedCycle.CycleID = originCycle.CycleID;
-            return finishedCycle;
+            return (UserFinishedCycle)factory.CreateCycle(CycleType.UserFinishedCycle, originCycle.Username);
         }
     }
 }

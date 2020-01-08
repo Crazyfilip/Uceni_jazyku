@@ -74,5 +74,12 @@ namespace Uceni_jazyku.Cycles
         {
             database[cycleID] = updatedCycle;
         }
+
+        public bool IsInDatabase(AbstractCycle cycle)
+        {
+            if (!database.ContainsKey(cycle.CycleID))
+                return false;
+            return database.ContainsValue(cycle);
+        }
     }
 }

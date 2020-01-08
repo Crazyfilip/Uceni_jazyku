@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Uceni_jazyku.Cycles
@@ -12,6 +13,11 @@ namespace Uceni_jazyku.Cycles
         public override void Update()
         {
             throw new NotImplementedException();
+        }
+
+        public virtual void DeleteCycleFile()
+        {
+            File.Delete(path);
         }
     }
 }
