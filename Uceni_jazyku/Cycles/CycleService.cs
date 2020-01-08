@@ -55,15 +55,23 @@ namespace Uceni_jazyku.Cycles
             return "cycle" + CycleDatabase.GetCyclesCount();
         }
 
-        private AbstractCycle LifeCycleStep(CycleType targetType, UserCycle originCycle)
+        private UserCycle LifeCycleStep(CycleType targetType, UserCycle originCycle)
         {
-            AbstractCycle result = targetType switch
+            UserCycle result;
+            switch (targetType)
             {
-                CycleType.UserActiveCycle => (UserActiveCycle)factory.CreateCycle(targetType, originCycle.Username, originCycle.RemainingEvents),
-                CycleType.UserInactiveCycle => (UserInactiveCycle)factory.CreateCycle(targetType, originCycle.Username, originCycle.RemainingEvents),
-                CycleType.UserFinishedCycle => (UserFinishedCycle)factory.CreateCycle(targetType, originCycle.Username),
-                _ => throw new NotSupportedException("LifeCycleStep not supported")
-            };
+                case CycleType.UserActiveCycle:
+                    result = (UserActiveCycle)factory.CreateCycle(targetType, originCycle.Username, originCycle.RemainingEvents);
+                    break;
+                case CycleType.UserInactiveCycle:
+                    result = (UserInactiveCycle)factory.CreateCycle(targetType, originCycle.Username, originCycle.RemainingEvents);
+                    break;
+                case CycleType.UserFinishedCycle:
+                    result = (UserFinishedCycle)factory.CreateCycle(targetType, originCycle.Username);
+                    break;
+                default:
+                    throw new NotSupportedException("LifeCycleStep not supported");
+            }
             result.CycleID = originCycle.CycleID;
             CycleDatabase.UpdateCycle(originCycle.CycleID, result);
             originCycle.DeleteCycleFile();
