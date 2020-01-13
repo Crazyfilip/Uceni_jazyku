@@ -1,6 +1,6 @@
 ## Popis
 
-- [ ] Krátce popsat předpokládaný rozsah PR v komentáři
+- [ ] Krátce popsat předpokládaný rozsah PR
 
 Obsah pull requestu: -- Place holder --
 
