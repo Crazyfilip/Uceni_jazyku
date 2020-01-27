@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Uceni_jazyku.Cycles
@@ -26,8 +27,18 @@ namespace Uceni_jazyku.Cycles
             path = "./cycles/user-inactive/";
         }
 
+        public static bool CycleExists(string cycleId)
+        {
+            return File.Exists("./cycles/user-inactive/" + cycleId + ".xml");
+        }
+
         protected override void Serialize(string filepath) => base.Serialize(filepath + CycleID + ".xml");
 
         protected override AbstractCycle Deserialize(string filepath) => base.Deserialize(filepath + CycleID + ".xml");
+
+        protected override void DeleteCycleFile(string filepath)
+        {
+            base.DeleteCycleFile(filepath + CycleID + ".xml");
+        }
     }
 }

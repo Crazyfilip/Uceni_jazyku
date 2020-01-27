@@ -114,7 +114,7 @@ namespace Uceni_jazyku.Cycles
         /// <returns>UserActiveCycle</returns>
         public UserActiveCycle Activate(UserInactiveCycle originCycle)
         {
-            return (UserActiveCycle)factory.CreateCycle(CycleType.UserActiveCycle, originCycle.Username, originCycle.RemainingEvents);
+            return (UserActiveCycle)LifeCycleStep(CycleType.UserActiveCycle, originCycle);
         }
 
         /// <summary>
@@ -122,9 +122,9 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         /// <param name="originCycle">active cycle which will be inactivated</param>
         /// <returns>UserInactiveCycle</returns>
-        public UserInactiveCycle Inactive(UserActiveCycle originCycle)
+        public UserInactiveCycle Inactivate(UserActiveCycle originCycle)
         {
-            return (UserInactiveCycle)factory.CreateCycle(CycleType.UserInactiveCycle, originCycle.Username, originCycle.RemainingEvents);
+            return (UserInactiveCycle)LifeCycleStep(CycleType.UserInactiveCycle, originCycle);
         }
 
         /// <summary>
@@ -134,7 +134,8 @@ namespace Uceni_jazyku.Cycles
         /// <returns>UserFinishedCycle</returns>
         public UserFinishedCycle Finish(UserActiveCycle originCycle)
         {
-            return (UserFinishedCycle)factory.CreateCycle(CycleType.UserFinishedCycle, originCycle.Username);
+            // TODO cannot finish cycle with non zero remaining events
+            return (UserFinishedCycle)LifeCycleStep(CycleType.UserFinishedCycle, originCycle);
         }
     }
 }

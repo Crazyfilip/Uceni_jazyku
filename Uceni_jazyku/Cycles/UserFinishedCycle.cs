@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Uceni_jazyku.Cycles
@@ -12,7 +13,7 @@ namespace Uceni_jazyku.Cycles
         /// <summary>
         /// Basic constructor. Mainly for serialization.
         /// </summary>
-        public UserFinishedCycle() => path = "./cycles/finished/user/";
+        public UserFinishedCycle() => path = "./cycles/user-finished/";
 
         /// <summary>
         /// Main constructor.
@@ -22,7 +23,17 @@ namespace Uceni_jazyku.Cycles
         {
             Username = name;
             RemainingEvents = null;
-            path = "./cycles/finished/user/";
+            path = "./cycles/user-finished/";
+        }
+
+        protected override void Serialize(string filepath) => base.Serialize(filepath + CycleID + ".xml");
+
+        protected override AbstractCycle Deserialize(string filepath) => base.Deserialize(filepath + CycleID + ".xml");
+
+
+        public static bool CycleExists(string cycleID)
+        {
+            return File.Exists("./cycles/user-finished/" + cycleID + ".xml");
         }
     }
 }

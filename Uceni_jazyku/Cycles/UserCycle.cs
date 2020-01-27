@@ -15,9 +15,14 @@ namespace Uceni_jazyku.Cycles
             throw new NotImplementedException();
         }
 
-        public virtual void DeleteCycleFile()
+        protected virtual void DeleteCycleFile(string filepath)
         {
-            File.Delete(path);
+            File.Delete(filepath);
+        }
+
+        public void DeleteCycleFile()
+        {
+            DeleteCycleFile(path);
         }
     }
 }
