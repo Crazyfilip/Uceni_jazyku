@@ -7,8 +7,9 @@ namespace Uceni_jazyku.Cycles
     /// Abstract class for all language and user cycles
     /// </summary>
     [XmlInclude(typeof(UserActiveCycle))]
-    [XmlInclude(typeof(UserInactiveCycle))]
     [XmlInclude(typeof(UserFinishedCycle))]
+    [XmlInclude(typeof(UserInactiveCycle))]
+    [XmlInclude(typeof(UserNewCycle))]
     public abstract class AbstractCycle
     {
 

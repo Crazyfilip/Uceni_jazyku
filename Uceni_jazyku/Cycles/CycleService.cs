@@ -73,7 +73,7 @@ namespace Uceni_jazyku.Cycles
                     throw new NotSupportedException("LifeCycleStep not supported");
             }
             result.CycleID = originCycle.CycleID;
-            CycleDatabase.UpdateCycle(originCycle.CycleID, result);
+            CycleDatabase.UpdateCycle(result);
             originCycle.DeleteCycleFile();
             result.SaveCycle();
             // TODO move plan

@@ -17,16 +17,18 @@ namespace Uceni_jazyku.Cycles
         /// <summary>
         /// List of all cycles, user and language ones.
         /// </summary>
-        private SortedList<String,AbstractCycle> database;
+        private List<AbstractCycle> database;
 
         /// <summary>
         /// Save actual state database
         /// </summary>
         public void Save()
         {
-            XmlSerializer serializer = new XmlSerializer(this.GetType());
+            if (database == null)
+                database = new List<AbstractCycle>();
+            XmlSerializer serializer = new XmlSerializer(database.GetType());
             using StreamWriter sw = new StreamWriter(path);
-            serializer.Serialize(sw, this);
+            serializer.Serialize(sw, database);
         }
 
         /// <summary>
@@ -34,15 +36,12 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         public void Load()
         {
-            XmlSerializer serializer = new XmlSerializer(this.GetType());
+            database = new List<AbstractCycle>();
+            XmlSerializer serializer = new XmlSerializer(database.GetType());
             if (File.Exists(path))
             {
                 using StreamReader sr = new StreamReader(path);
-                this.database = ((CycleDatabase)serializer.Deserialize(sr)).database;
-            } 
-            else
-            {
-                database = new SortedList<String,AbstractCycle>();
+                database = (List<AbstractCycle>)serializer.Deserialize(sr);
             }
         }
 
@@ -52,7 +51,7 @@ namespace Uceni_jazyku.Cycles
         /// <param name="cycle">inserted cycle</param>
         public void PutCycle(AbstractCycle cycle)
         {
-            database.Add(cycle.CycleID,cycle);
+            database.Add(cycle);
             Save();
         }
 
@@ -70,16 +69,16 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         /// <param name="cycleID"></param>
         /// <param name="updatedCycle"></param>
-        public void UpdateCycle(string cycleID, AbstractCycle updatedCycle)
+        public void UpdateCycle(AbstractCycle updatedCycle)
         {
-            database[cycleID] = updatedCycle;
+            int index = database.FindIndex(x => x.CycleID == updatedCycle.CycleID);
+            database[index] = updatedCycle;
+            Save();
         }
 
         public bool IsInDatabase(AbstractCycle cycle)
         {
-            if (!database.ContainsKey(cycle.CycleID))
-                return false;
-            return database.ContainsValue(cycle);
+            return database.Contains(cycle);
         }
     }
 }
