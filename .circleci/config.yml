@@ -12,3 +12,4 @@ jobs:
       - run: dotnet build
       - run: dotnet test --filter ClassName=UnitTests.CycleServiceTests
       - run: dotnet test --filter ClassName=UnitTests.CycleFactoryTests
+      - run: dotnet test --filter ClassName=UnitTests.CycleDatabaseTests
