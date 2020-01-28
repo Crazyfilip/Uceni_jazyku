@@ -3,8 +3,13 @@ using System.Xml.Serialization;
 
 namespace Uceni_jazyku.Cycles
 {
-
+    /// <summary>
+    /// Abstract class for all language and user cycles
+    /// </summary>
     [XmlInclude(typeof(UserActiveCycle))]
+    [XmlInclude(typeof(UserFinishedCycle))]
+    [XmlInclude(typeof(UserInactiveCycle))]
+    [XmlInclude(typeof(UserNewCycle))]
     public abstract class AbstractCycle
     {
 
@@ -14,7 +19,10 @@ namespace Uceni_jazyku.Cycles
 
         protected string path;
 
-        public abstract void Update();
+        /// <summary>
+        /// Update cycle when user did progress in learning
+        /// </summary>
+        public abstract void Update(); // TODO add appropiate argument describing what is updated 
 
         protected virtual void Serialize(string filepath)
         {
@@ -30,11 +38,18 @@ namespace Uceni_jazyku.Cycles
             return (AbstractCycle)serializer.Deserialize(sr);
         }
 
+        /// <summary>
+        /// Save cycle to file
+        /// </summary>
         public void SaveCycle()
         {
             Serialize(path);
         }
 
+        /// <summary>
+        /// Get cycle from file
+        /// </summary>
+        /// <returns></returns>
         public AbstractCycle GetCycle()
         {
             return Deserialize(path);

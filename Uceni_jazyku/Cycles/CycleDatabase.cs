@@ -5,43 +5,80 @@ using System.Xml.Serialization;
 
 namespace Uceni_jazyku.Cycles
 {
+    /// <summary>
+    /// Database of cycles
+    /// In application as collection</c>
+    /// Via xml-serialization saved to/loaded from file
+    /// </summary>
     public class CycleDatabase
     {
-        private readonly string path = "./sessions/service/database.xml";
+        private readonly string path = "./cycles/service/database.xml";
 
-        public List<AbstractCycle> database;
+        /// <summary>
+        /// List of all cycles, user and language ones.
+        /// </summary>
+        private List<AbstractCycle> database;
 
+        /// <summary>
+        /// Save actual state database
+        /// </summary>
         public void Save()
         {
-            XmlSerializer serializer = new XmlSerializer(this.GetType());
+            if (database == null)
+                database = new List<AbstractCycle>();
+            XmlSerializer serializer = new XmlSerializer(database.GetType());
             using StreamWriter sw = new StreamWriter(path);
-            serializer.Serialize(sw, this);
+            serializer.Serialize(sw, database);
         }
 
+        /// <summary>
+        /// Load database. If database file doesn't exists then database will be empty list.
+        /// </summary>
         public void Load()
         {
-            XmlSerializer serializer = new XmlSerializer(this.GetType());
+            database = new List<AbstractCycle>();
+            XmlSerializer serializer = new XmlSerializer(database.GetType());
             if (File.Exists(path))
             {
                 using StreamReader sr = new StreamReader(path);
-                this.database = ((CycleDatabase)serializer.Deserialize(sr)).database;
-            } 
-            else
-            {
-                database = new List<AbstractCycle>();
+                database = (List<AbstractCycle>)serializer.Deserialize(sr);
             }
         }
 
-        public void PutSession(AbstractCycle cycle)
+        /// <summary>
+        /// Insert cycle to database
+        /// </summary>
+        /// <param name="cycle">inserted cycle</param>
+        public void PutCycle(AbstractCycle cycle)
         {
             database.Add(cycle);
             Save();
-            //sessionsDatabase.Sort() sort by id
         }
 
-        public void UpdateSession(string sessionId, AbstractCycle updatedSession)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public int GetCyclesCount()
         {
-            //sessionsDatabase.Remove()
+            return database.Count;
+        }
+
+        /// <summary>
+        /// Update cycle to its current state 
+        /// </summary>
+        /// <param name="cycleID"></param>
+        /// <param name="updatedCycle"></param>
+        public void UpdateCycle(AbstractCycle updatedCycle)
+        {
+            int index = database.FindIndex(x => x.CycleID == updatedCycle.CycleID);
+            database[index] = updatedCycle;
+            Save();
+        }
+
+        public bool IsInDatabase(AbstractCycle cycle)
+        {
+            return database.Contains(cycle);
         }
     }
 }
