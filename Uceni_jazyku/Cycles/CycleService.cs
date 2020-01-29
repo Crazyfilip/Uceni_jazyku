@@ -39,6 +39,11 @@ namespace Uceni_jazyku.Cycles
             return UserActiveCycle.CycleExists();
         }
 
+        internal UserCycle GetUserCycle(string username)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Getter of UserActiveCycle;
         /// </summary>

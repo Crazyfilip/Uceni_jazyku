@@ -35,7 +35,7 @@ namespace User_interface
         {
             // TODO inactivate cycle
             CycleService cycleService = CycleService.GetInstance();
-            userCycle = (UserCycle) cycleService.CreateCycle(CycleType.UnknownUserCycle, null, null);
+            userCycle = (UserCycle)new CycleFactory().CreateCycle(CycleType.UnknownUserCycle, null, null);
             new LoginPage(userCycle).Show();
             Hide();
         }

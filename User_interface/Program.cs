@@ -17,15 +17,15 @@ namespace User_interface
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             CycleService cycleService = CycleService.GetInstance();
-            if (!cycleService.UserActiveCycleExists())
-            {
-                UserCycle userCycle = (UserCycle)cycleService.CreateCycle(CycleType.UnknownUserCycle, null, null);
-                Application.Run(new LoginPage(userCycle));
-            }
-            else
+            if (cycleService.UserActiveCycleExists())
             {
                 UserCycle userCycle = cycleService.GetActiveCycle();
                 Application.Run(new WelcomePage(userCycle));
+            }
+            else
+            {
+                UserCycle userCycle = (UserCycle) new CycleFactory().CreateCycle(CycleType.UnknownUserCycle, null, null);
+                Application.Run(new LoginPage(userCycle));
             }
         }
 
