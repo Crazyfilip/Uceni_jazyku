@@ -29,10 +29,15 @@ namespace User_interface
             }
         }
 
+        // TODO better solution
         private static void PrepareApp()
         {
             Directory.CreateDirectory("./users");
-            Directory.CreateDirectory("./sessions/user-active");
+            Directory.CreateDirectory("./cycles/user-active");
+            Directory.CreateDirectory("./cycles/user-finished");
+            Directory.CreateDirectory("./cycles/user-inactive");
+            Directory.CreateDirectory("./cycles/user-new");
+            Directory.CreateDirectory("./cycles/service");
         }
     }
 }
