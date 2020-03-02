@@ -7,9 +7,9 @@ namespace User_interface
 {
     public partial class LoginPage : Form
     {
-        UserCycle userCycle;
+        UnknownUserCycle userCycle;
 
-        public LoginPage(UserCycle userCycle)
+        public LoginPage(UnknownUserCycle userCycle)
         {
             InitializeComponent();
             this.userCycle = userCycle;
@@ -30,11 +30,11 @@ namespace User_interface
             string username = textboxName.Text;
             string password = textboxPassword.Text;
             UserAccountService userAccountService = UserAccountService.GetInstance();
-            userCycle = userAccountService.Login(username, password);
-            if (userCycle != null)
+            UserActiveCycle userActiveCycle = userAccountService.Login(username, password);
+            if (userActiveCycle != null)
             {
                 MessageBox.Show("Uživatel přihlášen.");
-                // TODO new UserMenu(userSession).Show();
+                new UserMenu(userActiveCycle).Show();
                 Hide();
             }
             else

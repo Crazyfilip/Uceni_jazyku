@@ -6,9 +6,9 @@ namespace User_interface
 {
     public partial class UserMenu : Form
     {
-        private UserCycle userCycle;
+        private UserActiveCycle userCycle;
 
-        public UserMenu(UserCycle userCycle)
+        public UserMenu(UserActiveCycle userCycle)
         {
             InitializeComponent();
             this.userCycle = userCycle;
@@ -17,9 +17,9 @@ namespace User_interface
         private void buttonLogout_Click(object sender, EventArgs e)
         {
             CycleService cycleService = CycleService.GetInstance();
-            // TODO inactivate active cycle
-            userCycle = (UserCycle) new CycleFactory().CreateCycle(CycleType.UnknownUserCycle, null, null);
-            new LoginPage(userCycle).Show();
+            cycleService.Inactivate(userCycle);
+            UnknownUserCycle uknownUser = (UnknownUserCycle) new CycleFactory().CreateCycle(CycleType.UnknownUserCycle, null, null);
+            new LoginPage(uknownUser).Show();
             Close();
         }
         // event for session update

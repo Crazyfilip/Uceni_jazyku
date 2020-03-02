@@ -39,19 +39,26 @@ namespace Uceni_jazyku.Cycles
             return UserActiveCycle.CycleExists();
         }
 
-        internal UserCycle GetUserCycle(string username)
+        internal UserActiveCycle GetUserCycle(string username)
         {
-            throw new NotImplementedException();
+            UserInactiveCycle userInactiveCycle = CycleDatabase.GetOldestUserInactiveCycle(username);
+            if (userInactiveCycle != null)
+            {
+                return Activate(userInactiveCycle);
+            }
+            else
+            {
+                return Activate(GetNewCycle(username));
+            }
         }
 
         /// <summary>
         /// Getter of UserActiveCycle;
         /// </summary>
         /// <returns>active cycle</returns>
-        public UserCycle GetActiveCycle()
+        public UserActiveCycle GetActiveCycle()
         {
-            UserCycle userCycle = new UserActiveCycle();
-            return (UserCycle)userCycle.GetCycle();
+            return (UserActiveCycle)new UserActiveCycle().GetCycle();
         }
 
         private string GenerateNewId()

@@ -4,11 +4,11 @@ using System.Text;
 
 namespace Uceni_jazyku.User_database
 {
-    class UserAccount
+    public class UserAccount
     {
-        string username { get; set; }
-        string loginCredential { get; set; }
+        public string username { get; set; }
+        public string loginCredential { get; set; }
 
-        string salt { get; set; }
+        public string salt { get; set; }
     }
 }

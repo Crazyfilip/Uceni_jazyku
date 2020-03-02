@@ -69,6 +69,7 @@
             this.textboxPassword.Name = "textboxPassword";
             this.textboxPassword.Size = new System.Drawing.Size(121, 20);
             this.textboxPassword.TabIndex = 3;
+            this.textboxPassword.PasswordChar = '*';
             this.textboxPassword.TextChanged += new System.EventHandler(this.textboxPassword_TextChanged);
             // 
             // labelNativeLanguage

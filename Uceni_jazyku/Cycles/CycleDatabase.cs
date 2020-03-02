@@ -94,7 +94,7 @@ namespace Uceni_jazyku.Cycles
                 .Where(x => x is UserInactiveCycle)
                 .ToList();
             queryResult.Sort((x, y) => getCycleNumber(x).CompareTo(getCycleNumber(y)));
-            return (UserInactiveCycle) queryResult.First();
+            return queryResult.Count > 0 ? (UserInactiveCycle) queryResult.First() : null;
         }
     }
 }

@@ -19,12 +19,12 @@ namespace User_interface
             CycleService cycleService = CycleService.GetInstance();
             if (cycleService.UserActiveCycleExists())
             {
-                UserCycle userCycle = cycleService.GetActiveCycle();
+                UserActiveCycle userCycle = cycleService.GetActiveCycle();
                 Application.Run(new WelcomePage(userCycle));
             }
             else
             {
-                UserCycle userCycle = (UserCycle) new CycleFactory().CreateCycle(CycleType.UnknownUserCycle, null, null);
+                UnknownUserCycle userCycle = (UnknownUserCycle) new CycleFactory().CreateCycle(CycleType.UnknownUserCycle, null, null);
                 Application.Run(new LoginPage(userCycle));
             }
         }
