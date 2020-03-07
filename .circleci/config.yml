@@ -1,12 +1,81 @@
 version: 2.1
 
 orbs:
-  win: circleci/windows@1.0.0
+  win: circleci/windows@2.4.0
 
 jobs:
-  build:
+  myjob:
     executor: 
       name: win/vs2019
+    parameters:
+      run_build:
+        type: boolean
+        default: true
+      run_test:
+        type: boolean
+        default: false
+      run_publish:
+        type: boolean
+        default: false
     steps:
       - checkout
-      - run: dotnet build
+      - when:
+          condition: << parameters.run_build >>
+          steps:
+            - run:
+                name: "build verification"
+                command: dotnet build
+      - when:
+          condition: << parameters.run_test >>
+          steps:
+            - run:
+                name: "cycle tests"
+                command: |
+                  dotnet test --filter ClassName=UnitTests.CycleServiceTests
+                  dotnet test --filter ClassName=UnitTests.CycleFactoryTests
+                  dotnet test --filter ClassName=UnitTests.CycleDatabaseTests
+      - when:
+          condition: << parameters.run_publish >>
+          steps:
+            - run:
+                name: "publish and create artifact"
+                command: |
+                  dotnet publish -c Release -r win10-x64
+                  Compress-Archive C:\Users\circleci\project\User_interface\bin\Release\netcoreapp3.0\win10-x64\publish Uceni_Jazyku.zip
+            - store_artifacts:
+                path: Uceni_Jazyku.zip
+
+workflows:
+  version: 2
+  build-test:
+    jobs:
+      myjob:
+        filters:
+          branches:
+            ignore:
+              - master
+              - publish
+        run_build: true
+        run_test: true
+        run_publish: false
+  build-publish:
+    jobs:
+      myjob:
+        filters:
+          branches:
+            only:
+              - publish
+        run_build: true
+        run_test: false
+        run_publish: true
+  build-test-publish:
+    jobs:
+      myjob:
+        filters:
+          branches:
+            only:
+              - master
+        run_build: true
+        run_test: true
+        run_publish: true
+    
