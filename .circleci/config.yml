@@ -6,7 +6,7 @@ orbs:
 jobs:
   myjob:
     executor: 
-      name: win/vs2019
+      name: win/default
     parameters:
       run_build:
         type: boolean
