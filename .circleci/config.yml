@@ -49,33 +49,33 @@ workflows:
   version: 2
   build-test:
     jobs:
-      myjob:
-        filters:
-          branches:
-            ignore:
-              - master
-              - publish
-        run_build: true
-        run_test: true
-        run_publish: false
+      - myjob:
+          filters:
+            branches:
+              ignore:
+                - master
+                - publish
+          run_build: true
+          run_test: true
+          run_publish: false
   build-publish:
     jobs:
-      myjob:
-        filters:
-          branches:
-            only:
-              - publish
-        run_build: true
-        run_test: false
-        run_publish: true
+      - myjob:
+          filters:
+            branches:
+              only:
+                - publish
+          run_build: true
+          run_test: false
+          run_publish: true
   build-test-publish:
     jobs:
-      myjob:
-        filters:
-          branches:
-            only:
-              - master
-        run_build: true
-        run_test: true
-        run_publish: true
+      - myjob:
+          filters:
+            branches:
+              only:
+                - master
+          run_build: true
+          run_test: true
+          run_publish: true
     
