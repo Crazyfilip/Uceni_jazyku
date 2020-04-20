@@ -27,10 +27,10 @@ jobs:
     executor: 
       name: win/default
     steps:
+      - checkout
       - run:
           name: "publish and create artifact"
           command: |
-            dotnet build
             dotnet publish -c Release -r win10-x64
             Compress-Archive C:\Users\circleci\project\User_interface\bin\Release\netcoreapp3.0\win10-x64\publish Uceni_Jazyku.zip
       - store_artifacts:
