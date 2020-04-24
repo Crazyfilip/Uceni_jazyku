@@ -17,12 +17,12 @@ jobs:
       name: win/default
     steps:
       - checkout
-      - run:
-          name: "cycle tests"
-          command: |
-            dotnet test --filter ClassName=UnitTests.CycleServiceTests
-            dotnet test --filter ClassName=UnitTests.CycleFactoryTests
-            dotnet test --filter ClassName=UnitTests.CycleDatabaseTests
+      - run: dotnet test
+         # name: "cycle tests"
+         # command: |
+         #   dotnet test --filter ClassName=UnitTests.CycleServiceTests
+         #   dotnet test --filter ClassName=UnitTests.CycleFactoryTests
+         #   dotnet test --filter ClassName=UnitTests.CycleDatabaseTests
   publish:
     executor: 
       name: win/default
