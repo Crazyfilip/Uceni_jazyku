@@ -7,11 +7,14 @@ namespace Uceni_jazyku.Cycles
 {
     /// <summary>
     /// Database of cycles
-    /// In application as collection</c>
+    /// 
     /// Via xml-serialization saved to/loaded from file
     /// </summary>
     public class CycleDatabase
     {
+        /// <summary>
+        /// Path to file where is stored collection of cycles
+        /// </summary>
         private readonly string path = "./cycles/service/database.xml";
 
         /// <summary>
@@ -24,11 +27,9 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         public void Save()
         {
-            if (database == null)
-                database = new List<AbstractCycle>();
-            XmlSerializer serializer = new XmlSerializer(database.GetType());
+            XmlSerializer serializer = new XmlSerializer(typeof(List<AbstractCycle>));
             using StreamWriter sw = new StreamWriter(path);
-            serializer.Serialize(sw, database);
+            serializer.Serialize(sw, database ?? new List<AbstractCycle>());
         }
 
         /// <summary>
@@ -36,12 +37,15 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         public void Load()
         {
-            database = new List<AbstractCycle>();
-            XmlSerializer serializer = new XmlSerializer(database.GetType());
-            if (File.Exists(path))
-            {
+            if (File.Exists(path)) {
+                XmlSerializer serializer = new XmlSerializer(typeof(List<AbstractCycle>));
                 using StreamReader sr = new StreamReader(path);
                 database = (List<AbstractCycle>)serializer.Deserialize(sr);
+                return;
+            }
+            else
+            {
+                database = new List<AbstractCycle>();
             }
         }
 
@@ -51,31 +55,36 @@ namespace Uceni_jazyku.Cycles
         /// <param name="cycle">inserted cycle</param>
         public void PutCycle(AbstractCycle cycle)
         {
-            database.Add(cycle);
+            (database ??= new List<AbstractCycle>()).Add(cycle);
             Save();
         }
 
         /// <summary>
-        /// 
+        /// getter for number of existing cycles
         /// </summary>
-        /// <returns></returns>
+        /// <returns>number of cycles in database</returns>
         public int GetCyclesCount()
         {
-            return database.Count;
+            return database?.Count ?? 0;
         }
 
         /// <summary>
-        /// Update cycle to its current state 
+        /// Update information about a cycle stored in the database.
         /// </summary>
         /// <param name="cycleID"></param>
         /// <param name="updatedCycle"></param>
         public void UpdateCycle(AbstractCycle updatedCycle)
         {
-            int index = database.FindIndex(x => x.CycleID == updatedCycle.CycleID);
+            int index = database?.FindIndex(x => x.CycleID == updatedCycle.CycleID) ?? throw new Exception("invalid state of database");
             database[index] = updatedCycle;
             Save();
         }
 
+        /// <summary>
+        /// Test if given cycle is present in database
+        /// </summary>
+        /// <param name="cycle">tested cycle</param>
+        /// <returns>true if cycle is present otherwise false</returns>
         public bool IsInDatabase(AbstractCycle cycle)
         {
             return database.Contains(cycle);

@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.IO;
 using Uceni_jazyku.Cycles;
 
@@ -16,6 +17,14 @@ namespace UnitTests
             Directory.CreateDirectory("./cycles/service");
             database = new CycleDatabase();
             factory = new CycleFactory();
+        }
+
+        [TestMethod]
+        public void TestSave()
+        {
+            Assert.IsFalse(File.Exists("./cycles/service/database.xml"));
+            database.Save();
+            Assert.IsTrue(File.Exists("./cycles/service/database.xml"));
         }
 
         [TestMethod]
@@ -52,6 +61,13 @@ namespace UnitTests
             Assert.IsFalse(database.IsInDatabase(cycle1));
             Assert.IsTrue(database.IsInDatabase(cycle2));
             Assert.AreEqual(1, database.GetCyclesCount());
+        }
+
+        [TestMethod]
+        public void UpdateCycleNullDatabase()
+        {
+            Exception ex = Assert.ThrowsException<Exception>(() => database.UpdateCycle(null));
+            Assert.AreEqual("invalid state of database", ex.Message);
         }
 
         [TestCleanup]

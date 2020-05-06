@@ -7,13 +7,21 @@ namespace Uceni_jazyku.Cycles
 {
     /// <summary>
     /// User finished cycle
+    /// Last step of UserCycle lifecycle
+    /// Represents cycle for which user finished its program
+    /// Has role in adapting mechanism
     /// </summary>
     public class UserFinishedCycle : UserCycle
     {
         /// <summary>
+        /// place where inactive cycles will be saved
+        /// </summary>
+        private static readonly string dirPath = "./cycles/user-finished/";
+
+        /// <summary>
         /// Basic constructor. Mainly for serialization.
         /// </summary>
-        public UserFinishedCycle() => path = "./cycles/user-finished/";
+        public UserFinishedCycle() => path = dirPath;
 
         /// <summary>
         /// Main constructor.
@@ -23,17 +31,21 @@ namespace Uceni_jazyku.Cycles
         {
             Username = name;
             RemainingEvents = null;
-            path = "./cycles/user-finished/";
+            path = dirPath;
         }
 
         protected override void Serialize(string filepath) => base.Serialize(filepath + CycleID + ".xml");
 
         protected override AbstractCycle Deserialize(string filepath) => base.Deserialize(filepath + CycleID + ".xml");
 
-
+        /// <summary>
+        /// Test if file for finished cycle exists
+        /// </summary>
+        /// <param name="cycleId">cycle's id</param>
+        /// <returns>true if exists</returns>
         public static bool CycleExists(string cycleID)
         {
-            return File.Exists("./cycles/user-finished/" + cycleID + ".xml");
+            return File.Exists(dirPath + cycleID + ".xml");
         }
     }
 }
