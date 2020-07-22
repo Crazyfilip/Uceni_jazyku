@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using Uceni_jazyku.Cycles;
 
 namespace Uceni_jazyku
 {
@@ -11,8 +12,12 @@ namespace Uceni_jazyku
     {
         static void Main(string[] args)
         {
-            LoadData load = new LoadData();
-            load.LoadDataToDatabase("lekce1_němčina.txt");
+            Directory.CreateDirectory("./sessions/user-active");
+            AbstractCycle session = new UserActiveCycle();
+            session.SaveCycle();
+            UserCycle session2 = CycleService.GetInstance().GetActiveCycle();
+            //LoadData load = new LoadData();
+            //load.LoadDataToDatabase("lekce1_němčina.txt");
             //IGenerator gen = new Generator();
             //StreamReader pom = gen.Generate(null, null, new GenDataWords());
             //ITester test = new Tester();

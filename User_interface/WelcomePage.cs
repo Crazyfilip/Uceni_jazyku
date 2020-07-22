@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using Uceni_jazyku.User_sessions;
+using Uceni_jazyku.Cycles;
 
 namespace User_interface
 {
@@ -17,7 +17,7 @@ namespace User_interface
         {
             InitializeComponent();
             userSession = session;
-            labelWelcome.Text = labelWelcome.Text.Replace("<username>",session.username);
+            labelWelcome.Text = labelWelcome.Text.Replace("<username>",session.Username);
         }
 
         private void buttonExit_Click(object sender, EventArgs e)

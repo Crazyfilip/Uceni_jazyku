@@ -1,14 +1,16 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
-namespace Uceni_jazyku.User_sessions
+namespace Uceni_jazyku.Cycles
 {
     /// <summary>
     /// User session class
     /// </summary>
+    [Obsolete]
     public class User_session
     {
-        public string username { get; private set;}
-        public int remaining_logins { get; private set; }
+        public string Username { get; private set;}
+        public int RemainingLogins { get; private set; }
 
         private static string activeSessionPath = "./sessions/user-active/session.txt";
             
@@ -36,8 +38,8 @@ namespace Uceni_jazyku.User_sessions
             User_session session = new User_session();
             using (StreamReader reader = new StreamReader(activeSessionPath))
             {
-                session.username = reader.ReadLine();
-                session.remaining_logins = int.Parse(reader.ReadLine());
+                session.Username = reader.ReadLine();
+                session.RemainingLogins = int.Parse(reader.ReadLine());
             }
             return session;
         }
@@ -50,8 +52,8 @@ namespace Uceni_jazyku.User_sessions
         public static User_session CreateSession(string username)
         {
             User_session userSession = new User_session();
-            userSession.username = username;
-            userSession.remaining_logins = 3;
+            userSession.Username = username;
+            userSession.RemainingLogins = 3;
             SaveSession(userSession);
             return userSession;
         }
@@ -62,11 +64,9 @@ namespace Uceni_jazyku.User_sessions
         /// <param name="userSession">session to save</param>
         private static void SaveSession(User_session userSession)
         {
-            using (StreamWriter writer = new StreamWriter(activeSessionPath))
-            {
-                writer.WriteLine(userSession.username);
-                writer.WriteLine(userSession.remaining_logins);
-            }
+            using StreamWriter writer = new StreamWriter(activeSessionPath);
+            writer.WriteLine(userSession.Username);
+            writer.WriteLine(userSession.RemainingLogins);
         }
     }
 }
