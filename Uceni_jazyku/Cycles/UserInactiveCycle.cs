@@ -7,13 +7,20 @@ namespace Uceni_jazyku.Cycles
 {
     /// <summary>
     /// User inactive cycle
+    /// Represents cycle based on which user is currently not do lessons
+    /// and which has not finished its program
     /// </summary>
     public class UserInactiveCycle : UserCycle
     {
         /// <summary>
+        /// place where inactive cycles will be saved
+        /// </summary>
+        private static readonly string dirPath = "./cycles/user-inactive/";
+
+        /// <summary>
         /// Basic constructor. Mainly for serialization.
         /// </summary>
-        public UserInactiveCycle() => path = "./cycles/user-inactive/";
+        public UserInactiveCycle() => path = dirPath;
 
         /// <summary>
         /// Main constructor.
@@ -24,12 +31,17 @@ namespace Uceni_jazyku.Cycles
         {
             Username = name;
             RemainingEvents = numberOfEvents;
-            path = "./cycles/user-inactive/";
+            path = dirPath;
         }
 
+        /// <summary>
+        /// Test if file for inactive cycle exists
+        /// </summary>
+        /// <param name="cycleId">cycle's id</param>
+        /// <returns>true if exists</returns>
         public static bool CycleExists(string cycleId)
         {
-            return File.Exists("./cycles/user-inactive/" + cycleId + ".xml");
+            return File.Exists(dirPath + cycleId + ".xml");
         }
 
         protected override void Serialize(string filepath) => base.Serialize(filepath + CycleID + ".xml");

@@ -7,10 +7,15 @@ namespace Uceni_jazyku.Cycles
 {
     /// <summary>
     /// User active cycle
-    /// At most one active cycle can be present
+    /// Second step in UserCycle lifecycle
+    /// At most one active cycle for user can be present
+    /// Represents cycle based on which user is currently doing lessons
     /// </summary>
     public class UserActiveCycle : UserCycle
     {
+        /// <summary>
+        /// place where active cycle will be saved
+        /// </summary>
         private static readonly string filepath = "./cycles/user-active/activeCycle.txt";
 
         /// <summary>

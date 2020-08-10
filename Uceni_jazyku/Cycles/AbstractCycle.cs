@@ -4,7 +4,9 @@ using System.Xml.Serialization;
 namespace Uceni_jazyku.Cycles
 {
     /// <summary>
-    /// Abstract class for all language and user cycles
+    /// Abstract class for all cycles
+    /// Cycle is internal object which drives learning process of user
+    /// There are two types of cycles: user and language
     /// </summary>
     [XmlInclude(typeof(UserActiveCycle))]
     [XmlInclude(typeof(UserFinishedCycle))]
@@ -17,6 +19,9 @@ namespace Uceni_jazyku.Cycles
         public int? RemainingEvents { get; set; }
         public string CycleID { get; set; }
 
+        /// <summary>
+        /// path to cycle's file
+        /// </summary>
         protected string path;
 
         /// <summary>
