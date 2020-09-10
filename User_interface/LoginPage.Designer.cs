@@ -42,10 +42,10 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::User_interface.Properties.Resources.cz_flag;
-            this.pictureBox1.Location = new System.Drawing.Point(13, 3);
+            this.pictureBox1.Location = new System.Drawing.Point(17, 5);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(103, 57);
+            this.pictureBox1.Size = new System.Drawing.Size(137, 88);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
@@ -53,9 +53,10 @@
             // linkLanguageSettings
             // 
             this.linkLanguageSettings.AutoSize = true;
-            this.linkLanguageSettings.Location = new System.Drawing.Point(13, 63);
+            this.linkLanguageSettings.Location = new System.Drawing.Point(17, 97);
+            this.linkLanguageSettings.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.linkLanguageSettings.Name = "linkLanguageSettings";
-            this.linkLanguageSettings.Size = new System.Drawing.Size(103, 13);
+            this.linkLanguageSettings.Size = new System.Drawing.Size(133, 20);
             this.linkLanguageSettings.TabIndex = 1;
             this.linkLanguageSettings.TabStop = true;
             this.linkLanguageSettings.Text = "Jazykové nastavení";
@@ -64,41 +65,46 @@
             // nameLabel
             // 
             this.nameLabel.AutoSize = true;
-            this.nameLabel.Location = new System.Drawing.Point(56, 129);
+            this.nameLabel.Location = new System.Drawing.Point(75, 198);
+            this.nameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.nameLabel.Name = "nameLabel";
-            this.nameLabel.Size = new System.Drawing.Size(38, 13);
+            this.nameLabel.Size = new System.Drawing.Size(52, 20);
             this.nameLabel.TabIndex = 2;
             this.nameLabel.Text = "Jméno";
             // 
             // passwordLabel
             // 
             this.passwordLabel.AutoSize = true;
-            this.passwordLabel.Location = new System.Drawing.Point(56, 155);
+            this.passwordLabel.Location = new System.Drawing.Point(75, 238);
+            this.passwordLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.passwordLabel.Name = "passwordLabel";
-            this.passwordLabel.Size = new System.Drawing.Size(34, 13);
+            this.passwordLabel.Size = new System.Drawing.Size(47, 20);
             this.passwordLabel.TabIndex = 3;
             this.passwordLabel.Text = "Heslo";
             // 
             // textboxName
             // 
-            this.textboxName.Location = new System.Drawing.Point(100, 122);
+            this.textboxName.Location = new System.Drawing.Point(133, 188);
+            this.textboxName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.textboxName.Name = "textboxName";
-            this.textboxName.Size = new System.Drawing.Size(145, 20);
+            this.textboxName.Size = new System.Drawing.Size(192, 27);
             this.textboxName.TabIndex = 4;
             // 
             // textboxPassword
             // 
-            this.textboxPassword.Location = new System.Drawing.Point(100, 155);
+            this.textboxPassword.Location = new System.Drawing.Point(133, 238);
+            this.textboxPassword.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.textboxPassword.Name = "textboxPassword";
-            this.textboxPassword.Size = new System.Drawing.Size(145, 20);
             this.textboxPassword.PasswordChar = '*';
+            this.textboxPassword.Size = new System.Drawing.Size(192, 27);
             this.textboxPassword.TabIndex = 5;
             // 
             // buttonLogin
             // 
-            this.buttonLogin.Location = new System.Drawing.Point(100, 192);
+            this.buttonLogin.Location = new System.Drawing.Point(133, 295);
+            this.buttonLogin.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonLogin.Name = "buttonLogin";
-            this.buttonLogin.Size = new System.Drawing.Size(145, 23);
+            this.buttonLogin.Size = new System.Drawing.Size(193, 35);
             this.buttonLogin.TabIndex = 6;
             this.buttonLogin.Text = "Přihlásit";
             this.buttonLogin.UseVisualStyleBackColor = true;
@@ -107,9 +113,10 @@
             // linkNewAccount
             // 
             this.linkNewAccount.AutoSize = true;
-            this.linkNewAccount.Location = new System.Drawing.Point(147, 228);
+            this.linkNewAccount.Location = new System.Drawing.Point(196, 351);
+            this.linkNewAccount.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.linkNewAccount.Name = "linkNewAccount";
-            this.linkNewAccount.Size = new System.Drawing.Size(56, 13);
+            this.linkNewAccount.Size = new System.Drawing.Size(75, 20);
             this.linkNewAccount.TabIndex = 7;
             this.linkNewAccount.TabStop = true;
             this.linkNewAccount.Text = "Nový účet";
@@ -117,9 +124,10 @@
             // 
             // buttonExit
             // 
-            this.buttonExit.Location = new System.Drawing.Point(228, 289);
+            this.buttonExit.Location = new System.Drawing.Point(304, 445);
+            this.buttonExit.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonExit.Name = "buttonExit";
-            this.buttonExit.Size = new System.Drawing.Size(75, 23);
+            this.buttonExit.Size = new System.Drawing.Size(100, 35);
             this.buttonExit.TabIndex = 8;
             this.buttonExit.Text = "Ukončit";
             this.buttonExit.UseVisualStyleBackColor = true;
@@ -127,9 +135,9 @@
             // 
             // LoginPage
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(343, 354);
+            this.ClientSize = new System.Drawing.Size(457, 545);
             this.Controls.Add(this.buttonExit);
             this.Controls.Add(this.linkNewAccount);
             this.Controls.Add(this.buttonLogin);
@@ -139,6 +147,7 @@
             this.Controls.Add(this.nameLabel);
             this.Controls.Add(this.linkLanguageSettings);
             this.Controls.Add(this.pictureBox1);
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "LoginPage";
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

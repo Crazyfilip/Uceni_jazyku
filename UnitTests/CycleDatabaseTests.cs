@@ -70,6 +70,49 @@ namespace UnitTests
             Assert.AreEqual("invalid state of database", ex.Message);
         }
 
+        [TestMethod]
+        public void CycleNumberTest()
+        {
+            AbstractCycle cycle = factory.CreateCycle(CycleType.UserActiveCycle, "test", 1);
+            int cycleNumber = 8548;
+            cycle.CycleID = "cycle" + cycleNumber;
+            database.Load();
+            database.PutCycle(cycle);
+            int result = database.getCycleNumber(cycle);
+            Assert.AreEqual(cycleNumber, result);
+        }
+
+        [TestMethod]
+        public void WhenInvalidStateOfDatabase_ThenOldestThrowsException()
+        {
+            Exception ex = Assert.ThrowsException<Exception>(() => database.GetOldestUserInactiveCycle("test"));
+            Assert.AreEqual("invalid state of database", ex.Message);
+        }
+
+        [TestMethod]
+        public void WhenNoInactiveCycle_ThenOldestReturnNull()
+        {
+            database.Load();
+            Assert.IsNull(database.GetOldestUserInactiveCycle("testuser"));
+        }
+
+        [TestMethod]
+        public void WhenInactiveCyclePresents_ThenReturnOldest()
+        {
+            AbstractCycle cycle_first = factory.CreateCycle(CycleType.UserInactiveCycle, "test", 1);
+            cycle_first.CycleID = "cycle1";
+            AbstractCycle cycle_second = factory.CreateCycle(CycleType.UserInactiveCycle, "test", 1);
+            cycle_second.CycleID = "cycle2";
+            database.Load();
+            database.PutCycle(cycle_first);
+            database.PutCycle(cycle_second);
+
+            UserInactiveCycle cycle_result = database.GetOldestUserInactiveCycle("test");
+
+            Assert.AreEqual(cycle_first, cycle_result);
+            Assert.AreNotEqual(cycle_second, cycle_result);
+        }
+
         [TestCleanup]
         public void CleanUp()
         {
