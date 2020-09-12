@@ -9,7 +9,8 @@ namespace Uceni_jazyku.User_database
 {
 
     /// <summary>
-    /// User account class
+    /// Class for managing user accounts
+    /// Login and creating new users
     /// </summary>
     public class UserAccountService
     {
@@ -31,6 +32,10 @@ namespace Uceni_jazyku.User_database
             }
         }
 
+        /// <summary>
+        /// Getter of UserAccountService instance
+        /// </summary>
+        /// <returns>UserAccountService's instance</returns>
         public static UserAccountService GetInstance()
         {
             if (instance == null)
@@ -41,8 +46,8 @@ namespace Uceni_jazyku.User_database
         /// <summary>
         /// Login user if user exists and return user's cycle in that case
         /// </summary>
-        /// <param name="username"></param>
-        /// <param name="password"></param>
+        /// <param name="username">username</param>
+        /// <param name="password">password</param>
         /// <returns>User's cycle or null</returns>
         public UserActiveCycle Login(string username, string password)
         {
@@ -107,6 +112,11 @@ namespace Uceni_jazyku.User_database
             XmlSerializer serializer = new XmlSerializer(typeof(List<UserAccount>));
             using StreamWriter sw = new StreamWriter(databasePath);
             serializer.Serialize(sw, userDatabase);
+        }
+
+        public static void Deallocate()
+        {
+            instance = null;
         }
     }
 }
