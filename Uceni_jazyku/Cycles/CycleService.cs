@@ -41,7 +41,8 @@ namespace Uceni_jazyku.Cycles
         }
 
         /// <summary>
-        /// Get active cycle when login or when active cycle was finished
+        /// Get active cycle for given user
+        /// when login or when active cycle was finished
         /// </summary>
         /// <param name="username">username</param>
         /// <returns>active cycle for user</returns>
