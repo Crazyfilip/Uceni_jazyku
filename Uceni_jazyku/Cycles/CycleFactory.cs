@@ -38,7 +38,7 @@ namespace Uceni_jazyku.Cycles
         /// <param name="type">cycle type</param>
         /// <param name="name">name of cycle</param>
         /// <param name="numberOfEvents">number of events in cycle</param>
-        /// <returns>ïnstance of cycle</returns>
+        /// <returns>instance of cycle</returns>
         public AbstractCycle CreateCycle(CycleType type, string name, int? numberOfEvents)
         {
             return type switch
@@ -57,6 +57,9 @@ namespace Uceni_jazyku.Cycles
         protected virtual AbstractCycle CreateCycle() { throw new NotSupportedException(); }
     }
 
+    /// <summary>
+    /// Factory subclass handling creation of UnknownUserCycle
+    /// </summary>
     class UnknownUserCycleFactory : CycleFactory
     {
         protected override AbstractCycle CreateCycle()

@@ -30,6 +30,7 @@ namespace Uceni_jazyku.Cycles
                 instance = new CycleService();
             return instance;
         }
+
         /// <summary>
         /// test presence of UserActiveCycle
         /// </summary>
@@ -39,6 +40,11 @@ namespace Uceni_jazyku.Cycles
             return UserActiveCycle.CycleExists();
         }
 
+        /// <summary>
+        /// Get active cycle when login or when active cycle was finished
+        /// </summary>
+        /// <param name="username">username</param>
+        /// <returns>active cycle for user</returns>
         internal UserActiveCycle GetUserCycle(string username)
         {
             UserInactiveCycle userInactiveCycle = CycleDatabase.GetOldestUserInactiveCycle(username);
@@ -53,7 +59,7 @@ namespace Uceni_jazyku.Cycles
         }
 
         /// <summary>
-        /// Getter of UserActiveCycle;
+        /// Get active cycle when application starts
         /// </summary>
         /// <returns>active cycle</returns>
         public UserActiveCycle GetActiveCycle()
@@ -65,6 +71,7 @@ namespace Uceni_jazyku.Cycles
         {
             return "cycle" + CycleDatabase.GetCyclesCount();
         }
+
         private UserCycle LifeCycleStep(CycleType targetType, UserCycle originCycle)
         {
             UserCycle result;

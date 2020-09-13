@@ -7,7 +7,7 @@ namespace Uceni_jazyku.Cycles
 {
     /// <summary>
     /// Abstract class for user cycles.
-    /// User cycle reflects user's activity in learning
+    /// User cycle reflects user's activity in learning and application
     /// Has role in internal process of adapting to user's progress
     /// </summary>
     public abstract class UserCycle : AbstractCycle
