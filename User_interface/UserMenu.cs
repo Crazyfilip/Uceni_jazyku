@@ -6,22 +6,20 @@ namespace User_interface
 {
     public partial class UserMenu : Form
     {
-        private User_session userSession;
+        private UserActiveCycle userCycle;
 
-        public UserMenu()
+        public UserMenu(UserActiveCycle userCycle)
         {
             InitializeComponent();
-        }
-
-        public UserMenu(User_session userSession)
-        {
-            InitializeComponent();
-            this.userSession = userSession;
+            this.userCycle = userCycle;
         }
 
         private void buttonLogout_Click(object sender, EventArgs e)
         {
-            new LoginPage().Show();
+            CycleService cycleService = CycleService.GetInstance();
+            cycleService.Inactivate(userCycle);
+            UnknownUserCycle uknownUser = (UnknownUserCycle) new CycleFactory().CreateCycle(CycleType.UnknownUserCycle, null, null);
+            new LoginPage(uknownUser).Show();
             Close();
         }
         // event for session update

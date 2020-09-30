@@ -27,7 +27,7 @@ namespace UnitTests
             Assert.IsNotNull(cycle);
             Assert.IsTrue(cycle is UserActiveCycle);
             Assert.IsNull(cycle.CycleID);
-            Assert.AreEqual(cycle.Username, "test");
+            Assert.AreEqual("test", cycle.Username);
             Assert.AreEqual(cycle.RemainingEvents, 5);
         }
 
@@ -41,7 +41,7 @@ namespace UnitTests
             Assert.IsNotNull(cycle);
             Assert.IsTrue(cycle is UserInactiveCycle);
             Assert.IsNull(cycle.CycleID);
-            Assert.AreEqual(cycle.Username, "test");
+            Assert.AreEqual("test", cycle.Username);
             Assert.AreEqual(cycle.RemainingEvents, 5);
         }
 
@@ -55,7 +55,7 @@ namespace UnitTests
             Assert.IsNotNull(cycle);
             Assert.IsTrue(cycle is UserNewCycle);
             Assert.IsNull(cycle.CycleID);
-            Assert.AreEqual(cycle.Username, "test");
+            Assert.AreEqual("test", cycle.Username);
             Assert.IsNull(cycle.RemainingEvents);
         }
 
@@ -69,7 +69,21 @@ namespace UnitTests
             Assert.IsNotNull(cycle);
             Assert.IsTrue(cycle is UserFinishedCycle);
             Assert.IsNull(cycle.CycleID);
-            Assert.AreEqual(cycle.Username, "test");
+            Assert.AreEqual("test", cycle.Username);
+            Assert.IsNull(cycle.RemainingEvents);
+        }
+
+        /// <summary>
+        /// Test of correct creation of UnknownUserCycle
+        /// </summary>
+        [TestMethod]
+        public void CreateUnknownUserCycle()
+        {
+            AbstractCycle cycle = factory.CreateCycle(CycleType.UnknownUserCycle, "ignore", null);
+            Assert.IsNotNull(cycle);
+            Assert.IsTrue(cycle is UnknownUserCycle);
+            Assert.IsNull(cycle.CycleID);
+            Assert.AreEqual("UnknownUser", cycle.Username);
             Assert.IsNull(cycle.RemainingEvents);
         }
     }

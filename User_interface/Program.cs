@@ -16,20 +16,28 @@ namespace User_interface
             PrepareApp();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            User_session session;
-            if (!User_session.ActiveSessionExists(out session))
-                Application.Run(new LoginPage());
+            CycleService cycleService = CycleService.GetInstance();
+            if (cycleService.UserActiveCycleExists())
+            {
+                UserActiveCycle userCycle = cycleService.GetActiveCycle();
+                Application.Run(new WelcomePage(userCycle));
+            }
             else
             {
-                
-                Application.Run(new WelcomePage(session));
+                UnknownUserCycle userCycle = (UnknownUserCycle) new CycleFactory().CreateCycle(CycleType.UnknownUserCycle, null, null);
+                Application.Run(new LoginPage(userCycle));
             }
         }
 
+        // TODO better solution
         private static void PrepareApp()
         {
             Directory.CreateDirectory("./users");
-            Directory.CreateDirectory("./sessions/user-active");
+            Directory.CreateDirectory("./cycles/user-active");
+            Directory.CreateDirectory("./cycles/user-finished");
+            Directory.CreateDirectory("./cycles/user-inactive");
+            Directory.CreateDirectory("./cycles/user-new");
+            Directory.CreateDirectory("./cycles/service");
         }
     }
 }

@@ -12,7 +12,8 @@ namespace Uceni_jazyku.Cycles
         UserNewCycle,
         UserActiveCycle,
         UserInactiveCycle,
-        UserFinishedCycle
+        UserFinishedCycle,
+        UnknownUserCycle
     }
 
     /// <summary>
@@ -37,7 +38,7 @@ namespace Uceni_jazyku.Cycles
         /// <param name="type">cycle type</param>
         /// <param name="name">name of cycle</param>
         /// <param name="numberOfEvents">number of events in cycle</param>
-        /// <returns>ïnstance of cycle</returns>
+        /// <returns>instance of cycle</returns>
         public AbstractCycle CreateCycle(CycleType type, string name, int? numberOfEvents)
         {
             return type switch
@@ -46,12 +47,25 @@ namespace Uceni_jazyku.Cycles
                 CycleType.UserInactiveCycle => new UserInactiveCycleFactory().CreateCycle(name, numberOfEvents),
                 CycleType.UserNewCycle => new UserNewCycleFactory().CreateCycle(name),
                 CycleType.UserFinishedCycle => new UserFinishedCycleFactory().CreateCycle(name),
+                CycleType.UnknownUserCycle => new UnknownUserCycleFactory().CreateCycle(),
                 _ => throw new ArgumentException("parametr type is not valid"),
             };
         }
 
         protected virtual AbstractCycle CreateCycle(string name, int? numberOfEvents) { throw new NotSupportedException(); }
         protected virtual AbstractCycle CreateCycle(string name) { throw new NotSupportedException(); }
+        protected virtual AbstractCycle CreateCycle() { throw new NotSupportedException(); }
+    }
+
+    /// <summary>
+    /// Factory subclass handling creation of UnknownUserCycle
+    /// </summary>
+    class UnknownUserCycleFactory : CycleFactory
+    {
+        protected override AbstractCycle CreateCycle()
+        {
+            return new UnknownUserCycle();
+        }
     }
 
     /// <summary>

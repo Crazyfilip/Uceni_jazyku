@@ -41,13 +41,31 @@ namespace Uceni_jazyku.Cycles
         }
 
         /// <summary>
-        /// Getter of UserActiveCycle;
+        /// Get active cycle for given user
+        /// when login or when active cycle was finished
+        /// </summary>
+        /// <param name="username">username</param>
+        /// <returns>active cycle for user</returns>
+        internal UserActiveCycle GetUserCycle(string username)
+        {
+            UserInactiveCycle userInactiveCycle = CycleDatabase.GetOldestUserInactiveCycle(username);
+            if (userInactiveCycle != null)
+            {
+                return Activate(userInactiveCycle);
+            }
+            else
+            {
+                return Activate(GetNewCycle(username));
+            }
+        }
+
+        /// <summary>
+        /// Get active cycle when application starts
         /// </summary>
         /// <returns>active cycle</returns>
-        public UserCycle GetActiveCycle()
+        public UserActiveCycle GetActiveCycle()
         {
-            UserCycle userCycle = new UserActiveCycle();
-            return (UserCycle)userCycle.GetCycle();
+            return (UserActiveCycle)new UserActiveCycle().GetCycle();
         }
 
         private string GenerateNewId()

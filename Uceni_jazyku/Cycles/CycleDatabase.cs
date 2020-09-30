@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml.Serialization;
 
 namespace Uceni_jazyku.Cycles
@@ -88,6 +89,32 @@ namespace Uceni_jazyku.Cycles
         public bool IsInDatabase(AbstractCycle cycle)
         {
             return database.Contains(cycle);
+        }
+
+        /// <summary>
+        /// getter of cycle number from its id
+        /// </summary>
+        /// <param name="cycle">cycle</param>
+        /// <returns>cycle number</returns>
+        public int getCycleNumber(AbstractCycle cycle)
+        {
+            return int.Parse(cycle.CycleID.Substring(5)); // cycleID format is: cycle<number>
+        }
+
+        /// <summary>
+        /// Search for user's oldest inactive cycle
+        /// </summary>
+        /// <param name="username">user's name</param>
+        /// <returns>Oldest user's inactive cycle</returns>
+        public UserInactiveCycle GetOldestUserInactiveCycle(string username)
+        {
+            var queryResult = database
+                ?.Where(x => x.Username == username)
+                .Where(x => x is UserInactiveCycle)
+                .ToList()
+                ?? throw new Exception("invalid state of database");
+            queryResult.Sort((x, y) => getCycleNumber(x).CompareTo(getCycleNumber(y)));
+            return queryResult.Count > 0 ? (UserInactiveCycle) queryResult.First() : null;
         }
     }
 }
