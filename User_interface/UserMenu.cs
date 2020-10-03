@@ -12,6 +12,7 @@ namespace User_interface
         {
             InitializeComponent();
             this.userCycle = userCycle;
+            labelUser.Text = labelUser.Text.Replace("<username>", userCycle.Username);
         }
 
         private void buttonLogout_Click(object sender, EventArgs e)
