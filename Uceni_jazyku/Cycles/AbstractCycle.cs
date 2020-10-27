@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Xml.Serialization;
+using Uceni_jazyku.Cycles.Program;
 
 namespace Uceni_jazyku.Cycles
 {
@@ -18,6 +19,8 @@ namespace Uceni_jazyku.Cycles
         public string Username { get; set; }
         public int? RemainingEvents { get; set; }
         public string CycleID { get; set; }
+
+        public CycleProgram Program { get; set; }
 
         /// <summary>
         /// path to cycle's file

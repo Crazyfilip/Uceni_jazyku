@@ -12,6 +12,8 @@ namespace Uceni_jazyku.Cycles
     /// </summary>
     public abstract class UserCycle : AbstractCycle
     {
+
+
         public override void Update()
         {
             throw new NotImplementedException();
