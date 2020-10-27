@@ -20,8 +20,6 @@ namespace Uceni_jazyku.Cycles
         public int? RemainingEvents { get; set; }
         public string CycleID { get; set; }
 
-        public CycleProgram Program { get; set; }
-
         /// <summary>
         /// path to cycle's file
         /// </summary>
