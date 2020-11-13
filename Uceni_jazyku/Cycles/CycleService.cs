@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization;
+using System.Xml;
 
 namespace Uceni_jazyku.Cycles
 {
@@ -13,11 +15,11 @@ namespace Uceni_jazyku.Cycles
         private static CycleService instance;
 
         private readonly CycleDatabase CycleDatabase;
-        private readonly CycleFactory factory;
-        private CycleService() {
-            CycleDatabase = new CycleDatabase();
+
+        private readonly string activeCycleCacheFile = "cycles/service/active-cycle.xml";
+        private CycleService(CycleDatabase database) {
+            CycleDatabase = database ?? new CycleDatabase();
             CycleDatabase.Load();
-            factory = new CycleFactory();
         }
 
         /// <summary>
@@ -27,17 +29,36 @@ namespace Uceni_jazyku.Cycles
         public static CycleService GetInstance()
         {
             if (instance == null)
-                instance = new CycleService();
+                instance = new CycleService(null);
+            return instance;
+        }
+
+        public static CycleService GetInstance(CycleDatabase database)
+        {
+            if (instance == null)
+                instance = new CycleService(database);
             return instance;
         }
 
         /// <summary>
-        /// test presence of UserActiveCycle
+        /// test presence of cached active cycle
         /// </summary>
-        /// <returns>true if there is ActiveUserCycle present</returns>
+        /// <returns>true if there is cached active cycle</returns>
         public bool UserActiveCycleExists()
         {
-            return UserActiveCycle.CycleExists();
+            return File.Exists(activeCycleCacheFile);
+        }
+
+        private void cacheActiveCycle(UserCycle cycle)
+        {
+            var serializer = new DataContractSerializer(typeof(UserCycle));
+            using XmlWriter writer = XmlWriter.Create(activeCycleCacheFile);
+            serializer.WriteObject(writer, cycle);
+        }
+
+        private void clearCachedActiveCycle()
+        {
+            File.Delete(activeCycleCacheFile);
         }
 
         /// <summary>
@@ -46,12 +67,12 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         /// <param name="username">username</param>
         /// <returns>active cycle for user</returns>
-        internal UserActiveCycle GetUserCycle(string username)
+        public UserCycle GetUserCycle(string username)
         {
-            UserInactiveCycle userInactiveCycle = CycleDatabase.GetOldestUserInactiveCycle(username);
-            if (userInactiveCycle != null)
+            UserCycle result = CycleDatabase.GetOldestUserInactiveCycle(username);
+            if (result != null)
             {
-                return Activate(userInactiveCycle);
+                 return Activate(result);
             }
             else
             {
@@ -63,97 +84,52 @@ namespace Uceni_jazyku.Cycles
         /// Get active cycle when application starts
         /// </summary>
         /// <returns>active cycle</returns>
-        public UserActiveCycle GetActiveCycle()
+        public UserCycle GetActiveCycle()
         {
-            return (UserActiveCycle)new UserActiveCycle().GetCycle();
+            var serializer = new DataContractSerializer(typeof(UserCycle));
+            using XmlReader reader = XmlReader.Create(activeCycleCacheFile);
+            return (UserCycle)serializer.ReadObject(reader);
         }
 
         private string GenerateNewId()
         {
             return "cycle" + CycleDatabase.GetCyclesCount();
         }
-
-        private UserCycle LifeCycleStep(CycleType targetType, UserCycle originCycle)
-        {
-            UserCycle result;
-            switch (targetType)
-            {
-                case CycleType.UserActiveCycle:
-                    result = (UserActiveCycle)factory.CreateCycle(targetType, originCycle.Username, originCycle.RemainingEvents);
-                    break;
-                case CycleType.UserInactiveCycle:
-                    result = (UserInactiveCycle)factory.CreateCycle(targetType, originCycle.Username, originCycle.RemainingEvents);
-                    break;
-                case CycleType.UserFinishedCycle:
-                    result = (UserFinishedCycle)factory.CreateCycle(targetType, originCycle.Username);
-                    break;
-                default:
-                    throw new NotSupportedException("LifeCycleStep not supported");
-            }
-            result.CycleID = originCycle.CycleID;
-            CycleDatabase.UpdateCycle(result);
-            originCycle.DeleteCycleFile();
-            result.SaveCycle();
-            // TODO move plan
-            return result;
-        }
         /// <summary>
         /// Create new user cycle
         /// Register cycle and assign to it cycleID
         /// </summary>
         /// <returns>instance of UserNewCycle</returns>
-        public UserNewCycle GetNewCycle(string username)
+        public UserCycle GetNewCycle(string username)
         {
-            UserNewCycle newCycle = (UserNewCycle)factory.CreateCycle(CycleType.UserNewCycle, username);
-            newCycle.CycleID = GenerateNewId();
+            UserCycle newCycle = new UserCycle
+            {
+                CycleID = GenerateNewId()
+            }; 
+            newCycle.AssignUser(username);
             CycleDatabase.PutCycle(newCycle);
-            newCycle.SaveCycle();
             return newCycle;
         }
 
-        /// <summary>
-        /// Convert UserNewCycle to UserActiveCycle.
-        /// </summary>
-        /// <param name="originCycle">new cycle which will be activated</param>
-        /// <returns>UserActiveCycle</returns>
-        // TODO add cycle program to cycle
-        public UserActiveCycle Activate(UserNewCycle originCycle)
+        public UserCycle Activate(UserCycle cycle)
         {
-            // TODO from user setting get length of cycle            
-            // TODO assign cycle plan
-            originCycle.RemainingEvents = 3; // TODO not use 3 but length of cycle
-            return (UserActiveCycle)LifeCycleStep(CycleType.UserActiveCycle, originCycle);
+            if (cycle.State == UserCycles.UserCycleState.New)
+            {
+                // TODO assign program
+                // cycle.AssignProgram(something);
+            }
+            cycle.Activate();
+            CycleDatabase.UpdateCycle(cycle);
+            cacheActiveCycle(cycle);
+            return cycle;
         }
 
-        /// <summary>
-        /// Convert UserInactiveCycle to UserActiveCycle
-        /// </summary>
-        /// <param name="originCycle">inactive cycle which will be activated</param>
-        /// <returns>UserActiveCycle</returns>
-        public UserActiveCycle Activate(UserInactiveCycle originCycle)
+        public UserCycle Inactivate(UserCycle cycle)
         {
-            return (UserActiveCycle)LifeCycleStep(CycleType.UserActiveCycle, originCycle);
-        }
-
-        /// <summary>
-        /// Convert UserActiveCycle to UserInactiveCycle
-        /// </summary>
-        /// <param name="originCycle">active cycle which will be inactivated</param>
-        /// <returns>UserInactiveCycle</returns>
-        public UserInactiveCycle Inactivate(UserActiveCycle originCycle)
-        {
-            return (UserInactiveCycle)LifeCycleStep(CycleType.UserInactiveCycle, originCycle);
-        }
-
-        /// <summary>
-        /// Convert UserActiveCycle to UserFinishedCycle
-        /// </summary>
-        /// <param name="originCycle">active cycle which will be finished</param>
-        /// <returns>UserFinishedCycle</returns>
-        public UserFinishedCycle Finish(UserActiveCycle originCycle)
-        {
-            // TODO cannot finish cycle with non zero remaining events
-            return (UserFinishedCycle)LifeCycleStep(CycleType.UserFinishedCycle, originCycle);
+            cycle.Inactivate();
+            CycleDatabase.UpdateCycle(cycle);
+            clearCachedActiveCycle();
+            return cycle;
         }
     }
 }

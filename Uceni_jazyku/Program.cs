@@ -12,10 +12,6 @@ namespace Uceni_jazyku
     {
         static void Main(string[] args)
         {
-            Directory.CreateDirectory("./sessions/user-active");
-            AbstractCycle session = new UserActiveCycle();
-            session.SaveCycle();
-            UserCycle session2 = CycleService.GetInstance().GetActiveCycle();
             //LoadData load = new LoadData();
             //load.LoadDataToDatabase("lekce1_němčina.txt");
             //IGenerator gen = new Generator();

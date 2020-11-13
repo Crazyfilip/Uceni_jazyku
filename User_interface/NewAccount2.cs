@@ -7,10 +7,10 @@ namespace User_interface
     public partial class NewAccount2 : Form
     {
 
-        private UserNewCycle userCycle;
+        private UserCycle userCycle;
         public string username { get; set; }
 
-        public NewAccount2(UserNewCycle userCycle)
+        public NewAccount2(UserCycle userCycle)
         {
             InitializeComponent();
             this.userCycle = userCycle;

@@ -6,9 +6,9 @@ namespace User_interface
 {
     public partial class UserMenu : Form
     {
-        private UserActiveCycle userCycle;
+        private UserCycle userCycle;
 
-        public UserMenu(UserActiveCycle userCycle)
+        public UserMenu(UserCycle userCycle)
         {
             InitializeComponent();
             this.userCycle = userCycle;
@@ -18,7 +18,8 @@ namespace User_interface
         {
             CycleService cycleService = CycleService.GetInstance();
             cycleService.Inactivate(userCycle);
-            UnknownUserCycle uknownUser = (UnknownUserCycle) new CycleFactory().CreateCycle(CycleType.UnknownUserCycle, null, null);
+            // TODO get cycle in UnknownUser state from service
+            UserCycle uknownUser = new UserCycle();
             new LoginPage(uknownUser).Show();
             Close();
         }

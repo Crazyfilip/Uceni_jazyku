@@ -7,9 +7,9 @@ namespace User_interface
 {
     public partial class NewAccount1 : Form
     {
-        UnknownUserCycle userCycle;
+        UserCycle userCycle;
 
-        public NewAccount1(UnknownUserCycle userCycle)
+        public NewAccount1(UserCycle userCycle)
         {
             InitializeComponent();
             this.userCycle = userCycle;
@@ -21,7 +21,7 @@ namespace User_interface
             if (userAccountService.CreateUser(textboxName.Text, textboxPassword.Text))
             {
                 MessageBox.Show("Účet vytvořen. Nyní si nastavíte jazykový/-é kurz/-y");
-                UserNewCycle userNewCycle = CycleService.GetInstance().GetNewCycle(textboxName.Text);
+                UserCycle userNewCycle = CycleService.GetInstance().GetNewCycle(textboxName.Text);
                 NewAccount2 newAccount2 = new NewAccount2(userNewCycle);
                 newAccount2.Show();
                 Hide();

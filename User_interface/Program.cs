@@ -19,12 +19,13 @@ namespace User_interface
             CycleService cycleService = CycleService.GetInstance();
             if (cycleService.UserActiveCycleExists())
             {
-                UserActiveCycle userCycle = cycleService.GetActiveCycle();
+                UserCycle userCycle = cycleService.GetActiveCycle();
                 Application.Run(new WelcomePage(userCycle));
             }
             else
             {
-                UnknownUserCycle userCycle = (UnknownUserCycle) new CycleFactory().CreateCycle(CycleType.UnknownUserCycle, null, null);
+                // TODO get cycle in UnknownUser state from service
+                UserCycle userCycle = new UserCycle();
                 Application.Run(new LoginPage(userCycle));
             }
         }
@@ -33,10 +34,6 @@ namespace User_interface
         private static void PrepareApp()
         {
             Directory.CreateDirectory("./users");
-            Directory.CreateDirectory("./cycles/user-active");
-            Directory.CreateDirectory("./cycles/user-finished");
-            Directory.CreateDirectory("./cycles/user-inactive");
-            Directory.CreateDirectory("./cycles/user-new");
             Directory.CreateDirectory("./cycles/service");
         }
     }

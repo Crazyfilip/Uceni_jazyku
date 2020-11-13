@@ -9,14 +9,12 @@ namespace UnitTests
     public class CycleDatabaseTests
     {
         CycleDatabase database;
-        CycleFactory factory;
 
         [TestInitialize]
         public void Init()
         {
             Directory.CreateDirectory("./cycles/service");
             database = new CycleDatabase();
-            factory = new CycleFactory();
         }
 
         [TestMethod]
@@ -37,7 +35,7 @@ namespace UnitTests
         [TestMethod]
         public void PutToDatabase()
         {
-            AbstractCycle cycle = factory.CreateCycle(CycleType.UserActiveCycle, "test",1);
+            UserCycle cycle = new UserCycle().AssignUser("test");
             cycle.CycleID = "test_cycle_0";
             database.Load();
             database.PutCycle(cycle);
@@ -48,14 +46,14 @@ namespace UnitTests
         [TestMethod]
         public void UpdateCycle()
         {
-            AbstractCycle cycle1 = factory.CreateCycle(CycleType.UserNewCycle, "test");
+            UserCycle cycle1 = new UserCycle().AssignUser("test");
             cycle1.CycleID = "test_cycle_0";
             database.Load();
             database.PutCycle(cycle1);
             Assert.IsTrue(database.IsInDatabase(cycle1));
             Assert.AreEqual(1, database.GetCyclesCount());
 
-            AbstractCycle cycle2 = factory.CreateCycle(CycleType.UserActiveCycle, "test", 1);
+            UserCycle cycle2 = new UserCycle().AssignUser("test").Activate();
             cycle2.CycleID = "test_cycle_0";
             database.UpdateCycle(cycle2);
             Assert.IsFalse(database.IsInDatabase(cycle1));
@@ -73,7 +71,7 @@ namespace UnitTests
         [TestMethod]
         public void CycleNumberTest()
         {
-            AbstractCycle cycle = factory.CreateCycle(CycleType.UserActiveCycle, "test", 1);
+            UserCycle cycle = new UserCycle().AssignUser("test").Activate();
             int cycleNumber = 8548;
             cycle.CycleID = "cycle" + cycleNumber;
             database.Load();
@@ -99,15 +97,15 @@ namespace UnitTests
         [TestMethod]
         public void WhenInactiveCyclePresents_ThenReturnOldest()
         {
-            AbstractCycle cycle_first = factory.CreateCycle(CycleType.UserInactiveCycle, "test", 1);
+            UserCycle cycle_first = new UserCycle().AssignUser("test").Activate().Inactivate();
             cycle_first.CycleID = "cycle1";
-            AbstractCycle cycle_second = factory.CreateCycle(CycleType.UserInactiveCycle, "test", 1);
+            UserCycle cycle_second = new UserCycle().AssignUser("test").Activate().Inactivate();
             cycle_second.CycleID = "cycle2";
             database.Load();
             database.PutCycle(cycle_first);
             database.PutCycle(cycle_second);
 
-            UserInactiveCycle cycle_result = database.GetOldestUserInactiveCycle("test");
+            UserCycle cycle_result = database.GetOldestUserInactiveCycle("test");
 
             Assert.AreEqual(cycle_first, cycle_result);
             Assert.AreNotEqual(cycle_second, cycle_result);

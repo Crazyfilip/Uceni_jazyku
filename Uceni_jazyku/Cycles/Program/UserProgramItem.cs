@@ -7,11 +7,10 @@ namespace Uceni_jazyku.Cycles.Program
     /// <summary>
     /// Class representing unit of user's cycle program
     /// </summary>
-    public class UserProgramItem
+    public class UserProgramItem : ProgramItem
     {
         public string LanguageCycleRef { get; private set; }
         public LanguageProgramItem LessonRef { get; private set; }
-        public bool Finished { get; private set; }
 
         /// <summary>
         /// Initialization of program item
@@ -22,14 +21,6 @@ namespace Uceni_jazyku.Cycles.Program
             LanguageCycleRef = langCycleId;
             LessonRef = languageProgramItem;
             Finished = false;
-        }
-
-        /// <summary>
-        /// Set Finished flag to true
-        /// </summary>
-        public void Finish()
-        {
-            Finished = true;
         }
     }
 }

@@ -1,9 +1,10 @@
 ﻿using Uceni_jazyku.Cycles;
 using System.IO;
 using System.Collections.Generic;
-using System.Xml.Serialization;
 using System;
 using System.Security.Cryptography;
+using System.Xml;
+using System.Runtime.Serialization;
 
 namespace Uceni_jazyku.User_database
 {
@@ -22,9 +23,9 @@ namespace Uceni_jazyku.User_database
         {
             if (File.Exists(databasePath))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(List<UserAccount>));
-                using StreamReader sr = new StreamReader(databasePath);
-                userDatabase = (List<UserAccount>) serializer.Deserialize(sr);
+                var serializer = new DataContractSerializer(typeof(List<UserAccount>));
+                using XmlReader reader = XmlReader.Create(databasePath);
+                userDatabase = (List<UserAccount>)serializer.ReadObject(reader);
             }
             else
             {
@@ -49,7 +50,7 @@ namespace Uceni_jazyku.User_database
         /// <param name="username">username</param>
         /// <param name="password">password</param>
         /// <returns>User's cycle or null</returns>
-        public UserActiveCycle Login(string username, string password)
+        public UserCycle Login(string username, string password)
         {
             CycleService service = CycleService.GetInstance();
             if (VerifyUser(username, password))
@@ -109,9 +110,9 @@ namespace Uceni_jazyku.User_database
 
         private void SaveDatabase()
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(List<UserAccount>));
-            using StreamWriter sw = new StreamWriter(databasePath);
-            serializer.Serialize(sw, userDatabase);
+            var serializer = new DataContractSerializer(typeof(List<UserAccount>));
+            using XmlWriter writer = XmlWriter.Create(databasePath);
+            serializer.WriteObject(writer, userDatabase);
         }
 
         public static void Deallocate()

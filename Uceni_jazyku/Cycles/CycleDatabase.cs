@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using System.Xml;
+using Uceni_jazyku.Cycles.UserCycles;
 
 namespace Uceni_jazyku.Cycles
 {
@@ -28,9 +30,9 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         public void Save()
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(List<AbstractCycle>));
-            using StreamWriter sw = new StreamWriter(path);
-            serializer.Serialize(sw, database ?? new List<AbstractCycle>());
+            var serializer = new DataContractSerializer(typeof(List<AbstractCycle>));
+            using XmlWriter writer = XmlWriter.Create(path);
+            serializer.WriteObject(writer, database ?? new List<AbstractCycle>());
         }
 
         /// <summary>
@@ -39,9 +41,9 @@ namespace Uceni_jazyku.Cycles
         public void Load()
         {
             if (File.Exists(path)) {
-                XmlSerializer serializer = new XmlSerializer(typeof(List<AbstractCycle>));
-                using StreamReader sr = new StreamReader(path);
-                database = (List<AbstractCycle>)serializer.Deserialize(sr);
+                var serializer = new DataContractSerializer(typeof(List<AbstractCycle>));
+                using XmlReader reader = XmlReader.Create(path);
+                database = (List<AbstractCycle>)serializer.ReadObject(reader);
                 return;
             }
             else
@@ -106,15 +108,19 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         /// <param name="username">user's name</param>
         /// <returns>Oldest user's inactive cycle</returns>
-        public UserInactiveCycle GetOldestUserInactiveCycle(string username)
+        public UserCycle GetOldestUserInactiveCycle(string username)
         {
             var queryResult = database
-                ?.Where(x => x.Username == username)
-                .Where(x => x is UserInactiveCycle)
+                ?.Where(x => x is UserCycle)
+                .Where(x =>
+                {
+                    UserCycle cycle = (UserCycle)x;
+                    return cycle.Username == username && cycle.State == UserCycleState.Inactive;
+                })
                 .ToList()
                 ?? throw new Exception("invalid state of database");
             queryResult.Sort((x, y) => getCycleNumber(x).CompareTo(getCycleNumber(y)));
-            return queryResult.Count > 0 ? (UserInactiveCycle) queryResult.First() : null;
+            return (queryResult.Count > 0) ? ((UserCycle) queryResult.First()) : null;
         }
     }
 }
