@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Runtime.Serialization;
 using System.Text;
@@ -111,6 +112,34 @@ namespace Uceni_jazyku.Cycles
             }
             else
                 throw new ArgumentException("Cycle with state " + State + " cannot be finished");
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (Object.ReferenceEquals(obj, null)) return false;
+            if (Object.ReferenceEquals(this, obj)) return true;
+            if (this.GetType() != obj.GetType()) return false;
+
+            UserCycle cycle = (UserCycle)obj;
+            bool result = (this.CycleID == cycle.CycleID)
+                && (this.FinishedEvents == cycle.FinishedEvents)
+                && (this.State == cycle.State)
+                && (this.Username == cycle.Username)
+                && (this.isUserAssigned == cycle.isUserAssigned)
+                && (this.isProgramAssigned == cycle.isProgramAssigned)
+                && (this.userProgramItems.SequenceEqual(cycle.userProgramItems));
+            return result;
+        }
+
+        public override int GetHashCode()
+        {
+            return CycleID.GetHashCode()
+                + FinishedEvents.GetHashCode()
+                + State.GetHashCode()
+                + Username.GetHashCode()
+                + isUserAssigned.GetHashCode()
+                + isProgramAssigned.GetHashCode()
+                + userProgramItems.Sum(x => x.GetHashCode());
         }
     }
 }

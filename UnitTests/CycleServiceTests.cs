@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;
 using Uceni_jazyku.Cycles;
+using Uceni_jazyku.Cycles.UserCycles;
 
 namespace UnitTests
 {
@@ -15,11 +16,12 @@ namespace UnitTests
     {
         CycleService service;
         CycleDatabase database;
+        UserCycle cycle;
         private readonly string activeCycleCacheFile = "cycles/service/active-cycle.xml";
 
         private void PrepareCachedActiveCycle()
         {
-            UserCycle cycle = new UserCycle().AssignUser("test").Activate();
+            cycle = new UserCycle().AssignUser("test").Activate();
             var serializer = new DataContractSerializer(typeof(UserCycle));
             using XmlWriter writer = XmlWriter.Create(activeCycleCacheFile);
             serializer.WriteObject(writer, cycle);
@@ -28,8 +30,8 @@ namespace UnitTests
         [TestInitialize]
         public void TestInitialization()
         {
-            database = new CycleDatabase();
             Directory.CreateDirectory("./cycles/service");
+            database = new CycleDatabase();
             service = CycleService.GetInstance(database);
         }
 
@@ -48,51 +50,114 @@ namespace UnitTests
             Assert.IsFalse(result);
         }
 
-        //[TestMethod]
-        //public void TestLifecycleOfUserCycle()
-        //{
-        //    UserNewCycle newCycle = service.GetNewCycle("test");
+        [TestMethod]
+        public void TestGetUserCycleCreateNew()
+        {
+            Assert.AreEqual(0, database.GetCyclesCount());
+            UserCycle result = service.GetUserCycle("test");
+            Assert.AreEqual(UserCycleState.Active, result.State);
+            Assert.AreEqual("test", result.Username);
+            Assert.AreEqual(1, database.GetCyclesCount());
+        }
 
-        //    Assert.IsTrue(UserNewCycle.CycleExists(newCycle.CycleID));
-        //    Assert.IsFalse(UserActiveCycle.CycleExists());
+        [TestMethod]
+        public void TestGetUserCycleFromInactive()
+        {
+            cycle = new UserCycle().AssignUser("test").Activate().Inactivate();
+            database.PutCycle(cycle);
+            Assert.AreEqual(1, database.GetCyclesCount());
+            Assert.AreEqual(UserCycleState.Inactive, cycle.State);
 
-        //    UserActiveCycle activeCycle = service.Activate(newCycle);
+            UserCycle result = service.GetUserCycle("test");
+            Assert.AreSame(cycle, result);
+            Assert.AreEqual(UserCycleState.Active, result.State);
+            Assert.AreEqual("test", result.Username);
+            Assert.AreEqual(1, database.GetCyclesCount());
+        }
 
-        //    Assert.IsFalse(UserNewCycle.CycleExists(newCycle.CycleID));
-        //    Assert.IsTrue(UserActiveCycle.CycleExists());
-        //    Assert.AreEqual(newCycle.CycleID, activeCycle.CycleID);
-        //    Assert.AreEqual(newCycle.Username, activeCycle.Username);
-        //    Assert.IsNotNull(activeCycle.FinishedEvents);
+        [TestMethod]
+        public void TestGetActiveCycleNegative()
+        {
+            Assert.ThrowsException<FileNotFoundException>(() => service.GetActiveCycle());
+        }
 
-        //    UserInactiveCycle inactiveCycle = service.Inactivate(activeCycle);
+        [TestMethod]
+        public void TestGetActiveCyclePositive()
+        {
+            PrepareCachedActiveCycle();
+            UserCycle result = service.GetActiveCycle();
+            Assert.AreEqual(cycle, result);
+        }
 
-        //    Assert.IsFalse(UserActiveCycle.CycleExists());
-        //    Assert.IsTrue(UserInactiveCycle.CycleExists(inactiveCycle.CycleID));
-        //    Assert.AreEqual(activeCycle.CycleID, inactiveCycle.CycleID);
-        //    Assert.AreEqual(activeCycle.Username, inactiveCycle.Username);
-        //    Assert.IsNotNull(inactiveCycle.FinishedEvents);
-        //    Assert.AreEqual(activeCycle.FinishedEvents, inactiveCycle.FinishedEvents);
+        [TestMethod]
+        public void TestGetNewCycle()
+        {
+            UserCycle result = service.GetNewCycle("test");
+            Assert.IsTrue(database.IsInDatabase(result));
+            Assert.AreEqual(UserCycleState.New, result.State);
+            Assert.AreEqual("test", result.Username);
+        }
 
-        //    UserActiveCycle activeCycle1 = service.Activate(inactiveCycle);
+        [TestMethod]
+        public void TestActivateNewCycle()
+        {
+            cycle = new UserCycle().AssignUser("test");
+            database.PutCycle(cycle);
+            Assert.AreEqual(UserCycleState.New, cycle.State);
 
-        //    Assert.IsFalse(UserInactiveCycle.CycleExists(inactiveCycle.CycleID));
-        //    Assert.IsTrue(UserActiveCycle.CycleExists());
-        //    Assert.AreEqual(inactiveCycle.CycleID, activeCycle1.CycleID);
-        //    Assert.AreEqual(inactiveCycle.Username, activeCycle1.Username);
-        //    Assert.IsNotNull(activeCycle1.FinishedEvents);
-        //    Assert.AreEqual(inactiveCycle.FinishedEvents, activeCycle1.FinishedEvents);
+            UserCycle result = service.Activate(cycle);
+            Assert.AreSame(cycle, result);
+            Assert.AreEqual(UserCycleState.Active, result.State);
+            Assert.IsTrue(database.IsInDatabase(result));
+            Assert.IsTrue(File.Exists(activeCycleCacheFile));
+            // TODO assert that program was assigned
+        }
 
-        //    UserFinishedCycle finishedCycle = service.Finish(activeCycle1);
+        [TestMethod]
+        public void TestActivateInactiveCycle()
+        {
+            cycle = new UserCycle().AssignUser("test").Activate().Inactivate();
+            database.PutCycle(cycle);
+            Assert.AreEqual(UserCycleState.Inactive, cycle.State);
 
-        //    Assert.IsFalse(UserActiveCycle.CycleExists());
-        //    Assert.IsTrue(UserFinishedCycle.CycleExists(finishedCycle.CycleID));
-        //    Assert.AreEqual(activeCycle1.CycleID, finishedCycle.CycleID);
-        //    Assert.AreEqual(activeCycle1.Username, finishedCycle.Username);
-        //}
+            UserCycle result = service.Activate(cycle);
+            Assert.AreSame(cycle, result);
+            Assert.AreEqual(UserCycleState.Active, result.State);
+            Assert.IsTrue(database.IsInDatabase(result));
+            Assert.IsTrue(File.Exists(activeCycleCacheFile));
+        }
+
+        [TestMethod]
+        public void TestActivateNegative()
+        {
+            Assert.ThrowsException<ArgumentException>(() => service.Activate(new UserCycle()));
+        }
+
+        [TestMethod]
+        public void TestInactivateCycle()
+        {
+            cycle = new UserCycle().AssignUser("test").Activate();
+            database.PutCycle(cycle);
+            Assert.AreEqual(UserCycleState.Active, cycle.State);
+
+            UserCycle result = service.Inactivate(cycle);
+            Assert.AreSame(cycle, result);
+            Assert.AreEqual(UserCycleState.Inactive, result.State);
+            Assert.IsTrue(database.IsInDatabase(result));
+            Assert.IsFalse(File.Exists(activeCycleCacheFile));
+        }
+
+        [TestMethod]
+        public void TestInactivateNegative()
+        {
+            Assert.ThrowsException<ArgumentException>(() => service.Inactivate(new UserCycle()));
+        }
 
         [TestCleanup]
         public void TestCleanUp()
         {
+            database = null;
+            CycleService.DeallocateInstance();
             Directory.Delete("./cycles", true);
         }
     }

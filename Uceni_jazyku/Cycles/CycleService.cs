@@ -40,6 +40,11 @@ namespace Uceni_jazyku.Cycles
             return instance;
         }
 
+        public static void DeallocateInstance()
+        {
+            instance = null;
+        }
+
         /// <summary>
         /// test presence of cached active cycle
         /// </summary>
