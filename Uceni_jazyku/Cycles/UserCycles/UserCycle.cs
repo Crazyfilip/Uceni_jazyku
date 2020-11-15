@@ -20,19 +20,19 @@ namespace Uceni_jazyku.Cycles
     public class UserCycle : AbstractCycle
     {
         [DataMember]
-        public string Username { get; private set; }
+        public string Username { get; protected set; }
 
         [DataMember]
-        public UserCycleState State { get; private set; }
+        public UserCycleState State { get; protected set; }
 
         [DataMember]
-        List<UserProgramItem> userProgramItems = new List<UserProgramItem>();
+        protected List<UserProgramItem> userProgramItems = new List<UserProgramItem>();
 
         [DataMember]
-        private bool isUserAssigned = false;
+        protected bool isUserAssigned = false;
 
         [DataMember]
-        private bool isProgramAssigned = false;
+        protected bool isProgramAssigned = false;
 
         public UserCycle() => State = UserCycleState.UnknownUser;
 
@@ -112,6 +112,14 @@ namespace Uceni_jazyku.Cycles
             }
             else
                 throw new ArgumentException("Cycle with state " + State + " cannot be finished");
+        }
+
+        public UserProgramItem SwapLesson(UserProgramItem newLesson)
+        {
+            UserProgramItem item = userProgramItems.Last();
+            userProgramItems.Insert(FinishedEvents, newLesson);
+            userProgramItems.RemoveAt(userProgramItems.Count);
+            return item;
         }
 
         public override bool Equals(object obj)

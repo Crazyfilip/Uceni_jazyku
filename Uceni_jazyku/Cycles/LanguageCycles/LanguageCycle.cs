@@ -7,7 +7,7 @@ using Uceni_jazyku.Cycles.Program;
 namespace Uceni_jazyku.Cycles.LanguageCycles
 {
     [DataContract]
-    class LanguageCycle : AbstractCycle
+    public class LanguageCycle : AbstractCycle
     {
         [DataMember]
         public int PlannedItems { get; private set; }
@@ -39,5 +39,7 @@ namespace Uceni_jazyku.Cycles.LanguageCycles
             item.Plan();
             return item;
         }
+
+        public static LanguageCycle LanguageCycleExample() => new LanguageCycle(new List<string>() { "lekce1", "lekce2" });
     }
 }

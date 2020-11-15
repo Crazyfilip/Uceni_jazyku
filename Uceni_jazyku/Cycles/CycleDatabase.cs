@@ -122,5 +122,16 @@ namespace Uceni_jazyku.Cycles
             queryResult.Sort((x, y) => getCycleNumber(x).CompareTo(getCycleNumber(y)));
             return (queryResult.Count > 0) ? ((UserCycle) queryResult.First()) : null;
         }
+
+        public IncompleteUserCycle GetUserIncompleteCycle(string username)
+        {
+            return (IncompleteUserCycle)database
+                ?.Where(x => x is IncompleteUserCycle)
+                .Where(x =>
+                {
+                    IncompleteUserCycle cycle = (IncompleteUserCycle)x;
+                    return cycle.Username == username;
+                }).FirstOrDefault();
+        }
     }
 }

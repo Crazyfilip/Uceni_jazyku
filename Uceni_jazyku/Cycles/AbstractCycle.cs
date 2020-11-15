@@ -1,6 +1,8 @@
 ﻿using System.Runtime.Serialization;
 using System.Xml;
+using Uceni_jazyku.Cycles.LanguageCycles;
 using Uceni_jazyku.Cycles.Program;
+using Uceni_jazyku.Cycles.UserCycles;
 
 namespace Uceni_jazyku.Cycles
 {
@@ -10,6 +12,8 @@ namespace Uceni_jazyku.Cycles
     /// There are two types of cycles: user and language
     /// </summary>
     [KnownType(typeof(UserCycle))]
+    [KnownType(typeof(LanguageCycle))]
+    [KnownType(typeof(IncompleteUserCycle))]
     [DataContract]
     public abstract class AbstractCycle
     {

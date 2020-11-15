@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;
+using Uceni_jazyku.Cycles.LanguageCycles;
+using Uceni_jazyku.Cycles.Program;
+using Uceni_jazyku.Cycles.UserCycles;
 
 namespace Uceni_jazyku.Cycles
 {
@@ -120,8 +123,10 @@ namespace Uceni_jazyku.Cycles
         {
             if (cycle.State == UserCycles.UserCycleState.New)
             {
-                // TODO assign program
-                // cycle.AssignProgram(something);
+                // TODO assign program from planner based on user model
+                LanguageCycle example = LanguageCycle.LanguageCycleExample();
+                RegisterCycle(example);
+                cycle.AssignProgram(new List<Program.UserProgramItem>() { new Program.UserProgramItem(example.CycleID, example.PlanNext())});
             }
             cycle.Activate();
             CycleDatabase.UpdateCycle(cycle);
@@ -135,6 +140,31 @@ namespace Uceni_jazyku.Cycles
             CycleDatabase.UpdateCycle(cycle);
             clearCachedActiveCycle();
             return cycle;
+        }
+
+        public void RegisterCycle(AbstractCycle cycle)
+        {
+            cycle.CycleID = GenerateNewId();
+            CycleDatabase.PutCycle(cycle);
+        }
+
+        public void SwapLesson(UserCycle cycle, UserProgramItem item)
+        {
+            UserProgramItem swappedItem = cycle.SwapLesson(item);
+            CycleDatabase.UpdateCycle(cycle);
+            if (cycle.State == UserCycleState.Active)
+            {
+                clearCachedActiveCycle();
+                cacheActiveCycle(cycle);
+            }
+            IncompleteUserCycle incompleteCycle = CycleDatabase.GetUserIncompleteCycle(cycle.Username);
+            if (incompleteCycle == null)
+            {
+                incompleteCycle = new IncompleteUserCycle(cycle.Username);
+                CycleDatabase.PutCycle(incompleteCycle);
+            }
+            incompleteCycle.AddLesson(swappedItem);
+            CycleDatabase.UpdateCycle(incompleteCycle);
         }
     }
 }

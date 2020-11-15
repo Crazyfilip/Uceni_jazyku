@@ -4,7 +4,9 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;
 using Uceni_jazyku.Cycles;
+using Uceni_jazyku.Cycles.Program;
 using Uceni_jazyku.Cycles.UserCycles;
+using Uceni_jazyku.Cycles.LanguageCycles;
 
 namespace UnitTests
 {
@@ -57,7 +59,7 @@ namespace UnitTests
             UserCycle result = service.GetUserCycle("test");
             Assert.AreEqual(UserCycleState.Active, result.State);
             Assert.AreEqual("test", result.Username);
-            Assert.AreEqual(1, database.GetCyclesCount());
+            Assert.AreEqual(2, database.GetCyclesCount()); // result + language cycle
         }
 
         [TestMethod]
@@ -101,6 +103,7 @@ namespace UnitTests
         [TestMethod]
         public void TestActivateNewCycle()
         {
+            LanguageProgramItem languageItem = LanguageCycle.LanguageCycleExample().PlanNext();
             cycle = new UserCycle().AssignUser("test");
             database.PutCycle(cycle);
             Assert.AreEqual(UserCycleState.New, cycle.State);
@@ -110,7 +113,9 @@ namespace UnitTests
             Assert.AreEqual(UserCycleState.Active, result.State);
             Assert.IsTrue(database.IsInDatabase(result));
             Assert.IsTrue(File.Exists(activeCycleCacheFile));
-            // TODO assert that program was assigned
+
+            UserProgramItem userItem = (UserProgramItem) result.GetNext();
+            Assert.AreEqual(languageItem, userItem.LessonRef);
         }
 
         [TestMethod]
