@@ -12,7 +12,7 @@ using Uceni_jazyku.Cycles.UserCycles;
 namespace Uceni_jazyku.Cycles
 {
     /// <summary>
-    /// Abstract class for user cycles.
+    /// Representation of the user's cycles
     /// User cycle reflects user's activity in learning and application
     /// Has role in internal process of adapting to user's progress
     /// </summary>
@@ -46,6 +46,12 @@ namespace Uceni_jazyku.Cycles
             return userProgramItems[FinishedEvents];
         }
 
+        /// <summary>
+        /// Assign user to cycle if wasn't assigned yet otherwise throw exception.
+        /// Also set state of cycle to new
+        /// </summary>
+        /// <param name="name">user's name</param>
+        /// <returns>this instance</returns>
         public UserCycle AssignUser(string name)
         {
             if (!isUserAssigned)
@@ -61,6 +67,11 @@ namespace Uceni_jazyku.Cycles
             }
         }
 
+        /// <summary>
+        /// Assign program to cycle if it wasn's assigned yet otherwise throw exception
+        /// </summary>
+        /// <param name="userProgramItems"></param>
+        /// <returns></returns>
         public UserCycle AssignProgram(List<UserProgramItem> userProgramItems)
         {
             if (!isProgramAssigned)
@@ -75,7 +86,11 @@ namespace Uceni_jazyku.Cycles
             }
         }
 
-
+        /// <summary>
+        /// Update cycle to active state if possible otherwise throw exception
+        /// Only new or inactive cycle is possible to activate
+        /// </summary>
+        /// <returns>this instance</returns>
         public UserCycle Activate()
         {
             if (State == UserCycleState.New || State == UserCycleState.Inactive)
@@ -87,6 +102,11 @@ namespace Uceni_jazyku.Cycles
                 throw new ArgumentException("Cycle with state " + State + " cannot be activated");
         }
 
+        /// <summary>
+        /// Update cycle to inactive state if possible otherwise throw exception
+        /// Only active cycle is possible to inactivate
+        /// </summary>
+        /// <returns>this instance</returns>
         public UserCycle Inactivate()
         {
             if (State == UserCycleState.Active)
@@ -98,6 +118,11 @@ namespace Uceni_jazyku.Cycles
                 throw new ArgumentException("Cycle with state " + State + " cannot be inactivated");
         }
 
+        /// <summary>
+        /// Update cycle to finished state if possible otherwise throw exception
+        /// Only active cycle with all lessons finished is possible to finish
+        /// </summary>
+        /// <returns>this instance</returns>
         public UserCycle Finish()
         {
             if (State == UserCycleState.Active)
@@ -114,6 +139,12 @@ namespace Uceni_jazyku.Cycles
                 throw new ArgumentException("Cycle with state " + State + " cannot be finished");
         }
 
+        /// <summary>
+        /// Place new program item on place of first unfinished lesson in cycle.
+        /// Remove last program item
+        /// </summary>
+        /// <param name="newLesson"></param>
+        /// <returns>Last item of the program</returns>
         public UserProgramItem SwapLesson(UserProgramItem newLesson)
         {
             UserProgramItem item = userProgramItems.Last();

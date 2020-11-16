@@ -123,6 +123,11 @@ namespace Uceni_jazyku.Cycles
             return (queryResult.Count > 0) ? ((UserCycle) queryResult.First()) : null;
         }
 
+        /// <summary>
+        /// Search for user's incomplete cycle
+        /// </summary>
+        /// <param name="username">user's name</param>
+        /// <returns>user's incomplete cycle or null</returns>
         public IncompleteUserCycle GetUserIncompleteCycle(string username)
         {
             return (IncompleteUserCycle)database

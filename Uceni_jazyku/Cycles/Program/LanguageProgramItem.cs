@@ -3,6 +3,9 @@ using System.Runtime.Serialization;
 
 namespace Uceni_jazyku.Cycles.Program
 {
+    /// <summary>
+    /// Class representing unit of language cycle's program
+    /// </summary>
     [DataContract]
     public class LanguageProgramItem : ProgramItem
     {

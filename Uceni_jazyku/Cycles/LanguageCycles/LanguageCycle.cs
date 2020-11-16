@@ -6,6 +6,9 @@ using Uceni_jazyku.Cycles.Program;
 
 namespace Uceni_jazyku.Cycles.LanguageCycles
 {
+    /// <summary>
+    /// Representation of language cycle
+    /// </summary>
     [DataContract]
     public class LanguageCycle : AbstractCycle
     {
@@ -33,6 +36,10 @@ namespace Uceni_jazyku.Cycles.LanguageCycles
             languageProgramItems[FinishedEvents++].Finish();
         }
 
+        /// <summary>
+        /// Pick first unplanned program item of cycle and mark it as planned
+        /// </summary>
+        /// <returns>Planned item</returns>
         public LanguageProgramItem PlanNext()
         {
             LanguageProgramItem item = languageProgramItems[PlannedItems++];
@@ -40,6 +47,11 @@ namespace Uceni_jazyku.Cycles.LanguageCycles
             return item;
         }
 
+        /// <summary>
+        /// Test example
+        /// </summary>
+        /// <returns>Instance of test example</returns>
+        // TODO remove when no longer needed
         public static LanguageCycle LanguageCycleExample() => new LanguageCycle(new List<string>() { "lekce1", "lekce2" });
     }
 }

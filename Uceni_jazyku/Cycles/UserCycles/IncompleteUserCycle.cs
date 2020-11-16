@@ -6,6 +6,11 @@ using Uceni_jazyku.Cycles.Program;
 
 namespace Uceni_jazyku.Cycles.UserCycles
 {
+    /// <summary>
+    /// Incomplete user cycle
+    /// Incomplete in a way that its program don't need to be fully initialized
+    /// This type of cycle has always state inactive
+    /// </summary>
     [DataContract]
     public class IncompleteUserCycle : UserCycle
     {
@@ -16,6 +21,10 @@ namespace Uceni_jazyku.Cycles.UserCycles
             isUserAssigned = true;
         }
 
+        /// <summary>
+        /// Add lesson to beginning of the cycle
+        /// </summary>
+        /// <param name="item">lesson to add</param>
         public void AddLesson(UserProgramItem item)
         {
             userProgramItems.Insert(0, item);

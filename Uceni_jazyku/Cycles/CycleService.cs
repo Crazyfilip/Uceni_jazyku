@@ -10,7 +10,8 @@ using Uceni_jazyku.Cycles.UserCycles;
 namespace Uceni_jazyku.Cycles
 {
     /// <summary>
-    /// Cycle service class which handles lifecycle and operations with cycles.
+    /// Cycle service is class for managing cycles.
+    /// With cycles should be manipulated only via this service to keep their state consistent.
     /// Implemented as singleton
     /// </summary>
     public class CycleService
@@ -26,7 +27,8 @@ namespace Uceni_jazyku.Cycles
         }
 
         /// <summary>
-        /// Get instance of service
+        /// Get instance of service. 
+        /// For database instance will be used the default one if service instance wasn't initialized yet.
         /// </summary>
         /// <returns>instance <c>CycleService</c></returns>
         public static CycleService GetInstance()
@@ -36,6 +38,11 @@ namespace Uceni_jazyku.Cycles
             return instance;
         }
 
+        /// <summary>
+        /// Get instance of service. For database instance will be used the provided one if service instance wasn't initialized yet.
+        /// </summary>
+        /// <param name="database"></param>
+        /// <returns>instance <c>CycleService</c></returns>
         public static CycleService GetInstance(CycleDatabase database)
         {
             if (instance == null)
@@ -43,6 +50,9 @@ namespace Uceni_jazyku.Cycles
             return instance;
         }
 
+        /// <summary>
+        /// Method for deallocating singleton instance
+        /// </summary>
         public static void DeallocateInstance()
         {
             instance = null;
@@ -119,6 +129,12 @@ namespace Uceni_jazyku.Cycles
             return newCycle;
         }
 
+        /// <summary>
+        /// Activate cycle, update it in a database and set active cycle cache
+        /// If cycle was in state new then assign program to cycle
+        /// </summary>
+        /// <param name="cycle">cycle to activate</param>
+        /// <returns>updated cycle</returns>
         public UserCycle Activate(UserCycle cycle)
         {
             if (cycle.State == UserCycles.UserCycleState.New)
@@ -134,6 +150,11 @@ namespace Uceni_jazyku.Cycles
             return cycle;
         }
 
+        /// <summary>
+        /// Inactive cycle, update it in a database and clear active cycle cache
+        /// </summary>
+        /// <param name="cycle">cycle to inactivate</param>
+        /// <returns>updated cycle</returns>
         public UserCycle Inactivate(UserCycle cycle)
         {
             cycle.Inactivate();
@@ -142,12 +163,32 @@ namespace Uceni_jazyku.Cycles
             return cycle;
         }
 
+        /// <summary>
+        /// Finish cycle, update it in a database and clear active cycle cache
+        /// </summary>
+        /// <param name="cycle">cycle to finish</param>
+        public void Finish(UserCycle cycle)
+        {
+            cycle.Finish();
+            CycleDatabase.UpdateCycle(cycle);
+            clearCachedActiveCycle();
+        }
+
+        /// <summary>
+        /// Register cycle which was created in a different way then via GetNewCycle(username)
+        /// </summary>
+        /// <param name="cycle">cycle to register</param>
         public void RegisterCycle(AbstractCycle cycle)
         {
             cycle.CycleID = GenerateNewId();
             CycleDatabase.PutCycle(cycle);
         }
 
+        /// <summary>
+        /// Insert lesson to cycle and place removed lesson from that cycle to new incomplete cycle
+        /// </summary>
+        /// <param name="cycle">cycle where to put lesson to swap</param>
+        /// <param name="item">lesson to swap</param>
         public void SwapLesson(UserCycle cycle, UserProgramItem item)
         {
             UserProgramItem swappedItem = cycle.SwapLesson(item);
@@ -161,7 +202,7 @@ namespace Uceni_jazyku.Cycles
             if (incompleteCycle == null)
             {
                 incompleteCycle = new IncompleteUserCycle(cycle.Username);
-                CycleDatabase.PutCycle(incompleteCycle);
+                RegisterCycle(incompleteCycle);
             }
             incompleteCycle.AddLesson(swappedItem);
             CycleDatabase.UpdateCycle(incompleteCycle);

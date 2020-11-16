@@ -23,19 +23,14 @@ namespace Uceni_jazyku.Cycles
         public string CycleID { get; set; }
 
         /// <summary>
-        /// path to cycle's file
+        /// Update cycle when user did progress in learning => set first unfinished lesson as finished
         /// </summary>
-        protected string path;
+        public abstract void Update(); // TODO different name?
 
         /// <summary>
-        /// Update cycle when user did progress in learning
+        /// Get first unfinished lesson
         /// </summary>
-        public abstract void Update(); // TODO add appropiate argument describing what is updated 
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
+        /// <returns>Lesson</returns>
         public abstract ProgramItem GetNext();
     }
 }
