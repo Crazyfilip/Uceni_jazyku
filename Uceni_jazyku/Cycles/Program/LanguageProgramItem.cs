@@ -5,6 +5,7 @@ namespace Uceni_jazyku.Cycles.Program
 {
     /// <summary>
     /// Class representing unit of language cycle's program
+    /// Contain lesson description and an information if lesson was planned and finished
     /// </summary>
     [DataContract]
     public class LanguageProgramItem : ProgramItem
