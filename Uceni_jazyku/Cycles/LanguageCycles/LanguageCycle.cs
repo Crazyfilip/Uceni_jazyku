@@ -52,6 +52,6 @@ namespace Uceni_jazyku.Cycles.LanguageCycles
         /// </summary>
         /// <returns>Instance of test example</returns>
         // TODO remove when no longer needed
-        public static LanguageCycle LanguageCycleExample() => new LanguageCycle(new List<string>() { "lekce1", "lekce2" });
+        public static LanguageCycle LanguageCycleExample() => new LanguageCycle(new List<string>() { "lekce1", "lekce2", "lekce3", "lekce4" });
     }
 }

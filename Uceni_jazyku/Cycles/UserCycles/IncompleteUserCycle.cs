@@ -27,7 +27,7 @@ namespace Uceni_jazyku.Cycles.UserCycles
         /// <param name="item">lesson to add</param>
         public void AddLesson(UserProgramItem item)
         {
-            userProgramItems.Insert(0, item);
+            UserProgramItems.Insert(0, item);
         }
 
         // TODO when full then convert to normal UserCycle

@@ -26,7 +26,7 @@ namespace Uceni_jazyku.Cycles
         public UserCycleState State { get; protected set; }
 
         [DataMember]
-        protected List<UserProgramItem> userProgramItems = new List<UserProgramItem>();
+        public List<UserProgramItem> UserProgramItems { get; protected set; } = new List<UserProgramItem>();
 
         [DataMember]
         protected bool isUserAssigned = false;
@@ -38,12 +38,14 @@ namespace Uceni_jazyku.Cycles
 
         public override void Update()
         {
-            userProgramItems[FinishedEvents++].Finish();
+            UserProgramItem item = UserProgramItems[FinishedEvents++];
+            item.Finish();
+            item.LessonRef.Finish();
         }
 
         public override ProgramItem GetNext()
         {
-            return userProgramItems[FinishedEvents];
+            return UserProgramItems[FinishedEvents];
         }
 
         /// <summary>
@@ -76,7 +78,7 @@ namespace Uceni_jazyku.Cycles
         {
             if (!isProgramAssigned)
             {
-                this.userProgramItems = userProgramItems;
+                this.UserProgramItems = userProgramItems;
                 isProgramAssigned = true;
                 return this;
             }
@@ -99,7 +101,7 @@ namespace Uceni_jazyku.Cycles
                 return this;
             }
             else
-                throw new ArgumentException("Cycle with state " + State + " cannot be activated");
+                throw new Exception("Cycle with state " + State + " cannot be activated");
         }
 
         /// <summary>
@@ -115,7 +117,7 @@ namespace Uceni_jazyku.Cycles
                 return this;
             }
             else
-                throw new ArgumentException("Cycle with state " + State + " cannot be inactivated");
+                throw new Exception("Cycle with state " + State + " cannot be inactivated");
         }
 
         /// <summary>
@@ -127,16 +129,16 @@ namespace Uceni_jazyku.Cycles
         {
             if (State == UserCycleState.Active)
             {
-                if (userProgramItems.TrueForAll(x => x.LessonRef.Finished))
+                if (UserProgramItems.TrueForAll(x => x.LessonRef.Finished))
                 {
                     State = UserCycleState.Finished;
                     return this;
                 }
                 else
-                    throw new ArgumentException("Cycle doesn't have finished all lesson so can't be finished");
+                    throw new Exception("Cycle doesn't have finished all lesson so can't be finished");
             }
             else
-                throw new ArgumentException("Cycle with state " + State + " cannot be finished");
+                throw new Exception("Cycle with state " + State + " cannot be finished");
         }
 
         /// <summary>
@@ -147,9 +149,9 @@ namespace Uceni_jazyku.Cycles
         /// <returns>Last item of the program</returns>
         public UserProgramItem SwapLesson(UserProgramItem newLesson)
         {
-            UserProgramItem item = userProgramItems.Last();
-            userProgramItems.Insert(FinishedEvents, newLesson);
-            userProgramItems.RemoveAt(userProgramItems.Count);
+            UserProgramItem item = UserProgramItems.Last();
+            UserProgramItems.Insert(FinishedEvents, newLesson);
+            UserProgramItems.RemoveAt(UserProgramItems.Count-1);
             return item;
         }
 
@@ -166,7 +168,7 @@ namespace Uceni_jazyku.Cycles
                 && (this.Username == cycle.Username)
                 && (this.isUserAssigned == cycle.isUserAssigned)
                 && (this.isProgramAssigned == cycle.isProgramAssigned)
-                && (this.userProgramItems.SequenceEqual(cycle.userProgramItems));
+                && (this.UserProgramItems.SequenceEqual(cycle.UserProgramItems));
             return result;
         }
 
@@ -178,7 +180,7 @@ namespace Uceni_jazyku.Cycles
                 + Username.GetHashCode()
                 + isUserAssigned.GetHashCode()
                 + isProgramAssigned.GetHashCode()
-                + userProgramItems.Sum(x => x.GetHashCode());
+                + UserProgramItems.Sum(x => x.GetHashCode());
         }
     }
 }

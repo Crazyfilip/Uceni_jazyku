@@ -7,6 +7,8 @@ using Uceni_jazyku.Cycles;
 using Uceni_jazyku.Cycles.Program;
 using Uceni_jazyku.Cycles.UserCycles;
 using Uceni_jazyku.Cycles.LanguageCycles;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace UnitTests
 {
@@ -135,15 +137,16 @@ namespace UnitTests
         [TestMethod]
         public void TestActivateNegative()
         {
-            Assert.ThrowsException<ArgumentException>(() => service.Activate(new UserCycle()));
+            Assert.ThrowsException<Exception>(() => service.Activate(new UserCycle()));
         }
 
         [TestMethod]
         public void TestInactivateCycle()
         {
-            cycle = new UserCycle().AssignUser("test").Activate();
+            PrepareCachedActiveCycle();
             database.PutCycle(cycle);
             Assert.AreEqual(UserCycleState.Active, cycle.State);
+            Assert.IsTrue(File.Exists(activeCycleCacheFile));
 
             UserCycle result = service.Inactivate(cycle);
             Assert.AreSame(cycle, result);
@@ -155,7 +158,86 @@ namespace UnitTests
         [TestMethod]
         public void TestInactivateNegative()
         {
-            Assert.ThrowsException<ArgumentException>(() => service.Inactivate(new UserCycle()));
+            Assert.ThrowsException<Exception>(() => service.Inactivate(new UserCycle()));
+        }
+
+        [TestMethod]
+        public void TestFinishCycle()
+        {
+            PrepareCachedActiveCycle();
+            LanguageCycle example = LanguageCycle.LanguageCycleExample();
+            cycle.AssignProgram(new List<UserProgramItem>() { new UserProgramItem(example.CycleID, example.PlanNext()) });
+            cycle.Update();
+            database.PutCycle(cycle);
+
+            Assert.AreEqual(UserCycleState.Active, cycle.State);
+            Assert.IsTrue(File.Exists(activeCycleCacheFile));
+
+            service.Finish(cycle);
+
+            Assert.AreEqual(UserCycleState.Finished, cycle.State);
+            Assert.IsFalse(File.Exists(activeCycleCacheFile));
+        }
+
+        [TestMethod]
+        public void TestFinishNegative()
+        {
+            Assert.ThrowsException<Exception>(() => service.Finish(new UserCycle()));
+        }
+
+        [TestMethod]
+        public void TestRegisterCycle()
+        {
+            cycle = new UserCycle().AssignUser("test").Activate().Inactivate();
+            Assert.IsNull(cycle.CycleID);
+            Assert.IsFalse(database.IsInDatabase(cycle));
+
+            service.RegisterCycle(cycle);
+
+            Assert.IsNotNull(cycle.CycleID);
+            Assert.IsTrue(database.IsInDatabase(cycle));
+        }
+
+        [TestMethod]
+        public void TestSwapLessonNewIncomplete()
+        {
+            LanguageCycle example = LanguageCycle.LanguageCycleExample();
+            UserProgramItem item1 = new UserProgramItem(example.CycleID, example.PlanNext());
+            UserProgramItem item2 = new UserProgramItem(example.CycleID, example.PlanNext());
+            UserProgramItem item3 = new UserProgramItem(example.CycleID, example.PlanNext());
+            cycle = new UserCycle().AssignUser("test").AssignProgram(new List<UserProgramItem>() { item1, item2 });
+            database.PutCycle(cycle);
+            CollectionAssert.AreEqual(new List<UserProgramItem>() { item1, item2 }, cycle.UserProgramItems);
+
+            service.SwapLesson(cycle, item3);
+
+            CollectionAssert.AreEqual(new List<UserProgramItem>() { item3, item1 }, cycle.UserProgramItems);
+
+            IncompleteUserCycle incompleteCycle = new IncompleteUserCycle("test");
+            incompleteCycle.AddLesson(item2);
+            incompleteCycle.CycleID = "cycle1";
+            Assert.IsTrue(database.IsInDatabase(incompleteCycle));
+        }
+
+        [TestMethod]
+        public void TestSwapLessonExistingIncomplete()
+        {
+            LanguageCycle example = LanguageCycle.LanguageCycleExample();
+            UserProgramItem item1 = new UserProgramItem(example.CycleID, example.PlanNext());
+            UserProgramItem item2 = new UserProgramItem(example.CycleID, example.PlanNext());
+            UserProgramItem item3 = new UserProgramItem(example.CycleID, example.PlanNext());
+            UserProgramItem item4 = new UserProgramItem(example.CycleID, example.PlanNext());
+            cycle = new UserCycle().AssignUser("test").AssignProgram(new List<UserProgramItem>() { item1, item2 });
+            database.PutCycle(cycle);
+            CollectionAssert.AreEqual(new List<UserProgramItem>() { item1, item2 }, cycle.UserProgramItems);
+            IncompleteUserCycle incompleteCycle = new IncompleteUserCycle("test");
+            incompleteCycle.AddLesson(item4);
+            database.PutCycle(incompleteCycle);
+
+            service.SwapLesson(cycle, item3);
+
+            CollectionAssert.AreEqual(new List<UserProgramItem>() { item3, item1 }, cycle.UserProgramItems);
+            CollectionAssert.AreEqual(new List<UserProgramItem>() { item2, item4 }, incompleteCycle.UserProgramItems);
         }
 
         [TestCleanup]

@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using Uceni_jazyku.Cycles;
+using Uceni_jazyku.Cycles.UserCycles;
 
 namespace UnitTests
 {
@@ -109,6 +110,22 @@ namespace UnitTests
 
             Assert.AreEqual(cycle_first, cycle_result);
             Assert.AreNotEqual(cycle_second, cycle_result);
+        }
+
+        [TestMethod]
+        public void TestGetUserIncompleteCycleNull()
+        {
+            Assert.IsNull(database.GetUserIncompleteCycle("test"));
+        }
+
+        [TestMethod]
+        public void TestGetUserIncompleteCycleExisting()
+        {
+            IncompleteUserCycle cycle = new IncompleteUserCycle("test");
+            database.PutCycle(cycle);
+
+            IncompleteUserCycle result = database.GetUserIncompleteCycle("test");
+            Assert.AreEqual(cycle, result);
         }
 
         [TestCleanup]
