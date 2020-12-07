@@ -24,7 +24,7 @@ namespace UnitTests
         public void CreateAndLoginTest()
         {
             Assert.IsTrue(accountService.CreateUser("test", "test"));
-            UserActiveCycle cycle = accountService.Login("test", "test");
+            UserCycle cycle = accountService.Login("test", "test");
             Assert.IsNotNull(cycle);
             Assert.AreEqual("test", cycle.Username);
         }

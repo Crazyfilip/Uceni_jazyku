@@ -18,11 +18,9 @@ jobs:
     steps:
       - checkout
       - run: 
-          name: "cycle tests"
+          name: "unit tests"
           command: |
-            dotnet test --filter ClassName=UnitTests.CycleServiceTests
-            dotnet test --filter ClassName=UnitTests.CycleFactoryTests
-            dotnet test --filter ClassName=UnitTests.CycleDatabaseTests
+            dotnet test 
   publish:
     executor: 
       name: win/default

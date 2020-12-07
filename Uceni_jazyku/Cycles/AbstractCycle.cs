@@ -1,5 +1,8 @@
-﻿using System.IO;
-using System.Xml.Serialization;
+﻿using System.Runtime.Serialization;
+using System.Xml;
+using Uceni_jazyku.Cycles.LanguageCycles;
+using Uceni_jazyku.Cycles.Program;
+using Uceni_jazyku.Cycles.UserCycles;
 
 namespace Uceni_jazyku.Cycles
 {
@@ -8,56 +11,26 @@ namespace Uceni_jazyku.Cycles
     /// Cycle is internal object which drives learning process of user
     /// There are two types of cycles: user and language
     /// </summary>
-    [XmlInclude(typeof(UserActiveCycle))]
-    [XmlInclude(typeof(UserFinishedCycle))]
-    [XmlInclude(typeof(UserInactiveCycle))]
-    [XmlInclude(typeof(UserNewCycle))]
+    [KnownType(typeof(UserCycle))]
+    [KnownType(typeof(LanguageCycle))]
+    [KnownType(typeof(IncompleteUserCycle))]
+    [DataContract]
     public abstract class AbstractCycle
     {
-
-        public string Username { get; set; }
-        public int? RemainingEvents { get; set; }
+        [DataMember]
+        public int FinishedEvents { get; protected set; }
+        [DataMember]
         public string CycleID { get; set; }
 
         /// <summary>
-        /// path to cycle's file
+        /// Update cycle when user did progress in learning => set first unfinished lesson as finished
         /// </summary>
-        protected string path;
+        public abstract void Update(); // TODO different name?
 
         /// <summary>
-        /// Update cycle when user did progress in learning
+        /// Get first unfinished lesson
         /// </summary>
-        public abstract void Update(); // TODO add appropiate argument describing what is updated 
-
-        protected virtual void Serialize(string filepath)
-        {
-            XmlSerializer serializer = new XmlSerializer(this.GetType());
-            using StreamWriter sw = new StreamWriter(filepath);
-            serializer.Serialize(sw, this);
-        }
-
-        protected virtual AbstractCycle Deserialize(string filepath)
-        {
-            XmlSerializer serializer = new XmlSerializer(this.GetType());
-            using StreamReader sr = new StreamReader(filepath);
-            return (AbstractCycle)serializer.Deserialize(sr);
-        }
-
-        /// <summary>
-        /// Save cycle to file
-        /// </summary>
-        public void SaveCycle()
-        {
-            Serialize(path);
-        }
-
-        /// <summary>
-        /// Get cycle from file
-        /// </summary>
-        /// <returns></returns>
-        public AbstractCycle GetCycle()
-        {
-            return Deserialize(path);
-        }
+        /// <returns>Lesson</returns>
+        public abstract ProgramItem GetNext();
     }
 }

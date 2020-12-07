@@ -6,14 +6,14 @@ namespace User_interface
 {
     public partial class WelcomePage : Form
     {
-        private UserActiveCycle userCycle;
+        private UserCycle userCycle;
         
         public WelcomePage()
         {
             InitializeComponent();
         }
 
-        public WelcomePage(UserActiveCycle cycle)
+        public WelcomePage(UserCycle cycle)
         {
             InitializeComponent();
             userCycle = cycle;
@@ -35,7 +35,8 @@ namespace User_interface
         {
             CycleService cycleService = CycleService.GetInstance();
             cycleService.Inactivate(userCycle);
-            UnknownUserCycle unknownUserCycle = (UnknownUserCycle)new CycleFactory().CreateCycle(CycleType.UnknownUserCycle, null, null);
+            // TODO get cycle in UnknownUser state from service
+            UserCycle unknownUserCycle = new UserCycle();
             new LoginPage(unknownUserCycle).Show();
             Hide();
         }
