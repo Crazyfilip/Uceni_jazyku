@@ -43,7 +43,7 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         /// <param name="database"></param>
         /// <returns>instance <c>CycleService</c></returns>
-        public static CycleService GetInstance(CycleRepository database)
+        public static CycleService GetInstance(ICycleRepository database)
         {
             if (instance == null)
                 instance = new CycleService(database, null);

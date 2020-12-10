@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Moq" Version="4.15.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Uceni_jazyku\Uceni_jazyku.csproj" />
   </ItemGroup>
 

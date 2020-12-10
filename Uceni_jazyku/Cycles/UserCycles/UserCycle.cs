@@ -23,7 +23,7 @@ namespace Uceni_jazyku.Cycles
         public string Username { get; protected set; }
 
         [DataMember]
-        public UserCycleState State { get; protected set; }
+        public virtual UserCycleState State { get; protected set; }
 
         [DataMember]
         public List<UserProgramItem> UserProgramItems { get; protected set; } = new List<UserProgramItem>();

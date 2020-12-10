@@ -8,7 +8,7 @@ namespace Uceni_jazyku.Cycles
     /// <summary>
     /// Interface of operations with repository of cycles
     /// </summary>
-    interface ICycleRepository
+    public interface ICycleRepository
     {
 
         /// <summary>

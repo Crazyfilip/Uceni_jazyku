@@ -51,7 +51,7 @@ namespace Uceni_jazyku.Cycles
             serializer.WriteObject(writer, database ?? new List<AbstractCycle>());
         }
 
-        public void PutCycle(AbstractCycle cycle)
+        public virtual void PutCycle(AbstractCycle cycle)
         {
             database.Add(cycle);
             Save();
@@ -62,7 +62,7 @@ namespace Uceni_jazyku.Cycles
             return database.Count;
         }
 
-        public void UpdateCycle(AbstractCycle updatedCycle)
+        public virtual void UpdateCycle(AbstractCycle updatedCycle)
         {
             int index = database.FindIndex(x => x.CycleID == updatedCycle.CycleID);
             if (index != -1)
@@ -101,7 +101,7 @@ namespace Uceni_jazyku.Cycles
             return int.Parse(cycle.CycleID.Substring(5)); // cycleID format is: cycle<number>
         }
 
-        public UserCycle GetOldestUserInactiveCycle(string username)
+        public virtual UserCycle GetOldestUserInactiveCycle(string username)
         {
             var queryResult = database
                 .Where(x => x is UserCycle)

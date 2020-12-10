@@ -9,6 +9,7 @@ using Uceni_jazyku.Cycles.UserCycles;
 using Uceni_jazyku.Cycles.LanguageCycles;
 using System.Collections.Generic;
 using System.Linq;
+using Moq;
 
 namespace UnitTests
 {
@@ -19,7 +20,7 @@ namespace UnitTests
     public class CycleServiceTests
     {
         CycleService service;
-        CycleRepository database;
+        Mock<ICycleRepository> databaseMock;
         UserCycle cycle;
         private readonly string activeCycleCacheFile = "cycles/service/active-cycle.xml";
 
@@ -35,48 +36,71 @@ namespace UnitTests
         public void TestInitialization()
         {
             Directory.CreateDirectory("./cycles/service");
-            database = new CycleRepository();
-            service = CycleService.GetInstance(database);
+            databaseMock = new Mock<ICycleRepository>();
+            service = CycleService.GetInstance(databaseMock.Object);
         }
 
         [TestMethod]
         public void TestActiveCycleExistsPositive()
         {
+            // Init
             PrepareCachedActiveCycle();
+
+            // Test
             bool result = service.UserActiveCycleExists();
+
+            // Verify
             Assert.IsTrue(result);
         }
 
         [TestMethod]
         public void TestActiveCycleExistsNegative()
         {
+            // Test
             bool result = service.UserActiveCycleExists();
+
+            // Verify
             Assert.IsFalse(result);
         }
 
         [TestMethod]
         public void TestGetUserCycleCreateNew()
         {
-            Assert.AreEqual(0, database.GetCyclesCount());
+            // Init
+            UserCycle userCycle = new UserCycle().AssignUser("test");
+            userCycle.CycleID = "cycle1";
+            databaseMock.Setup(x => x.GetOldestUserInactiveCycle("test")).Returns((UserCycle)null);
+            databaseMock.Setup(x => x.UpdateCycle(userCycle)).Verifiable();
+
+            // Test
             UserCycle result = service.GetUserCycle("test");
+
+            // Verify
             Assert.AreEqual(UserCycleState.Active, result.State);
             Assert.AreEqual("test", result.Username);
-            Assert.AreEqual(2, database.GetCyclesCount()); // result + language cycle
+            Assert.AreEqual(2, databaseMock.Object.GetCyclesCount()); // result + language cycle
+            databaseMock.Verify(x => x.GetOldestUserInactiveCycle("test"), Times.Once);
+           // databaseMock.Verify(x => x.PutCycle(userCycle), Times.Exactly(2));
         }
 
         [TestMethod]
         public void TestGetUserCycleFromInactive()
         {
-            cycle = new UserCycle().AssignUser("test").Activate().Inactivate();
-            database.PutCycle(cycle);
-            Assert.AreEqual(1, database.GetCyclesCount());
-            Assert.AreEqual(UserCycleState.Inactive, cycle.State);
+            // Init
+            Mock<UserCycle> cycleMock = new Mock<UserCycle>();
+            cycleMock.SetupGet(x => x.State).Returns(UserCycleState.Inactive);
 
+            databaseMock.Setup(x => x.GetOldestUserInactiveCycle("test")).Returns(cycleMock.Object);
+            databaseMock.Setup(x => x.UpdateCycle(cycleMock.Object)).Verifiable();
+
+            // Test
             UserCycle result = service.GetUserCycle("test");
+
+            // Verify
             Assert.AreSame(cycle, result);
             Assert.AreEqual(UserCycleState.Active, result.State);
             Assert.AreEqual("test", result.Username);
-            Assert.AreEqual(1, database.GetCyclesCount());
+            Assert.AreEqual(1, databaseMock.Object.GetCyclesCount());
         }
 
         [TestMethod]
@@ -101,7 +125,7 @@ namespace UnitTests
         public void TestGetNewCycle()
         {
             UserCycle result = service.GetNewCycle("test");
-            Assert.IsTrue(database.IsInDatabase(result));
+            Assert.IsTrue(databaseMock.Object.IsInDatabase(result));
             Assert.AreEqual(UserCycleState.New, result.State);
             Assert.AreEqual("test", result.Username);
         }
@@ -111,13 +135,13 @@ namespace UnitTests
         {
             LanguageProgramItem languageItem = LanguageCycle.LanguageCycleExample().PlanNext();
             cycle = new UserCycle().AssignUser("test");
-            database.PutCycle(cycle);
+            databaseMock.Object.PutCycle(cycle);
             Assert.AreEqual(UserCycleState.New, cycle.State);
 
             UserCycle result = service.Activate(cycle);
             Assert.AreSame(cycle, result);
             Assert.AreEqual(UserCycleState.Active, result.State);
-            Assert.IsTrue(database.IsInDatabase(result));
+            Assert.IsTrue(databaseMock.Object.IsInDatabase(result));
             Assert.IsTrue(File.Exists(activeCycleCacheFile));
 
             UserProgramItem userItem = (UserProgramItem) result.GetNext();
@@ -128,13 +152,13 @@ namespace UnitTests
         public void TestActivateInactiveCycle()
         {
             cycle = new UserCycle().AssignUser("test").Activate().Inactivate();
-            database.PutCycle(cycle);
+            databaseMock.Object.PutCycle(cycle);
             Assert.AreEqual(UserCycleState.Inactive, cycle.State);
 
             UserCycle result = service.Activate(cycle);
             Assert.AreSame(cycle, result);
             Assert.AreEqual(UserCycleState.Active, result.State);
-            Assert.IsTrue(database.IsInDatabase(result));
+            Assert.IsTrue(databaseMock.Object.IsInDatabase(result));
             Assert.IsTrue(File.Exists(activeCycleCacheFile));
         }
 
@@ -148,14 +172,14 @@ namespace UnitTests
         public void TestInactivateCycle()
         {
             PrepareCachedActiveCycle();
-            database.PutCycle(cycle);
+            databaseMock.Object.PutCycle(cycle);
             Assert.AreEqual(UserCycleState.Active, cycle.State);
             Assert.IsTrue(File.Exists(activeCycleCacheFile));
 
             UserCycle result = service.Inactivate(cycle);
             Assert.AreSame(cycle, result);
             Assert.AreEqual(UserCycleState.Inactive, result.State);
-            Assert.IsTrue(database.IsInDatabase(result));
+            Assert.IsTrue(databaseMock.Object.IsInDatabase(result));
             Assert.IsFalse(File.Exists(activeCycleCacheFile));
         }
 
@@ -172,7 +196,7 @@ namespace UnitTests
             LanguageCycle example = LanguageCycle.LanguageCycleExample();
             cycle.AssignProgram(new List<UserProgramItem>() { new UserProgramItem(example.CycleID, example.PlanNext()) });
             cycle.Update();
-            database.PutCycle(cycle);
+            databaseMock.Object.PutCycle(cycle);
 
             Assert.AreEqual(UserCycleState.Active, cycle.State);
             Assert.IsTrue(File.Exists(activeCycleCacheFile));
@@ -194,12 +218,12 @@ namespace UnitTests
         {
             cycle = new UserCycle().AssignUser("test").Activate().Inactivate();
             Assert.IsNull(cycle.CycleID);
-            Assert.IsFalse(database.IsInDatabase(cycle));
+            Assert.IsFalse(databaseMock.Object.IsInDatabase(cycle));
 
             service.RegisterCycle(cycle);
 
             Assert.IsNotNull(cycle.CycleID);
-            Assert.IsTrue(database.IsInDatabase(cycle));
+            Assert.IsTrue(databaseMock.Object.IsInDatabase(cycle));
         }
 
         [TestMethod]
@@ -210,7 +234,7 @@ namespace UnitTests
             UserProgramItem item2 = new UserProgramItem(example.CycleID, example.PlanNext());
             UserProgramItem item3 = new UserProgramItem(example.CycleID, example.PlanNext());
             cycle = new UserCycle().AssignUser("test").AssignProgram(new List<UserProgramItem>() { item1, item2 });
-            database.PutCycle(cycle);
+            databaseMock.Object.PutCycle(cycle);
             CollectionAssert.AreEqual(new List<UserProgramItem>() { item1, item2 }, cycle.UserProgramItems);
 
             service.SwapLesson(cycle, item3);
@@ -220,7 +244,7 @@ namespace UnitTests
             IncompleteUserCycle incompleteCycle = new IncompleteUserCycle("test");
             incompleteCycle.AddLesson(item2);
             incompleteCycle.CycleID = "cycle1";
-            Assert.IsTrue(database.IsInDatabase(incompleteCycle));
+            Assert.IsTrue(databaseMock.Object.IsInDatabase(incompleteCycle));
         }
 
         [TestMethod]
@@ -232,11 +256,11 @@ namespace UnitTests
             UserProgramItem item3 = new UserProgramItem(example.CycleID, example.PlanNext());
             UserProgramItem item4 = new UserProgramItem(example.CycleID, example.PlanNext());
             cycle = new UserCycle().AssignUser("test").AssignProgram(new List<UserProgramItem>() { item1, item2 });
-            database.PutCycle(cycle);
+            databaseMock.Object.PutCycle(cycle);
             CollectionAssert.AreEqual(new List<UserProgramItem>() { item1, item2 }, cycle.UserProgramItems);
             IncompleteUserCycle incompleteCycle = new IncompleteUserCycle("test");
             incompleteCycle.AddLesson(item4);
-            database.PutCycle(incompleteCycle);
+            databaseMock.Object.PutCycle(incompleteCycle);
 
             service.SwapLesson(cycle, item3);
 
@@ -247,7 +271,7 @@ namespace UnitTests
         [TestCleanup]
         public void TestCleanUp()
         {
-            database = null;
+            databaseMock = null;
             CycleService.DeallocateInstance();
             Directory.Delete("./cycles", true);
         }
