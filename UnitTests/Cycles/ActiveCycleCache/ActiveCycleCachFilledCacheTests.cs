@@ -5,7 +5,6 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
 using Uceni_jazyku.Cycles;
-using Uceni_jazyku.Cycles.ActiveCycleCache;
 
 namespace UnitTests.Cycles
 {
