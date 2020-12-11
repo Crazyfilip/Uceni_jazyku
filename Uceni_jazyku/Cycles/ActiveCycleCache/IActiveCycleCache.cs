@@ -1,29 +1,30 @@
 ﻿namespace Uceni_jazyku.Cycles
 {
     /// <summary>
-    /// 
+    /// Interface for operation with cache for user's active cycle
     /// </summary>
     interface IActiveCycleCache
     {
         /// <summary>
-        /// Empty cache
+        /// Empty the cache
         /// </summary>
         void DropCache();
 
         /// <summary>
-        /// 
+        /// Retrieve an active cycle from the cache
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Cached active cycle or null</returns>
         UserCycle GetFromCache();
 
         /// <summary>
-        /// Insert cycle to cache
+        /// Insert or update a cycle in the cache
         /// </summary>
         /// <param name="cycle"></param>
+        /// <exception cref="System.ArgumentException">if cycle is not in active state</exception>
         void InsertToCache(UserCycle cycle);
 
         /// <summary>
-        /// Test if cache is used
+        /// Test if there is a cycle in the cache
         /// </summary>
         /// <returns>true if cache is filled</returns>
         bool IsCacheFilled();

@@ -5,6 +5,7 @@ using System.Xml;
 
 namespace Uceni_jazyku.Cycles
 {
+    /// <inheritdoc/>
     public class ActiveCycleCache : IActiveCycleCache
     {
         private readonly string activeCycleCacheFile = "cycles/service/active-cycle.xml";

@@ -35,7 +35,7 @@ namespace Uceni_jazyku.Cycles
         public static CycleService GetInstance()
         {
             if (instance == null)
-                instance = new CycleService(null);
+                instance = new CycleService(null, null);
             return instance;
         }
 
@@ -47,7 +47,7 @@ namespace Uceni_jazyku.Cycles
         public static CycleService GetInstance(CycleDatabase database)
         {
             if (instance == null)
-                instance = new CycleService(database);
+                instance = new CycleService(database, null);
             return instance;
         }
 
