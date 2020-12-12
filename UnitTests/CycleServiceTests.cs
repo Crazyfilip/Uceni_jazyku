@@ -82,7 +82,11 @@ namespace UnitTests
         [TestMethod]
         public void TestGetActiveCycleNegative()
         {
-            Assert.ThrowsException<FileNotFoundException>(() => service.GetActiveCycle());
+            // Test
+            UserCycle result = service.GetActiveCycle();
+
+            // Verify
+            Assert.IsNull(result);
         }
 
         [TestMethod]

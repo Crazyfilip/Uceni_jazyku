@@ -16,17 +16,14 @@ namespace User_interface
             PrepareApp();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            CycleService cycleService = CycleService.GetInstance();
-            if (cycleService.UserActiveCycleExists())
+            UserCycle userCycle = CycleService.GetInstance().GetActiveCycle();
+            if (userCycle != null)
             {
-                UserCycle userCycle = cycleService.GetActiveCycle();
                 Application.Run(new WelcomePage(userCycle));
             }
             else
             {
-                // TODO get cycle in UnknownUser state from service
-                UserCycle userCycle = new UserCycle();
-                Application.Run(new LoginPage(userCycle));
+                Application.Run(new LoginPage(new UserCycle()));
             }
         }
 

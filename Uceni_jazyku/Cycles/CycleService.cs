@@ -20,10 +20,11 @@ namespace Uceni_jazyku.Cycles
 
         private readonly CycleDatabase CycleDatabase;
 
-        private readonly string activeCycleCacheFile = "cycles/service/active-cycle.xml";
-        private CycleService(CycleDatabase database) {
+        private readonly IActiveCycleCache ActiveCycleCache;
+        private CycleService(CycleDatabase database, IActiveCycleCache cache) {
             CycleDatabase = database ?? new CycleDatabase();
             CycleDatabase.Load();
+            ActiveCycleCache = cache ?? new ActiveCycleCache();
         }
 
         /// <summary>
@@ -34,7 +35,7 @@ namespace Uceni_jazyku.Cycles
         public static CycleService GetInstance()
         {
             if (instance == null)
-                instance = new CycleService(null);
+                instance = new CycleService(null, null);
             return instance;
         }
 
@@ -46,7 +47,7 @@ namespace Uceni_jazyku.Cycles
         public static CycleService GetInstance(CycleDatabase database)
         {
             if (instance == null)
-                instance = new CycleService(database);
+                instance = new CycleService(database, null);
             return instance;
         }
 
@@ -64,19 +65,16 @@ namespace Uceni_jazyku.Cycles
         /// <returns>true if there is cached active cycle</returns>
         public bool UserActiveCycleExists()
         {
-            return File.Exists(activeCycleCacheFile);
+            return ActiveCycleCache.IsCacheFilled();
         }
 
-        private void cacheActiveCycle(UserCycle cycle)
+        /// <summary>
+        /// Get active cycle when application starts
+        /// </summary>
+        /// <returns>active cycle</returns>
+        public UserCycle GetActiveCycle()
         {
-            var serializer = new DataContractSerializer(typeof(UserCycle));
-            using XmlWriter writer = XmlWriter.Create(activeCycleCacheFile);
-            serializer.WriteObject(writer, cycle);
-        }
-
-        private void clearCachedActiveCycle()
-        {
-            File.Delete(activeCycleCacheFile);
+            return ActiveCycleCache.GetFromCache();
         }
 
         /// <summary>
@@ -96,17 +94,6 @@ namespace Uceni_jazyku.Cycles
             {
                 return Activate(GetNewCycle(username));
             }
-        }
-
-        /// <summary>
-        /// Get active cycle when application starts
-        /// </summary>
-        /// <returns>active cycle</returns>
-        public UserCycle GetActiveCycle()
-        {
-            var serializer = new DataContractSerializer(typeof(UserCycle));
-            using XmlReader reader = XmlReader.Create(activeCycleCacheFile);
-            return (UserCycle)serializer.ReadObject(reader);
         }
 
         private string GenerateNewId()
@@ -146,7 +133,7 @@ namespace Uceni_jazyku.Cycles
             }
             cycle.Activate();
             CycleDatabase.UpdateCycle(cycle);
-            cacheActiveCycle(cycle);
+            ActiveCycleCache.InsertToCache(cycle);
             return cycle;
         }
 
@@ -159,7 +146,7 @@ namespace Uceni_jazyku.Cycles
         {
             cycle.Inactivate();
             CycleDatabase.UpdateCycle(cycle);
-            clearCachedActiveCycle();
+            ActiveCycleCache.DropCache();
             return cycle;
         }
 
@@ -171,7 +158,7 @@ namespace Uceni_jazyku.Cycles
         {
             cycle.Finish();
             CycleDatabase.UpdateCycle(cycle);
-            clearCachedActiveCycle();
+            ActiveCycleCache.DropCache();
         }
 
         /// <summary>
@@ -195,8 +182,7 @@ namespace Uceni_jazyku.Cycles
             CycleDatabase.UpdateCycle(cycle);
             if (cycle.State == UserCycleState.Active)
             {
-                clearCachedActiveCycle();
-                cacheActiveCycle(cycle);
+                ActiveCycleCache.InsertToCache(cycle);
             }
             IncompleteUserCycle incompleteCycle = CycleDatabase.GetUserIncompleteCycle(cycle.Username);
             if (incompleteCycle == null)
