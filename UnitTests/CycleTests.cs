@@ -98,6 +98,7 @@ namespace UnitTests
         public void TestFinish()
         {
             UserCycle cycle = new UserCycle().AssignUser("test").Activate();
+            cycle.AssignProgram(new List<UserProgramItem>()); // replace with mocked data
             Assert.AreEqual(UserCycleState.Active, cycle.State);
 
             cycle.Finish();

@@ -26,7 +26,7 @@ namespace Uceni_jazyku.Cycles
         public virtual UserCycleState State { get; protected set; }
 
         [DataMember]
-        public List<UserProgramItem> UserProgramItems { get; protected set; }
+        public List<UserProgramItem> UserProgramItems { get; protected set; } = new List<UserProgramItem>();
 
         [DataMember]
         protected bool isUserAssigned;
@@ -109,7 +109,7 @@ namespace Uceni_jazyku.Cycles
         /// Only active cycle is possible to inactivate
         /// </summary>
         /// <returns>this instance</returns>
-        public UserCycle Inactivate()
+        public virtual UserCycle Inactivate()
         {
             if (State == UserCycleState.Active)
             { 
@@ -125,14 +125,13 @@ namespace Uceni_jazyku.Cycles
         /// Only active cycle with all lessons finished is possible to finish
         /// </summary>
         /// <returns>this instance</returns>
-        public UserCycle Finish()
+        public virtual void Finish()
         {
             if (State == UserCycleState.Active)
             {
                 if (UserProgramItems.TrueForAll(x => x.LessonRef.Finished))
                 {
                     State = UserCycleState.Finished;
-                    return this;
                 }
                 else
                     throw new Exception("Cycle doesn't have finished all lesson so can't be finished");
