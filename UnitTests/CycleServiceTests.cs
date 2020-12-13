@@ -21,6 +21,7 @@ namespace UnitTests
     {
         CycleService service;
         Mock<ICycleRepository> databaseMock;
+        Mock<IActiveCycleCache> cacheMock;
         UserCycle cycle;
         private readonly string activeCycleCacheFile = "cycles/service/active-cycle.xml";
 
@@ -37,30 +38,38 @@ namespace UnitTests
         {
             Directory.CreateDirectory("./cycles/service");
             databaseMock = new Mock<ICycleRepository>();
-            service = CycleService.GetInstance(databaseMock.Object);
+            cacheMock = new Mock<IActiveCycleCache>();
+            service = CycleService.GetInstance(databaseMock.Object, cacheMock.Object);
         }
 
         [TestMethod]
         public void TestActiveCycleExistsPositive()
         {
             // Init
-            PrepareCachedActiveCycle();
+            cacheMock.Setup(x => x.IsCacheFilled()).Returns(true);
 
             // Test
             bool result = service.UserActiveCycleExists();
 
             // Verify
             Assert.IsTrue(result);
+            cacheMock.Verify(x => x.IsCacheFilled(), Times.Once);
+            cacheMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
         public void TestActiveCycleExistsNegative()
         {
+            // Init
+            cacheMock.Setup(x => x.IsCacheFilled()).Returns(false);
+
             // Test
             bool result = service.UserActiveCycleExists();
 
             // Verify
             Assert.IsFalse(result);
+            cacheMock.Verify(x => x.IsCacheFilled(), Times.Once);
+            cacheMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
@@ -89,36 +98,58 @@ namespace UnitTests
             // Init
             Mock<UserCycle> cycleMock = new Mock<UserCycle>();
             cycleMock.SetupGet(x => x.State).Returns(UserCycleState.Inactive);
-
+            cycleMock.Setup(x => x.Activate()).Returns(cycleMock.Object);
             databaseMock.Setup(x => x.GetOldestUserInactiveCycle("test")).Returns(cycleMock.Object);
             databaseMock.Setup(x => x.UpdateCycle(cycleMock.Object)).Verifiable();
+            cacheMock.Setup(x => x.InsertToCache(cycleMock.Object)).Verifiable();
 
             // Test
             UserCycle result = service.GetUserCycle("test");
 
             // Verify
-            Assert.AreSame(cycle, result);
-            Assert.AreEqual(UserCycleState.Active, result.State);
-            Assert.AreEqual("test", result.Username);
-            Assert.AreEqual(1, databaseMock.Object.GetCyclesCount());
+            Assert.AreSame(cycleMock.Object, result);
+
+            databaseMock.Verify(x => x.GetOldestUserInactiveCycle("test"), Times.Once);
+            cycleMock.Verify(x => x.State, Times.Once);
+            cycleMock.Verify(x => x.Activate(), Times.Once);
+            databaseMock.Verify(x => x.UpdateCycle(cycleMock.Object), Times.Once);
+            cacheMock.Verify(x => x.InsertToCache(cycleMock.Object), Times.Once);
+
+            databaseMock.VerifyNoOtherCalls();
+            cacheMock.VerifyNoOtherCalls();
+            cycleMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
         public void TestGetActiveCycleNegative()
         {
+            // Init
+            cacheMock.Setup(x => x.GetFromCache()).Returns((UserCycle)null);
+
             // Test
             UserCycle result = service.GetActiveCycle();
 
             // Verify
             Assert.IsNull(result);
+            cacheMock.Verify(x => x.GetFromCache(), Times.Once);
+            cacheMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
         public void TestGetActiveCyclePositive()
         {
-            PrepareCachedActiveCycle();
+            // Init
+            Mock<UserCycle> cycleMock = new Mock<UserCycle>();
+            cacheMock.Setup(x => x.GetFromCache()).Returns(cycleMock.Object);
+
+            // Test
             UserCycle result = service.GetActiveCycle();
-            Assert.AreEqual(cycle, result);
+
+            // Verify
+            Assert.AreEqual(cycleMock.Object, result);
+            cacheMock.Verify(x => x.GetFromCache(), Times.Once);
+            cacheMock.VerifyNoOtherCalls();
+            cycleMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
@@ -151,21 +182,46 @@ namespace UnitTests
         [TestMethod]
         public void TestActivateInactiveCycle()
         {
-            cycle = new UserCycle().AssignUser("test").Activate().Inactivate();
-            databaseMock.Object.PutCycle(cycle);
-            Assert.AreEqual(UserCycleState.Inactive, cycle.State);
+            // Init
+            Mock<UserCycle> cycleMock = new Mock<UserCycle>();
+            cycleMock.SetupGet(x => x.State).Returns(UserCycleState.Inactive);
+            cycleMock.Setup(x => x.Activate()).Returns(cycleMock.Object);
+            databaseMock.Setup(x => x.UpdateCycle(cycleMock.Object)).Verifiable();
+            cacheMock.Setup(x => x.InsertToCache(cycleMock.Object)).Verifiable();
 
-            UserCycle result = service.Activate(cycle);
-            Assert.AreSame(cycle, result);
-            Assert.AreEqual(UserCycleState.Active, result.State);
-            Assert.IsTrue(databaseMock.Object.IsInDatabase(result));
-            Assert.IsTrue(File.Exists(activeCycleCacheFile));
+            // Test
+            UserCycle result = service.Activate(cycleMock.Object);
+
+            // Verify
+            Assert.AreSame(cycleMock.Object, result);
+
+            cycleMock.Verify(x => x.State, Times.Once);
+            cycleMock.Verify(x => x.Activate(), Times.Once);
+            databaseMock.Verify(x => x.UpdateCycle(cycleMock.Object), Times.Once);
+            cacheMock.Verify(x => x.InsertToCache(cycleMock.Object), Times.Once);
+
+            cycleMock.VerifyNoOtherCalls();
+            databaseMock.VerifyNoOtherCalls();
+            cacheMock.VerifyNoOtherCalls();
         }
 
-        [TestMethod]
-        public void TestActivateNegative()
+        [DataRow(UserCycleState.UnknownUser)]
+        [DataRow(UserCycleState.Active)]
+        [DataRow(UserCycleState.Finished)]
+        [DataTestMethod]
+        public void TestActivateNegative(UserCycleState incorrectState)
         {
-            Assert.ThrowsException<Exception>(() => service.Activate(new UserCycle()));
+            // Init
+            Mock<UserCycle> cycleMock = new Mock<UserCycle>();
+            cycleMock.SetupGet(x => x.State).Returns(incorrectState);
+            cycleMock.Setup(x => x.Activate()).CallBase();
+
+            // Test & Verify
+            Assert.ThrowsException<Exception>(() => service.Activate(cycleMock.Object));
+
+            cycleMock.Verify(x => x.State, Times.Exactly(4));
+            cycleMock.Verify(x => x.Activate(), Times.Once);
+            cycleMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]

@@ -43,10 +43,10 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         /// <param name="database"></param>
         /// <returns>instance <c>CycleService</c></returns>
-        public static CycleService GetInstance(ICycleRepository database)
+        public static CycleService GetInstance(ICycleRepository database, IActiveCycleCache cache)
         {
             if (instance == null)
-                instance = new CycleService(database, null);
+                instance = new CycleService(database, cache);
             return instance;
         }
 

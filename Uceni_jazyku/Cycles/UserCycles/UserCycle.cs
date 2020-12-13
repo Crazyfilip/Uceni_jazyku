@@ -26,15 +26,15 @@ namespace Uceni_jazyku.Cycles
         public virtual UserCycleState State { get; protected set; }
 
         [DataMember]
-        public List<UserProgramItem> UserProgramItems { get; protected set; } = new List<UserProgramItem>();
+        public List<UserProgramItem> UserProgramItems { get; protected set; }
 
         [DataMember]
-        protected bool isUserAssigned = false;
+        protected bool isUserAssigned;
 
         [DataMember]
-        protected bool isProgramAssigned = false;
+        protected bool isProgramAssigned;
 
-        public UserCycle() => State = UserCycleState.UnknownUser;
+        public UserCycle() { }
 
         public override void Update()
         {
@@ -93,7 +93,7 @@ namespace Uceni_jazyku.Cycles
         /// Only new or inactive cycle is possible to activate
         /// </summary>
         /// <returns>this instance</returns>
-        public UserCycle Activate()
+        public virtual UserCycle Activate()
         {
             if (State == UserCycleState.New || State == UserCycleState.Inactive)
             {
