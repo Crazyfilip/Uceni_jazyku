@@ -18,12 +18,11 @@ namespace Uceni_jazyku.Cycles
     {
         private static CycleService instance;
 
-        private readonly CycleDatabase CycleDatabase;
+        private readonly ICycleRepository CycleRepository;
 
         private readonly IActiveCycleCache ActiveCycleCache;
-        private CycleService(CycleDatabase database, IActiveCycleCache cache) {
-            CycleDatabase = database ?? new CycleDatabase();
-            CycleDatabase.Load();
+        private CycleService(ICycleRepository database, IActiveCycleCache cache) {
+            CycleRepository = database ?? new CycleRepository();
             ActiveCycleCache = cache ?? new ActiveCycleCache();
         }
 
@@ -44,7 +43,7 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         /// <param name="database"></param>
         /// <returns>instance <c>CycleService</c></returns>
-        public static CycleService GetInstance(CycleDatabase database)
+        public static CycleService GetInstance(CycleRepository database)
         {
             if (instance == null)
                 instance = new CycleService(database, null);
@@ -85,7 +84,7 @@ namespace Uceni_jazyku.Cycles
         /// <returns>active cycle for user</returns>
         public UserCycle GetUserCycle(string username)
         {
-            UserCycle result = CycleDatabase.GetOldestUserInactiveCycle(username);
+            UserCycle result = CycleRepository.GetOldestUserInactiveCycle(username);
             if (result != null)
             {
                  return Activate(result);
@@ -98,7 +97,7 @@ namespace Uceni_jazyku.Cycles
 
         private string GenerateNewId()
         {
-            return "cycle" + CycleDatabase.GetCyclesCount();
+            return "cycle" + CycleRepository.GetCyclesCount();
         }
         /// <summary>
         /// Create new user cycle
@@ -112,7 +111,7 @@ namespace Uceni_jazyku.Cycles
                 CycleID = GenerateNewId()
             }; 
             newCycle.AssignUser(username);
-            CycleDatabase.PutCycle(newCycle);
+            CycleRepository.PutCycle(newCycle);
             return newCycle;
         }
 
@@ -132,7 +131,7 @@ namespace Uceni_jazyku.Cycles
                 cycle.AssignProgram(new List<Program.UserProgramItem>() { new Program.UserProgramItem(example.CycleID, example.PlanNext())});
             }
             cycle.Activate();
-            CycleDatabase.UpdateCycle(cycle);
+            CycleRepository.UpdateCycle(cycle);
             ActiveCycleCache.InsertToCache(cycle);
             return cycle;
         }
@@ -145,7 +144,7 @@ namespace Uceni_jazyku.Cycles
         public UserCycle Inactivate(UserCycle cycle)
         {
             cycle.Inactivate();
-            CycleDatabase.UpdateCycle(cycle);
+            CycleRepository.UpdateCycle(cycle);
             ActiveCycleCache.DropCache();
             return cycle;
         }
@@ -157,7 +156,7 @@ namespace Uceni_jazyku.Cycles
         public void Finish(UserCycle cycle)
         {
             cycle.Finish();
-            CycleDatabase.UpdateCycle(cycle);
+            CycleRepository.UpdateCycle(cycle);
             ActiveCycleCache.DropCache();
         }
 
@@ -168,7 +167,7 @@ namespace Uceni_jazyku.Cycles
         public void RegisterCycle(AbstractCycle cycle)
         {
             cycle.CycleID = GenerateNewId();
-            CycleDatabase.PutCycle(cycle);
+            CycleRepository.PutCycle(cycle);
         }
 
         /// <summary>
@@ -179,19 +178,19 @@ namespace Uceni_jazyku.Cycles
         public void SwapLesson(UserCycle cycle, UserProgramItem item)
         {
             UserProgramItem swappedItem = cycle.SwapLesson(item);
-            CycleDatabase.UpdateCycle(cycle);
+            CycleRepository.UpdateCycle(cycle);
             if (cycle.State == UserCycleState.Active)
             {
                 ActiveCycleCache.InsertToCache(cycle);
             }
-            IncompleteUserCycle incompleteCycle = CycleDatabase.GetUserIncompleteCycle(cycle.Username);
+            IncompleteUserCycle incompleteCycle = CycleRepository.GetUserIncompleteCycle(cycle.Username);
             if (incompleteCycle == null)
             {
                 incompleteCycle = new IncompleteUserCycle(cycle.Username);
                 RegisterCycle(incompleteCycle);
             }
             incompleteCycle.AddLesson(swappedItem);
-            CycleDatabase.UpdateCycle(incompleteCycle);
+            CycleRepository.UpdateCycle(incompleteCycle);
         }
     }
 }

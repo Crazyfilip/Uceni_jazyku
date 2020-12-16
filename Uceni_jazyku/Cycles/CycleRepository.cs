@@ -13,7 +13,7 @@ namespace Uceni_jazyku.Cycles
     /// 
     /// Via xml-serialization saved to/loaded from file
     /// </summary>
-    public class CycleDatabase
+    public class CycleRepository : ICycleRepository
     {
         /// <summary>
         /// Path to file where is stored collection of cycles
@@ -23,33 +23,33 @@ namespace Uceni_jazyku.Cycles
         /// <summary>
         /// List of all cycles, user and language ones.
         /// </summary>
-        private List<AbstractCycle> database;
+        private List<AbstractCycle> database = new List<AbstractCycle>();
+
+
+        public CycleRepository()
+        {
+            if (File.Exists(path))
+            {
+                var serializer = new DataContractSerializer(typeof(List<AbstractCycle>));
+                using XmlReader reader = XmlReader.Create(path);
+                database = (List<AbstractCycle>)serializer.ReadObject(reader);
+            }
+        }
+
+        public CycleRepository(List<AbstractCycle> cycles)
+        {
+            database = cycles;
+            Save();
+        }
 
         /// <summary>
         /// Save actual state database
         /// </summary>
-        public void Save()
+        private void Save()
         {
             var serializer = new DataContractSerializer(typeof(List<AbstractCycle>));
             using XmlWriter writer = XmlWriter.Create(path);
             serializer.WriteObject(writer, database ?? new List<AbstractCycle>());
-        }
-
-        /// <summary>
-        /// Load database. If database file doesn't exists then database will be empty list.
-        /// </summary>
-        public void Load()
-        {
-            if (File.Exists(path)) {
-                var serializer = new DataContractSerializer(typeof(List<AbstractCycle>));
-                using XmlReader reader = XmlReader.Create(path);
-                database = (List<AbstractCycle>)serializer.ReadObject(reader);
-                return;
-            }
-            else
-            {
-                database = new List<AbstractCycle>();
-            }
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace Uceni_jazyku.Cycles
         /// <param name="cycle">inserted cycle</param>
         public void PutCycle(AbstractCycle cycle)
         {
-            (database ??= new List<AbstractCycle>()).Add(cycle);
+            database.Add(cycle);
             Save();
         }
 
@@ -68,7 +68,7 @@ namespace Uceni_jazyku.Cycles
         /// <returns>number of cycles in database</returns>
         public int GetCyclesCount()
         {
-            return database?.Count ?? 0;
+            return database.Count;
         }
 
         /// <summary>
@@ -78,8 +78,15 @@ namespace Uceni_jazyku.Cycles
         /// <param name="updatedCycle"></param>
         public void UpdateCycle(AbstractCycle updatedCycle)
         {
-            int index = database?.FindIndex(x => x.CycleID == updatedCycle.CycleID) ?? throw new Exception("invalid state of database");
-            database[index] = updatedCycle;
+            int index = database.FindIndex(x => x.CycleID == updatedCycle.CycleID);
+            if (index != -1)
+            {
+                database[index] = updatedCycle;
+            }
+            else
+            {
+                database.Add(updatedCycle);
+            }
             Save();
         }
 
@@ -88,6 +95,8 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         /// <param name="cycle">tested cycle</param>
         /// <returns>true if cycle is present otherwise false</returns>
+        // TODO remove when tests will utilize moq
+        // method was added just for tests
         public bool IsInDatabase(AbstractCycle cycle)
         {
             return database.Contains(cycle);
@@ -111,14 +120,13 @@ namespace Uceni_jazyku.Cycles
         public UserCycle GetOldestUserInactiveCycle(string username)
         {
             var queryResult = database
-                ?.Where(x => x is UserCycle)
+                .Where(x => x is UserCycle)
                 .Where(x =>
                 {
                     UserCycle cycle = (UserCycle)x;
                     return cycle.Username == username && cycle.State == UserCycleState.Inactive;
                 })
-                .ToList()
-                ?? throw new Exception("invalid state of database");
+                .ToList();
             queryResult.Sort((x, y) => getCycleNumber(x).CompareTo(getCycleNumber(y)));
             return (queryResult.Count > 0) ? ((UserCycle) queryResult.First()) : null;
         }
@@ -131,7 +139,7 @@ namespace Uceni_jazyku.Cycles
         public IncompleteUserCycle GetUserIncompleteCycle(string username)
         {
             return (IncompleteUserCycle)database
-                ?.Where(x => x is IncompleteUserCycle)
+                .Where(x => x is IncompleteUserCycle)
                 .Where(x =>
                 {
                     IncompleteUserCycle cycle = (IncompleteUserCycle)x;
