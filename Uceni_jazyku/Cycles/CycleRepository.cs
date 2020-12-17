@@ -8,10 +8,9 @@ using Uceni_jazyku.Cycles.UserCycles;
 
 namespace Uceni_jazyku.Cycles
 {
+    /// <inheritdoc/>
     /// <summary>
-    /// Database of cycles
-    /// 
-    /// Via xml-serialization saved to/loaded from file
+    /// Repository represented as List which is saved to/loaded from a file
     /// </summary>
     public class CycleRepository : ICycleRepository
     {
@@ -52,30 +51,17 @@ namespace Uceni_jazyku.Cycles
             serializer.WriteObject(writer, database ?? new List<AbstractCycle>());
         }
 
-        /// <summary>
-        /// Insert cycle to database
-        /// </summary>
-        /// <param name="cycle">inserted cycle</param>
         public void PutCycle(AbstractCycle cycle)
         {
             database.Add(cycle);
             Save();
         }
 
-        /// <summary>
-        /// getter for number of existing cycles
-        /// </summary>
-        /// <returns>number of cycles in database</returns>
         public int GetCyclesCount()
         {
             return database.Count;
         }
 
-        /// <summary>
-        /// Update information about a cycle stored in the database.
-        /// </summary>
-        /// <param name="cycleID"></param>
-        /// <param name="updatedCycle"></param>
         public void UpdateCycle(AbstractCycle updatedCycle)
         {
             int index = database.FindIndex(x => x.CycleID == updatedCycle.CycleID);
@@ -97,6 +83,7 @@ namespace Uceni_jazyku.Cycles
         /// <returns>true if cycle is present otherwise false</returns>
         // TODO remove when tests will utilize moq
         // method was added just for tests
+        [Obsolete]
         public bool IsInDatabase(AbstractCycle cycle)
         {
             return database.Contains(cycle);
@@ -107,16 +94,13 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         /// <param name="cycle">cycle</param>
         /// <returns>cycle number</returns>
-        public int getCycleNumber(AbstractCycle cycle)
+        // TODO delete this method, cycle should rather to have field like DateCreated based on which will be chosen oldest one
+        [Obsolete]
+        private int getCycleNumber(AbstractCycle cycle)
         {
             return int.Parse(cycle.CycleID.Substring(5)); // cycleID format is: cycle<number>
         }
 
-        /// <summary>
-        /// Search for user's oldest inactive cycle
-        /// </summary>
-        /// <param name="username">user's name</param>
-        /// <returns>Oldest user's inactive cycle</returns>
         public UserCycle GetOldestUserInactiveCycle(string username)
         {
             var queryResult = database
@@ -131,11 +115,6 @@ namespace Uceni_jazyku.Cycles
             return (queryResult.Count > 0) ? ((UserCycle) queryResult.First()) : null;
         }
 
-        /// <summary>
-        /// Search for user's incomplete cycle
-        /// </summary>
-        /// <param name="username">user's name</param>
-        /// <returns>user's incomplete cycle or null</returns>
         public IncompleteUserCycle GetUserIncompleteCycle(string username)
         {
             return (IncompleteUserCycle)database

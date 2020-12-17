@@ -46,17 +46,6 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void CycleNumberTest()
-        {
-            UserCycle cycle = new UserCycle().AssignUser("test").Activate();
-            int cycleNumber = 8548;
-            cycle.CycleID = "cycle" + cycleNumber;
-            database.PutCycle(cycle);
-            int result = database.getCycleNumber(cycle);
-            Assert.AreEqual(cycleNumber, result);
-        }
-
-        [TestMethod]
         public void WhenNoInactiveCycle_ThenOldestReturnNull()
         {
             Assert.IsNull(database.GetOldestUserInactiveCycle("testuser"));
