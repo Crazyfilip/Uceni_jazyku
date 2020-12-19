@@ -19,7 +19,7 @@ namespace UnitTests
     public class CycleServiceTests
     {
         CycleService service;
-        CycleDatabase database;
+        CycleRepository database;
         UserCycle cycle;
         private readonly string activeCycleCacheFile = "cycles/service/active-cycle.xml";
 
@@ -35,7 +35,7 @@ namespace UnitTests
         public void TestInitialization()
         {
             Directory.CreateDirectory("./cycles/service");
-            database = new CycleDatabase();
+            database = new CycleRepository();
             service = CycleService.GetInstance(database);
         }
 
