@@ -34,6 +34,12 @@ namespace Uceni_jazyku.User_database
             }
         }
 
+        public UserAccountRepository(List<UserAccount> accounts)
+        {
+            userDatabase = accounts;
+            SaveDatabase();
+        }
+
         public void AddUserAccount(UserAccount userAccount)
         {
             userDatabase.Add(userAccount);
