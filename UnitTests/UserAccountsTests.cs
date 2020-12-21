@@ -15,8 +15,6 @@ namespace UnitTests
         {
             Directory.CreateDirectory("./users");
             Directory.CreateDirectory("./cycles/service");
-            Directory.CreateDirectory("./cycles/user-new");
-            Directory.CreateDirectory("./cycles/user-active");
             accountService = UserAccountService.GetInstance();
         }
 
@@ -30,7 +28,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void WhenLoginFailed_thenReturnNull()
+        public void TestLoginNegative()
         {
             Assert.IsNull(accountService.Login("fail", "fail"));
         }

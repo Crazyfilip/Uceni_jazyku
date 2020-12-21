@@ -6,7 +6,7 @@ using Uceni_jazyku.Cycles.UserCycles;
 namespace Uceni_jazyku.Cycles
 {
     /// <summary>
-    /// Interface of operation with repository of cycles
+    /// Interface of operations with repository of cycles
     /// </summary>
     interface ICycleRepository
     {

@@ -1,10 +1,6 @@
 ﻿using Uceni_jazyku.Cycles;
-using System.IO;
-using System.Collections.Generic;
 using System;
 using System.Security.Cryptography;
-using System.Xml;
-using System.Runtime.Serialization;
 
 namespace Uceni_jazyku.User_database
 {
@@ -16,21 +12,11 @@ namespace Uceni_jazyku.User_database
     public class UserAccountService
     {
         private static UserAccountService instance;
-        private List<UserAccount> userDatabase = new List<UserAccount>();
-        private string databasePath = "./users/accounts.txt";
+        private IUserAccountRepository userAccountRepository;
 
-        private UserAccountService()
+        private UserAccountService(IUserAccountRepository repository)
         {
-            if (File.Exists(databasePath))
-            {
-                var serializer = new DataContractSerializer(typeof(List<UserAccount>));
-                using XmlReader reader = XmlReader.Create(databasePath);
-                userDatabase = (List<UserAccount>)serializer.ReadObject(reader);
-            }
-            else
-            {
-                userDatabase = new List<UserAccount>();
-            }
+            userAccountRepository = repository ?? new UserAccountRepository();
         }
 
         /// <summary>
@@ -40,7 +26,19 @@ namespace Uceni_jazyku.User_database
         public static UserAccountService GetInstance()
         {
             if (instance == null)
-                instance = new UserAccountService();
+                instance = new UserAccountService(null);
+            return instance;
+        }
+
+        /// <summary>
+        /// Getter of UserAccountService instance
+        /// </summary>
+        /// <param name="repository">UserAccountRepository to be used in repository</param>
+        /// <returns>UserAccountService's instance</returns>
+        public static UserAccountService GetInstance(IUserAccountRepository repository)
+        {
+            if (instance == null)
+                instance = new UserAccountService(repository);
             return instance;
         }
 
@@ -71,7 +69,7 @@ namespace Uceni_jazyku.User_database
         /// <returns>true when user exists</returns>
         private bool VerifyUser(string username, string password)
         {
-            UserAccount userAccount = userDatabase.Find(x => x.username == username);
+            UserAccount userAccount = userAccountRepository.GetUserAccount(username);
             if (userAccount == null)
                 return false;
 
@@ -89,7 +87,7 @@ namespace Uceni_jazyku.User_database
         /// <returns>true if user is created, false when username is already used</returns>
         public bool CreateUser(string username, string password)
         {
-            UserAccount userAccount = userDatabase.Find(x => x.username == username);
+            UserAccount userAccount = userAccountRepository.GetUserAccount(username);
             if (userAccount != null)
                 return false;
 
@@ -103,16 +101,8 @@ namespace Uceni_jazyku.User_database
             var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 1000);
             userAccount.loginCredential = Convert.ToBase64String(pbkdf2.GetBytes(20));
 
-            userDatabase.Add(userAccount);
-            SaveDatabase();
+            userAccountRepository.AddUserAccount(userAccount);
             return true;
-        }
-
-        private void SaveDatabase()
-        {
-            var serializer = new DataContractSerializer(typeof(List<UserAccount>));
-            using XmlWriter writer = XmlWriter.Create(databasePath);
-            serializer.WriteObject(writer, userDatabase);
         }
 
         public static void Deallocate()
