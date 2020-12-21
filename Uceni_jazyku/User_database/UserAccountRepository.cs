@@ -34,6 +34,10 @@ namespace Uceni_jazyku.User_database
             }
         }
 
+        /// <summary>
+        /// Initialize repository with existing data
+        /// </summary>
+        /// <param name="accounts">List of data</param>
         public UserAccountRepository(List<UserAccount> accounts)
         {
             userDatabase = accounts;
