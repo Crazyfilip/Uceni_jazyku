@@ -21,6 +21,9 @@ namespace Uceni_jazyku.Cycles
         private readonly ICycleRepository CycleRepository;
 
         private readonly IActiveCycleCache ActiveCycleCache;
+
+        public CycleService() : this(null, null){}
+
         private CycleService(ICycleRepository database, IActiveCycleCache cache) {
             CycleRepository = database ?? new CycleRepository();
             ActiveCycleCache = cache ?? new ActiveCycleCache();
@@ -82,7 +85,7 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         /// <param name="username">username</param>
         /// <returns>active cycle for user</returns>
-        public UserCycle GetUserCycle(string username)
+        public virtual UserCycle GetUserCycle(string username)
         {
             UserCycle result = CycleRepository.GetOldestUserInactiveCycle(username);
             if (result != null)
@@ -123,7 +126,7 @@ namespace Uceni_jazyku.Cycles
         /// <returns>updated cycle</returns>
         public UserCycle Activate(UserCycle cycle)
         {
-            if (cycle.State == UserCycles.UserCycleState.New)
+            if (cycle.State == UserCycleState.New)
             {
                 // TODO assign program from planner based on user model
                 LanguageCycle example = LanguageCycle.LanguageCycleExample();

@@ -11,35 +11,19 @@ namespace Uceni_jazyku.User_database
     /// </summary>
     public class UserAccountService
     {
-        private static UserAccountService instance;
         private IUserAccountRepository userAccountRepository;
+        private CycleService cycleService;
 
-        private UserAccountService(IUserAccountRepository repository)
+        public UserAccountService() : this(null, null) {}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="repository"></param>
+        public UserAccountService(IUserAccountRepository repository, CycleService cycleService)
         {
             userAccountRepository = repository ?? new UserAccountRepository();
-        }
-
-        /// <summary>
-        /// Getter of UserAccountService instance
-        /// </summary>
-        /// <returns>UserAccountService's instance</returns>
-        public static UserAccountService GetInstance()
-        {
-            if (instance == null)
-                instance = new UserAccountService(null);
-            return instance;
-        }
-
-        /// <summary>
-        /// Getter of UserAccountService instance
-        /// </summary>
-        /// <param name="repository">UserAccountRepository to be used in repository</param>
-        /// <returns>UserAccountService's instance</returns>
-        public static UserAccountService GetInstance(IUserAccountRepository repository)
-        {
-            if (instance == null)
-                instance = new UserAccountService(repository);
-            return instance;
+            this.cycleService = cycleService ?? CycleService.GetInstance();
         }
 
         /// <summary>
@@ -50,10 +34,9 @@ namespace Uceni_jazyku.User_database
         /// <returns>User's cycle or null</returns>
         public UserCycle Login(string username, string password)
         {
-            CycleService service = CycleService.GetInstance();
             if (VerifyUser(username, password))
             {
-                return service.GetUserCycle(username);
+                return cycleService.GetUserCycle(username);
             }
             else
             {
@@ -103,11 +86,6 @@ namespace Uceni_jazyku.User_database
 
             userAccountRepository.AddUserAccount(userAccount);
             return true;
-        }
-
-        public static void Deallocate()
-        {
-            instance = null;
         }
     }
 }

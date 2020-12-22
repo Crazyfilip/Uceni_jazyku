@@ -74,7 +74,7 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         /// <param name="userProgramItems"></param>
         /// <returns></returns>
-        public UserCycle AssignProgram(List<UserProgramItem> userProgramItems)
+        public virtual UserCycle AssignProgram(List<UserProgramItem> userProgramItems)
         {
             if (!isProgramAssigned)
             {

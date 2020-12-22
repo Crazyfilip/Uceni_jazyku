@@ -1,14 +1,11 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
-using System.Runtime.Serialization;
-using System.Xml;
 using Uceni_jazyku.Cycles;
 using Uceni_jazyku.Cycles.Program;
 using Uceni_jazyku.Cycles.UserCycles;
 using Uceni_jazyku.Cycles.LanguageCycles;
 using System.Collections.Generic;
-using System.Linq;
 using Moq;
 
 namespace UnitTests
@@ -22,17 +19,10 @@ namespace UnitTests
         CycleService service;
         Mock<ICycleRepository> databaseMock;
         Mock<IActiveCycleCache> cacheMock;
-        UserCycle cycle;
-        private readonly string activeCycleCacheFile = "cycles/service/active-cycle.xml";
+        UserCycle cycle1, cycle2;
+        UserProgramItem item1, item2, item3, item4;
+        IncompleteUserCycle newIncomplete, existingIncomplete;
 
-        private void PrepareCachedActiveCycle()
-        {
-            cycle = new UserCycle().AssignUser("test").Activate();
-            var serializer = new DataContractSerializer(typeof(UserCycle));
-            using XmlWriter writer = XmlWriter.Create(activeCycleCacheFile);
-            serializer.WriteObject(writer, cycle);
-        }
-        
         [TestInitialize]
         public void TestInitialization()
         {
@@ -40,6 +30,20 @@ namespace UnitTests
             databaseMock = new Mock<ICycleRepository>();
             cacheMock = new Mock<IActiveCycleCache>();
             service = CycleService.GetInstance(databaseMock.Object, cacheMock.Object);
+
+            LanguageCycle example = LanguageCycle.LanguageCycleExample();
+            item1 = new UserProgramItem(example.CycleID, example.PlanNext());
+            item2 = new UserProgramItem(example.CycleID, example.PlanNext());
+            item3 = new UserProgramItem(example.CycleID, example.PlanNext());
+            item4 = new UserProgramItem(example.CycleID, example.PlanNext());
+
+            newIncomplete = new IncompleteUserCycle("test");
+            newIncomplete.AddLesson(item2);
+            newIncomplete.CycleID = "cycle0";
+            existingIncomplete = new IncompleteUserCycle("test");
+            existingIncomplete.AddLesson(item4);
+            cycle1 = new UserCycle().AssignUser("test").AssignProgram(new List<UserProgramItem>() { item1, item2 }).Activate();
+            cycle2 = new UserCycle().AssignUser("test").AssignProgram(new List<UserProgramItem>() { item1, item2 });
         }
 
         [TestMethod]
@@ -93,6 +97,7 @@ namespace UnitTests
             Assert.AreEqual("test", result.Username);
             databaseMock.Verify(x => x.GetOldestUserInactiveCycle("test"), Times.Once);
             databaseMock.Verify(x => x.PutCycle(It.IsAny<AbstractCycle>()), Times.Exactly(2)); // result + language cycle, TODO language cycle will go away
+            databaseMock.Verify(x => x.GetCyclesCount(), Times.Exactly(2));
             databaseMock.Verify(x => x.UpdateCycle(result), Times.Once);
             cacheMock.Verify(x => x.InsertToCache(result), Times.Once);
 
@@ -177,6 +182,7 @@ namespace UnitTests
             Assert.AreEqual(UserCycleState.New, result.State);
             Assert.AreEqual("test", result.Username);
             databaseMock.Verify(x => x.PutCycle(result), Times.Once);
+            databaseMock.Verify(x => x.GetCyclesCount(), Times.Once);
 
             databaseMock.VerifyNoOtherCalls();
             cacheMock.VerifyNoOtherCalls();
@@ -185,19 +191,32 @@ namespace UnitTests
         [TestMethod]
         public void TestActivateNewCycle()
         {
-            LanguageProgramItem languageItem = LanguageCycle.LanguageCycleExample().PlanNext();
-            cycle = new UserCycle().AssignUser("test");
-            databaseMock.Object.PutCycle(cycle);
-            Assert.AreEqual(UserCycleState.New, cycle.State);
+            //Init
+            Mock<UserCycle> cycleMock = new Mock<UserCycle>();
+            cycleMock.SetupGet(x => x.State).Returns(UserCycleState.New);
+            cycleMock.Setup(x => x.AssignProgram(It.IsAny<List<UserProgramItem>>())).Returns(cycleMock.Object);
+            cycleMock.Setup(x => x.Activate()).Returns(cycleMock.Object);
+            databaseMock.Setup(x => x.PutCycle(It.IsAny<AbstractCycle>())).Verifiable();
+            databaseMock.Setup(x => x.UpdateCycle(cycleMock.Object)).Verifiable();
+            cacheMock.Setup(x => x.InsertToCache(cycleMock.Object)).Verifiable();
 
-            UserCycle result = service.Activate(cycle);
-            Assert.AreSame(cycle, result);
-            Assert.AreEqual(UserCycleState.Active, result.State);
-            Assert.IsTrue(databaseMock.Object.IsInDatabase(result));
-            Assert.IsTrue(File.Exists(activeCycleCacheFile));
+            // Test
+            UserCycle result = service.Activate(cycleMock.Object);
 
-            UserProgramItem userItem = (UserProgramItem) result.GetNext();
-            Assert.AreEqual(languageItem, userItem.LessonRef);
+            // Verify
+            Assert.AreSame(cycleMock.Object, result);
+
+            cycleMock.Verify(x => x.State, Times.Once);
+            cycleMock.Verify(x => x.AssignProgram(It.IsAny<List<UserProgramItem>>()), Times.Once);
+            cycleMock.Verify(x => x.Activate(), Times.Once);
+            databaseMock.Verify(x => x.GetCyclesCount(), Times.Once);
+            databaseMock.Verify(x => x.PutCycle(It.IsAny<AbstractCycle>()), Times.Once);
+            databaseMock.Verify(x => x.UpdateCycle(cycleMock.Object), Times.Once);
+            cacheMock.Verify(x => x.InsertToCache(cycleMock.Object), Times.Once);
+
+            cycleMock.VerifyNoOtherCalls();
+            databaseMock.VerifyNoOtherCalls();
+            cacheMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
@@ -356,6 +375,7 @@ namespace UnitTests
             // Verify
             cycleMock.VerifySet(x => x.CycleID = It.IsAny<String>(), Times.Once);
             databaseMock.Verify(x => x.PutCycle(cycleMock.Object), Times.Once);
+            databaseMock.Verify(x => x.GetCyclesCount(), Times.Once);
 
             cycleMock.VerifyNoOtherCalls();
             databaseMock.VerifyNoOtherCalls();
@@ -365,49 +385,65 @@ namespace UnitTests
         [TestMethod]
         public void TestSwapLessonNewIncomplete()
         {
-            LanguageCycle example = LanguageCycle.LanguageCycleExample();
-            UserProgramItem item1 = new UserProgramItem(example.CycleID, example.PlanNext());
-            UserProgramItem item2 = new UserProgramItem(example.CycleID, example.PlanNext());
-            UserProgramItem item3 = new UserProgramItem(example.CycleID, example.PlanNext());
-            cycle = new UserCycle().AssignUser("test").AssignProgram(new List<UserProgramItem>() { item1, item2 });
-            databaseMock.Object.PutCycle(cycle);
-            CollectionAssert.AreEqual(new List<UserProgramItem>() { item1, item2 }, cycle.UserProgramItems);
+            // Init
+            databaseMock.Setup(x => x.GetUserIncompleteCycle("test")).Returns((IncompleteUserCycle)null);
+            databaseMock.Setup(x => x.GetCyclesCount()).Returns(0);
+            databaseMock.Setup(x => x.PutCycle(newIncomplete)).Verifiable();
+            databaseMock.Setup(x => x.UpdateCycle(cycle1)).Verifiable();
+            databaseMock.Setup(x => x.UpdateCycle(newIncomplete)).Verifiable();
+            cacheMock.Setup(x => x.InsertToCache(cycle1)).Verifiable();
 
-            service.SwapLesson(cycle, item3);
+            // Preverify
+            CollectionAssert.AreEqual(new List<UserProgramItem>() { item1, item2 }, cycle1.UserProgramItems);
 
-            CollectionAssert.AreEqual(new List<UserProgramItem>() { item3, item1 }, cycle.UserProgramItems);
+            // Test
+            service.SwapLesson(cycle1, item3);
 
-            IncompleteUserCycle incompleteCycle = new IncompleteUserCycle("test");
-            incompleteCycle.AddLesson(item2);
-            incompleteCycle.CycleID = "cycle1";
-            Assert.IsTrue(databaseMock.Object.IsInDatabase(incompleteCycle));
+            // Verify
+            CollectionAssert.AreEqual(new List<UserProgramItem>() { item3, item1 }, cycle1.UserProgramItems);
+            CollectionAssert.AreEqual(new List<UserProgramItem>() { item2 }, newIncomplete.UserProgramItems);
+
+            databaseMock.Verify(x => x.GetUserIncompleteCycle("test"), Times.Once);
+            databaseMock.Verify(x => x.GetCyclesCount(), Times.Once);
+            databaseMock.Verify(x => x.PutCycle(newIncomplete), Times.Once);
+            databaseMock.Verify(x => x.UpdateCycle(cycle1), Times.Once);
+            databaseMock.Verify(x => x.UpdateCycle(newIncomplete), Times.Once);
+            cacheMock.Verify(x => x.InsertToCache(cycle1), Times.Once);
+
+            databaseMock.VerifyNoOtherCalls();
+            cacheMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
         public void TestSwapLessonExistingIncomplete()
         {
-            LanguageCycle example = LanguageCycle.LanguageCycleExample();
-            UserProgramItem item1 = new UserProgramItem(example.CycleID, example.PlanNext());
-            UserProgramItem item2 = new UserProgramItem(example.CycleID, example.PlanNext());
-            UserProgramItem item3 = new UserProgramItem(example.CycleID, example.PlanNext());
-            UserProgramItem item4 = new UserProgramItem(example.CycleID, example.PlanNext());
-            cycle = new UserCycle().AssignUser("test").AssignProgram(new List<UserProgramItem>() { item1, item2 });
-            databaseMock.Object.PutCycle(cycle);
-            CollectionAssert.AreEqual(new List<UserProgramItem>() { item1, item2 }, cycle.UserProgramItems);
-            IncompleteUserCycle incompleteCycle = new IncompleteUserCycle("test");
-            incompleteCycle.AddLesson(item4);
-            databaseMock.Object.PutCycle(incompleteCycle);
+            // Init
+            databaseMock.Setup(x => x.GetUserIncompleteCycle("test")).Returns(existingIncomplete);
+            databaseMock.Setup(x => x.UpdateCycle(cycle2)).Verifiable();
+            databaseMock.Setup(x => x.UpdateCycle(newIncomplete)).Verifiable();
 
-            service.SwapLesson(cycle, item3);
+            // Preverify
+            CollectionAssert.AreEqual(new List<UserProgramItem>() { item1, item2 }, cycle2.UserProgramItems);
+            CollectionAssert.AreEqual(new List<UserProgramItem>() { item4 }, existingIncomplete.UserProgramItems);
 
-            CollectionAssert.AreEqual(new List<UserProgramItem>() { item3, item1 }, cycle.UserProgramItems);
-            CollectionAssert.AreEqual(new List<UserProgramItem>() { item2, item4 }, incompleteCycle.UserProgramItems);
+            // Test
+            service.SwapLesson(cycle2, item3);
+
+            // Verify
+            CollectionAssert.AreEqual(new List<UserProgramItem>() { item3, item1 }, cycle2.UserProgramItems);
+            CollectionAssert.AreEqual(new List<UserProgramItem>() { item2, item4 }, existingIncomplete.UserProgramItems);
+
+            databaseMock.Verify(x => x.GetUserIncompleteCycle("test"), Times.Once);
+            databaseMock.Verify(x => x.UpdateCycle(cycle2), Times.Once);
+            databaseMock.Verify(x => x.UpdateCycle(existingIncomplete), Times.Once);
+
+            databaseMock.VerifyNoOtherCalls();
+            cacheMock.VerifyNoOtherCalls();
         }
 
         [TestCleanup]
         public void TestCleanUp()
         {
-            databaseMock = null;
             CycleService.DeallocateInstance();
             Directory.Delete("./cycles", true);
         }
