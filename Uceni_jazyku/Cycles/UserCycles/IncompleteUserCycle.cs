@@ -18,7 +18,6 @@ namespace Uceni_jazyku.Cycles.UserCycles
         {
             this.Username = username;
             this.State = UserCycleState.Inactive;
-            this.UserProgramItems = new List<UserProgramItem>();
             isUserAssigned = true;
         }
 

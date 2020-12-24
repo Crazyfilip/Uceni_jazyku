@@ -20,9 +20,6 @@ namespace UnitTests
         [TestInitialize]
         public void Init()
         {
-            Directory.CreateDirectory("./users");
-            Directory.CreateDirectory("./cycles/service");
-
             accountMock = new Mock<UserAccount>();
             repositoryMock = new Mock<IUserAccountRepository>();
             cycleServiceMock = new Mock<CycleService>();
@@ -136,13 +133,6 @@ namespace UnitTests
             repositoryMock.VerifyNoOtherCalls();
             accountMock.VerifyNoOtherCalls();
             cycleServiceMock.VerifyNoOtherCalls();
-        }
-
-        [TestCleanup]
-        public void CleanUp()
-        {
-            Directory.Delete("./cycles", true);
-            Directory.Delete("./users", true);
         }
     }
 }

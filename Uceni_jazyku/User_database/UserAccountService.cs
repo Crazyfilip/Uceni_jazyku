@@ -14,12 +14,17 @@ namespace Uceni_jazyku.User_database
         private IUserAccountRepository userAccountRepository;
         private CycleService cycleService;
 
+        /// <summary>
+        /// This constructor calls UserAccountService(IUserAccountRepository, CycleService) with null values
+        /// </summary>
         public UserAccountService() : this(null, null) {}
 
         /// <summary>
-        /// 
+        /// Constructor of UserAccountService. When IUserAccountRepository or CycleService are not provided (null values)
+        /// it gets default instances for those.
         /// </summary>
-        /// <param name="repository"></param>
+        /// <param name="repository">object implementing IUserAccountRepository</param>
+        /// <param name="cycleService">instance of CycleService</param>
         public UserAccountService(IUserAccountRepository repository, CycleService cycleService)
         {
             userAccountRepository = repository ?? new UserAccountRepository();
