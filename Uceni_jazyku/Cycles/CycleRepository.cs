@@ -57,6 +57,8 @@ namespace Uceni_jazyku.Cycles
             Save();
         }
 
+        // TODO this method is used for generating cycleID so once generating will change remove this
+        [Obsolete]
         public int GetCyclesCount()
         {
             return database.Count;
@@ -74,19 +76,6 @@ namespace Uceni_jazyku.Cycles
                 database.Add(updatedCycle);
             }
             Save();
-        }
-
-        /// <summary>
-        /// Test if given cycle is present in database
-        /// </summary>
-        /// <param name="cycle">tested cycle</param>
-        /// <returns>true if cycle is present otherwise false</returns>
-        // TODO remove when tests will utilize moq
-        // method was added just for tests
-        [Obsolete]
-        public bool IsInDatabase(AbstractCycle cycle)
-        {
-            return database.Contains(cycle);
         }
 
         /// <summary>

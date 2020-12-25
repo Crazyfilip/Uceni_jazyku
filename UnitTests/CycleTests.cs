@@ -15,7 +15,10 @@ namespace UnitTests
         [TestMethod]
         public void TestUserCycleInitialization()
         {
+            // Test
             UserCycle cycle = new UserCycle();
+
+            // Verify
             Assert.AreEqual(UserCycleState.UnknownUser, cycle.State);
             Assert.IsNotNull(cycle.UserProgramItems);
             Assert.AreEqual(0, cycle.UserProgramItems.Count);
