@@ -13,15 +13,5 @@ namespace Uceni_jazyku.Cycles.Program
     [KnownType(typeof(LanguageProgramItem))]
     public abstract class ProgramItem
     {
-        [DataMember]
-        public bool Finished { get; protected set; }
-
-        /// <summary>
-        /// Set Finished flag to true
-        /// </summary>
-        public void Finish()
-        {
-            Finished = true;
-        }
     }
 }

@@ -16,6 +16,11 @@ namespace Uceni_jazyku.Cycles.Program
         [DataMember]
         public bool Planned { get; private set; }
 
+        [DataMember]
+        public virtual bool Finished { get; protected set; }
+
+        public LanguageProgramItem() { }
+
         public LanguageProgramItem(string lessonDescription)
         {
             Lesson = lessonDescription;
@@ -25,6 +30,14 @@ namespace Uceni_jazyku.Cycles.Program
         public void Plan()
         {
             Planned = true;
+        }
+
+        /// <summary>
+        /// Set Finished flag to true
+        /// </summary>
+        public void Finish()
+        {
+            Finished = true;
         }
 
         public override bool Equals(object obj)

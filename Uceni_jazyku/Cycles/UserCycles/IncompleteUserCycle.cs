@@ -18,7 +18,7 @@ namespace Uceni_jazyku.Cycles.UserCycles
         {
             this.Username = username;
             this.State = UserCycleState.Inactive;
-            isUserAssigned = true;
+            IsUserAssigned = true;
         }
 
         /// <summary>

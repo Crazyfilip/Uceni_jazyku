@@ -15,7 +15,9 @@ namespace Uceni_jazyku.Cycles.Program
         [DataMember]
         public string LanguageCycleRef { get; private set; }
         [DataMember]
-        public LanguageProgramItem LessonRef { get; private set; }
+        public virtual LanguageProgramItem LessonRef { get; private set; }
+
+        public UserProgramItem() { }
 
         /// <summary>
         /// Initialization of program item
@@ -25,7 +27,6 @@ namespace Uceni_jazyku.Cycles.Program
         {
             LanguageCycleRef = langCycleId;
             LessonRef = languageProgramItem;
-            Finished = false;
         }
     }
 }
