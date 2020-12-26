@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Uceni_jazyku.Cycles;
 using Uceni_jazyku.Cycles.LanguageCycles;
 using Uceni_jazyku.Cycles.Program;
@@ -12,10 +13,39 @@ namespace UnitTests
     [TestClass]
     public class CycleTests
     {
-        [TestMethod]
-        public void TestUserCycleInitialization()
+        UserCycle cycle;
+        UserCycle cycleNew, cycleActive, cycleInactive;
+        UserCycle cycleActiveWithProgram, cycleSwap;
+        List<UserProgramItem> userProgramItems, swappingList;
+        UserProgramItem item1, item2, item3;
+
+        [TestInitialize]
+        public void Init()
         {
+            userProgramItems = new List<UserProgramItem>();
+
+            cycle = new UserCycle();
+            cycleNew = new UserCycle().AssignUser("test");
+            cycleActive = new UserCycle().AssignUser("test").Activate();
+            cycleInactive = new UserCycle().AssignUser("test").Activate().Inactivate();
+            cycleActiveWithProgram = new UserCycle().AssignUser("test").AssignProgram(new List<UserProgramItem>()).Activate();
+
+            LanguageCycle example = LanguageCycle.LanguageCycleExample();
+            item1 = new UserProgramItem(example.CycleID, example.PlanNext());
+            item2 = new UserProgramItem(example.CycleID, example.PlanNext());
+            item3 = new UserProgramItem(example.CycleID, example.PlanNext());
+
+            swappingList = new List<UserProgramItem>() { item1, item2 };
+            cycleSwap = new UserCycle().AssignProgram(swappingList);
+        }
+
+        [TestMethod]
+        public void TestUserCycleConstructorPositive()
+        {
+            // Test
             UserCycle cycle = new UserCycle();
+
+            // Verify
             Assert.AreEqual(UserCycleState.UnknownUser, cycle.State);
             Assert.IsNotNull(cycle.UserProgramItems);
             Assert.AreEqual(0, cycle.UserProgramItems.Count);
@@ -25,116 +55,228 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestAssignUser()
+        public void TestAssignUserPositive()
         {
-            UserCycle cycle = new UserCycle().AssignUser("test");
-            Assert.AreEqual(UserCycleState.New, cycle.State);
-            Assert.AreEqual("test", cycle.Username);
+            // Test
+            UserCycle result = cycle.AssignUser("test");
 
-            Exception exception = Assert.ThrowsException<Exception>(() => cycle.AssignUser("user"));
+            // Verify
+            Assert.AreSame(cycle, result);
+            Assert.AreEqual("test", result.Username);
+            Assert.AreEqual(UserCycleState.New, result.State);
+            Assert.IsTrue(result.IsUserAssigned);
+        }
+
+        [TestMethod]
+        public void TestAssignUserNegative()
+        {
+            // Init
+            Mock<UserCycle> cycleMock = new Mock<UserCycle>();
+            cycleMock.Setup(x => x.AssignUser("user")).CallBase();
+            cycleMock.SetupGet(x => x.IsUserAssigned).Returns(true);
+
+            // Test & Verify
+            Exception exception = Assert.ThrowsException<Exception>(() => cycleMock.Object.AssignUser("user"));
             Assert.AreEqual("username already assigned", exception.Message);
+
+            cycleMock.Verify(x => x.AssignUser("user"), Times.Once);
+            cycleMock.Verify(x => x.IsUserAssigned, Times.Once);
+            
+            cycleMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
-        public void TestAssignProgram()
+        public void TestAssignProgramPositive()
         {
-            List<UserProgramItem> userProgramItems = new List<UserProgramItem>();
-            UserCycle cycle = new UserCycle().AssignProgram(userProgramItems);
+            // Test
+            UserCycle result = cycle.AssignProgram(userProgramItems);
 
-            CollectionAssert.AreEqual(userProgramItems, cycle.UserProgramItems);
+            // Verify
+            Assert.AreSame(cycle, result);
+            CollectionAssert.AreEqual(userProgramItems, result.UserProgramItems);
+            Assert.IsTrue(result.IsProgramAssigned);
+        }
 
-            Exception exception = Assert.ThrowsException<Exception>(() => cycle.AssignProgram(userProgramItems));
+        [TestMethod]
+        public void TestAssignProgramNegative()
+        {
+            // Init
+            Mock<UserCycle> cycleMock = new Mock<UserCycle>();
+            cycleMock.Setup(x => x.AssignProgram(userProgramItems)).CallBase();
+            cycleMock.SetupGet(x => x.IsProgramAssigned).Returns(true);
+
+            // Test & Verify
+            Exception exception = Assert.ThrowsException<Exception>(() => cycleMock.Object.AssignProgram(userProgramItems));
             Assert.AreEqual("cycle program already assigned", exception.Message);
+
+            cycleMock.Verify(x => x.AssignProgram(userProgramItems), Times.Once);
+            cycleMock.Verify(x => x.IsProgramAssigned, Times.Once);
+
+            cycleMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
-        public void TestActivateNew()
+        public void TestActivatePositiveNew()
         {
-            UserCycle cycle = new UserCycle().AssignUser("test");
-            Assert.AreEqual(UserCycleState.New, cycle.State);
+            // Preverify
+            Assert.AreEqual(UserCycleState.New, cycleNew.State);
 
-            cycle.Activate();
+            // Test
+            UserCycle result = cycleNew.Activate();
 
-            Assert.AreEqual(UserCycleState.Active, cycle.State);
+            // Verify
+            Assert.AreSame(cycleNew, result);
+            Assert.AreEqual(UserCycleState.Active, cycleNew.State);
         }
 
         [TestMethod]
-        public void TestActivateInactive()
+        public void TestActivatePositiveInactive()
         {
-            UserCycle cycle = new UserCycle().AssignUser("test").Activate().Inactivate();
-            Assert.AreEqual(UserCycleState.Inactive, cycle.State);
+            // Preverify
+            Assert.AreEqual(UserCycleState.Inactive, cycleInactive.State);
 
-            cycle.Activate();
+            // Test
+            UserCycle result = cycleInactive.Activate();
 
-            Assert.AreEqual(UserCycleState.Active, cycle.State);
+            // Verify
+            Assert.AreSame(cycleInactive, result);
+            Assert.AreEqual(UserCycleState.Active, cycleInactive.State);
+        }
+
+        [DataRow(UserCycleState.UnknownUser)]
+        [DataRow(UserCycleState.Active)]
+        [DataRow(UserCycleState.Finished)]
+        [DataTestMethod]
+        public void TestActivateNegative(UserCycleState state)
+        {
+            // Init
+            Mock<UserCycle> cycleMock = new Mock<UserCycle>();
+            cycleMock.Setup(x => x.Activate()).CallBase();
+            cycleMock.SetupGet(x => x.State).Returns(state);
+
+            // Test & Verify
+            Exception exception = Assert.ThrowsException<Exception>(() => cycleMock.Object.Activate());
+            Assert.AreEqual("Cycle with state " + state + " cannot be activated", exception.Message);
+
+            cycleMock.Verify(x => x.Activate(), Times.Once);
+            cycleMock.Verify(x => x.State, Times.Exactly(3));
+
+            cycleMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
-        public void TestActivateNegative()
+        public void TestInactivatePositive()
         {
-            Exception exception = Assert.ThrowsException<Exception>(() => new UserCycle().Activate());
-            Assert.AreEqual("Cycle with state " + UserCycleState.UnknownUser + " cannot be activated", exception.Message);
+            // Preverify
+            Assert.AreEqual(UserCycleState.Active, cycleActive.State);
+
+            // Test
+            UserCycle result = cycleActive.Inactivate();
+
+            // Verify
+            Assert.AreSame(cycleActive, result);
+            Assert.AreEqual(UserCycleState.Inactive, cycleActive.State);
+        }
+
+        [DataRow(UserCycleState.UnknownUser)]
+        [DataRow(UserCycleState.New)]
+        [DataRow(UserCycleState.Inactive)]
+        [DataRow(UserCycleState.Finished)]
+        [DataTestMethod]
+        public void TestInactivateNegative(UserCycleState state)
+        {
+            // Init
+            Mock<UserCycle> cycleMock = new Mock<UserCycle>();
+            cycleMock.Setup(x => x.Inactivate()).CallBase();
+            cycleMock.SetupGet(x => x.State).Returns(state);
+
+            // Test & Verify
+            Exception exception = Assert.ThrowsException<Exception>(() => cycleMock.Object.Inactivate());
+            Assert.AreEqual("Cycle with state " + state + " cannot be inactivated", exception.Message);
+
+            cycleMock.Verify(x => x.Inactivate(), Times.Once);
+            cycleMock.Verify(x => x.State, Times.Exactly(2));
+
+            cycleMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
-        public void TestInactivate()
+        public void TestFinishPositive()
         {
-            UserCycle cycle = new UserCycle().AssignUser("test").Activate();
-            Assert.AreEqual(UserCycleState.Active, cycle.State);
+            // Preverify
+            Assert.AreEqual(UserCycleState.Active, cycleActiveWithProgram.State);
 
-            cycle.Inactivate();
+            // Test
+            cycleActiveWithProgram.Finish();
 
-            Assert.AreEqual(UserCycleState.Inactive, cycle.State);
+            // Verify
+            Assert.AreEqual(UserCycleState.Finished, cycleActiveWithProgram.State);
         }
 
-        [TestMethod]
-        public void TestInactivateNegative()
+        [DataRow(UserCycleState.UnknownUser)]
+        [DataRow(UserCycleState.New)]
+        [DataRow(UserCycleState.Inactive)]
+        [DataRow(UserCycleState.Finished)]
+        [DataTestMethod]
+        public void TestFinishNegativeIncorrectState(UserCycleState state)
         {
-            Exception exception = Assert.ThrowsException<Exception>(() => new UserCycle().Inactivate());
-            Assert.AreEqual("Cycle with state " + UserCycleState.UnknownUser + " cannot be inactivated", exception.Message);
-        }
+            // Init
+            Mock<UserCycle> cycleMock = new Mock<UserCycle>();
+            cycleMock.Setup(x => x.Finish()).CallBase();
+            cycleMock.SetupGet(x => x.State).Returns(state);
 
-        [TestMethod]
-        public void TestFinish()
-        {
-            UserCycle cycle = new UserCycle().AssignUser("test").Activate();
-            Assert.AreEqual(UserCycleState.Active, cycle.State);
+            // Test & Verify
+            Exception exception = Assert.ThrowsException<Exception>(() => cycleMock.Object.Finish());
+            Assert.AreEqual("Cycle with state " + state + " cannot be finished", exception.Message);
 
-            cycle.Finish();
+            cycleMock.Verify(x => x.Finish(), Times.Once);
+            cycleMock.Verify(x => x.State, Times.Exactly(2));
 
-            Assert.AreEqual(UserCycleState.Finished, cycle.State);
-        }
-
-        [TestMethod]
-        public void TestFinishNegativeFromIncorrectState()
-        {
-            Exception exception = Assert.ThrowsException<Exception>(() => new UserCycle().Finish());
-            Assert.AreEqual("Cycle with state " + UserCycleState.UnknownUser + " cannot be finished", exception.Message);
+            cycleMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
         public void TestFinishNegativeUnfinishedLesson()
         {
-            LanguageCycle example = LanguageCycle.LanguageCycleExample();
-            UserCycle cycle = new UserCycle().AssignUser("test").AssignProgram(new List<UserProgramItem>() { new UserProgramItem(example.CycleID, example.PlanNext()) }).Activate();
+            // Init
+            Mock<LanguageProgramItem> languageItemMock = new Mock<LanguageProgramItem>();
+            languageItemMock.SetupGet(x => x.Finished).Returns(false);
 
-            Exception exception = Assert.ThrowsException<Exception>(() => cycle.Finish());
+            Mock<UserProgramItem> userItemMock = new Mock<UserProgramItem>();
+            userItemMock.SetupGet(x => x.LessonRef).Returns(languageItemMock.Object);
+
+            List<UserProgramItem> listMock = new List<UserProgramItem>() { userItemMock.Object };
+            Mock<UserCycle> cycleMock = new Mock<UserCycle>();
+            cycleMock.Setup(x => x.Finish()).CallBase();
+            cycleMock.SetupGet(x => x.State).Returns(UserCycleState.Active);
+            cycleMock.SetupGet(x => x.UserProgramItems).Returns(listMock);
+
+            // Test & Verify
+            Exception exception = Assert.ThrowsException<Exception>(() => cycleMock.Object.Finish());
             Assert.AreEqual("Cycle doesn't have finished all lesson so can't be finished", exception.Message);
+
+            cycleMock.Verify(x => x.Finish(), Times.Once);
+            cycleMock.Verify(x => x.State, Times.Once);
+            cycleMock.Verify(x => x.UserProgramItems, Times.Once);
+            userItemMock.Verify(x => x.LessonRef, Times.Once);
+            languageItemMock.Verify(x => x.Finished, Times.Once);
+
+            cycleMock.VerifyNoOtherCalls();
+            userItemMock.VerifyNoOtherCalls();
+            languageItemMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
-        public void TestSwapLesson()
+        public void TestSwapLessonPositive()
         {
-            LanguageCycle example = LanguageCycle.LanguageCycleExample();
-            UserProgramItem item1 = new UserProgramItem(example.CycleID, example.PlanNext());
-            UserProgramItem item2 = new UserProgramItem(example.CycleID, example.PlanNext());
-            UserProgramItem item3 = new UserProgramItem(example.CycleID, example.PlanNext());
-            UserCycle cycle = new UserCycle().AssignUser("test").AssignProgram(new List<UserProgramItem>() { item1, item2 });
-            CollectionAssert.AreEqual(new List<UserProgramItem>() { item1, item2 }, cycle.UserProgramItems);
+            // Preverify
+            CollectionAssert.AreEqual(new List<UserProgramItem>() { item1, item2 }, cycleSwap.UserProgramItems);
 
-            UserProgramItem result = cycle.SwapLesson(item3);
+            // Test
+            UserProgramItem result = cycleSwap.SwapLesson(item3);
 
-            CollectionAssert.AreEqual(new List<UserProgramItem>() { item3, item1 }, cycle.UserProgramItems);
+            // Verify
+            CollectionAssert.AreEqual(new List<UserProgramItem>() { item3, item1 }, cycleSwap.UserProgramItems);
             Assert.AreEqual(item2, result);
         }
     }

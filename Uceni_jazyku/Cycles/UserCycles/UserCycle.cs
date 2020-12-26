@@ -20,26 +20,25 @@ namespace Uceni_jazyku.Cycles
     public class UserCycle : AbstractCycle
     {
         [DataMember]
-        public string Username { get; protected set; }
+        public virtual string Username { get; protected set; }
 
         [DataMember]
-        public UserCycleState State { get; protected set; }
+        public virtual UserCycleState State { get; protected set; }
 
         [DataMember]
-        public List<UserProgramItem> UserProgramItems { get; protected set; } = new List<UserProgramItem>();
+        public virtual List<UserProgramItem> UserProgramItems { get; protected set; } = new List<UserProgramItem>();
 
         [DataMember]
-        protected bool isUserAssigned = false;
+        public virtual bool IsUserAssigned { get; protected set; }
 
         [DataMember]
-        protected bool isProgramAssigned = false;
+        public virtual bool IsProgramAssigned { get; protected set; }
 
-        public UserCycle() => State = UserCycleState.UnknownUser;
+        public UserCycle() { }
 
         public override void Update()
         {
             UserProgramItem item = UserProgramItems[FinishedEvents++];
-            item.Finish();
             item.LessonRef.Finish();
         }
 
@@ -54,13 +53,13 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         /// <param name="name">user's name</param>
         /// <returns>this instance</returns>
-        public UserCycle AssignUser(string name)
+        public virtual UserCycle AssignUser(string name)
         {
-            if (!isUserAssigned)
+            if (!IsUserAssigned)
             {
                 Username = name;
                 State = UserCycleState.New;
-                isUserAssigned = true;
+                IsUserAssigned = true;
                 return this;
             }
             else
@@ -74,12 +73,12 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         /// <param name="userProgramItems"></param>
         /// <returns></returns>
-        public UserCycle AssignProgram(List<UserProgramItem> userProgramItems)
+        public virtual UserCycle AssignProgram(List<UserProgramItem> userProgramItems)
         {
-            if (!isProgramAssigned)
+            if (!IsProgramAssigned)
             {
                 this.UserProgramItems = userProgramItems;
-                isProgramAssigned = true;
+                IsProgramAssigned = true;
                 return this;
             }
             else
@@ -93,7 +92,7 @@ namespace Uceni_jazyku.Cycles
         /// Only new or inactive cycle is possible to activate
         /// </summary>
         /// <returns>this instance</returns>
-        public UserCycle Activate()
+        public virtual UserCycle Activate()
         {
             if (State == UserCycleState.New || State == UserCycleState.Inactive)
             {
@@ -109,7 +108,7 @@ namespace Uceni_jazyku.Cycles
         /// Only active cycle is possible to inactivate
         /// </summary>
         /// <returns>this instance</returns>
-        public UserCycle Inactivate()
+        public virtual UserCycle Inactivate()
         {
             if (State == UserCycleState.Active)
             { 
@@ -125,14 +124,13 @@ namespace Uceni_jazyku.Cycles
         /// Only active cycle with all lessons finished is possible to finish
         /// </summary>
         /// <returns>this instance</returns>
-        public UserCycle Finish()
+        public virtual void Finish()
         {
             if (State == UserCycleState.Active)
             {
                 if (UserProgramItems.TrueForAll(x => x.LessonRef.Finished))
                 {
                     State = UserCycleState.Finished;
-                    return this;
                 }
                 else
                     throw new Exception("Cycle doesn't have finished all lesson so can't be finished");
@@ -166,8 +164,8 @@ namespace Uceni_jazyku.Cycles
                 && (this.FinishedEvents == cycle.FinishedEvents)
                 && (this.State == cycle.State)
                 && (this.Username == cycle.Username)
-                && (this.isUserAssigned == cycle.isUserAssigned)
-                && (this.isProgramAssigned == cycle.isProgramAssigned)
+                && (this.IsUserAssigned == cycle.IsUserAssigned)
+                && (this.IsProgramAssigned == cycle.IsProgramAssigned)
                 && (this.UserProgramItems.SequenceEqual(cycle.UserProgramItems));
             return result;
         }
@@ -178,8 +176,8 @@ namespace Uceni_jazyku.Cycles
                 + FinishedEvents.GetHashCode()
                 + State.GetHashCode()
                 + Username.GetHashCode()
-                + isUserAssigned.GetHashCode()
-                + isProgramAssigned.GetHashCode()
+                + IsUserAssigned.GetHashCode()
+                + IsProgramAssigned.GetHashCode()
                 + UserProgramItems.Sum(x => x.GetHashCode());
         }
     }

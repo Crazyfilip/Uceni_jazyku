@@ -27,7 +27,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestAddUserAccount()
+        public void TestAddUserAccountPostive()
         {
             // Test
             userAccountRepository.AddUserAccount(userAccount1);

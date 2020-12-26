@@ -8,16 +8,17 @@ namespace User_interface
     public partial class NewAccount1 : Form
     {
         UserCycle userCycle;
+        UserAccountService userAccountService;
 
-        public NewAccount1(UserCycle userCycle)
+        public NewAccount1(UserCycle userCycle, UserAccountService userAccountService)
         {
             InitializeComponent();
             this.userCycle = userCycle;
+            this.userAccountService = userAccountService;
         }
 
         private void buttonContinue_Click(object sender, EventArgs e)
         {
-            UserAccountService userAccountService = UserAccountService.GetInstance();
             if (userAccountService.CreateUser(textboxName.Text, textboxPassword.Text))
             {
                 MessageBox.Show("Účet vytvořen. Nyní si nastavíte jazykový/-é kurz/-y");

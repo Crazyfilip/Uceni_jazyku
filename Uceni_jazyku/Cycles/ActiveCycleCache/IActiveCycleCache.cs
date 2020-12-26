@@ -3,7 +3,7 @@
     /// <summary>
     /// Interface for operation with cache for user's active cycle
     /// </summary>
-    interface IActiveCycleCache
+    public interface IActiveCycleCache
     {
         /// <summary>
         /// Empty the cache

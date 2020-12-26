@@ -10,9 +10,9 @@ namespace Uceni_jazyku.User_database
     /// </summary>
     public class UserAccount
     {
-        public string username { get; set; }
-        public string loginCredential { get; set; }
+        public virtual string username { get; set; }
+        public virtual string loginCredential { get; set; }
 
-        public string salt { get; set; }
+        public virtual string salt { get; set; }
     }
 }

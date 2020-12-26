@@ -19,8 +19,9 @@ namespace Uceni_jazyku.Cycles
     {
         [DataMember]
         public int FinishedEvents { get; protected set; }
+
         [DataMember]
-        public string CycleID { get; set; }
+        public virtual string CycleID { get; set; }
 
         /// <summary>
         /// Update cycle when user did progress in learning => set first unfinished lesson as finished
