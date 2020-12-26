@@ -9,9 +9,9 @@ Obsah pull requestu: -- Place holder --
 - [ ] Dokumentační komentáře
 - [ ] plánované změny implementovány
 - [ ] Testy pro novou funkcionalitu
-- [ ] Dokumentováno na google disku
+- [ ] Dokumentováno na google disku (link v komentářích)
 
-## Ready to review stage checklist:
+## Ready for review stage checklist:
 
 - [ ] Branch je up-to-date s bázovou branch-í
 - [ ] Sestavitelnost projektu (v CircleCI dotnet build kontrola prošla)
