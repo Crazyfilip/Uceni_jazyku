@@ -95,7 +95,7 @@ namespace UnitTests
 
 
         [TestMethod]
-        public void TestLoginNotExistingAccount()
+        public void TestLoginNegativeNotExistingAccount()
         {
             // Init
             repositoryMock.Setup(x => x.GetUserAccount("fail")).Returns((UserAccount)null);
@@ -113,7 +113,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestLoginIncorrectCredentials()
+        public void TestLoginNegativeIncorrectCredentials()
         {
             // Init
             repositoryMock.Setup(x => x.GetUserAccount("test")).Returns(accountMock.Object);

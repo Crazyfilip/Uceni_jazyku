@@ -40,7 +40,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestUserCycleInitialization()
+        public void TestUserCycleConstructorPositive()
         {
             // Test
             UserCycle cycle = new UserCycle();
@@ -201,7 +201,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestFinish()
+        public void TestFinishPositive()
         {
             // Preverify
             Assert.AreEqual(UserCycleState.Active, cycleActiveWithProgram.State);
@@ -267,7 +267,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestSwapLesson()
+        public void TestSwapLessonPositive()
         {
             // Preverify
             CollectionAssert.AreEqual(new List<UserProgramItem>() { item1, item2 }, cycleSwap.UserProgramItems);

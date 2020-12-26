@@ -81,7 +81,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestGetUserCycleCreateNew()
+        public void TestGetUserCyclePositiveCreateNew()
         {
             // Init
             UserCycle userCycle = new UserCycle().AssignUser("test"); // TODO should be outside of test
@@ -106,7 +106,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestGetUserCycleFromInactive()
+        public void TestGetUserCyclePositiveFromInactive()
         {
             // Init
             Mock<UserCycle> cycleMock = new Mock<UserCycle>();
@@ -170,7 +170,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestGetNewCycle()
+        public void TestGetNewCyclePositive()
         {
             // Init
             databaseMock.Setup(x => x.PutCycle(It.IsAny<UserCycle>())).Verifiable(); 
@@ -189,7 +189,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestActivateNewCycle()
+        public void TestActivatePositiveNewCycle()
         {
             //Init
             Mock<UserCycle> cycleMock = new Mock<UserCycle>();
@@ -220,7 +220,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestActivateInactiveCycle()
+        public void TestActivatePositiveInactiveCycle()
         {
             // Init
             Mock<UserCycle> cycleMock = new Mock<UserCycle>();
@@ -254,12 +254,12 @@ namespace UnitTests
             // Init
             Mock<UserCycle> cycleMock = new Mock<UserCycle>();
             cycleMock.SetupGet(x => x.State).Returns(incorrectState);
-            cycleMock.Setup(x => x.Activate()).CallBase();
+            cycleMock.Setup(x => x.Activate()).Throws<Exception>();
 
             // Test & Verify
             Assert.ThrowsException<Exception>(() => service.Activate(cycleMock.Object));
 
-            cycleMock.Verify(x => x.State, Times.Exactly(4));
+            cycleMock.Verify(x => x.State, Times.Once);
             cycleMock.Verify(x => x.Activate(), Times.Once);
 
             cycleMock.VerifyNoOtherCalls();
@@ -291,22 +291,16 @@ namespace UnitTests
             cacheMock.VerifyNoOtherCalls();
         }
 
-        [DataRow(UserCycleState.UnknownUser)]
-        [DataRow(UserCycleState.New)]
-        [DataRow(UserCycleState.Inactive)]
-        [DataRow(UserCycleState.Finished)]
-        [DataTestMethod]
-        public void TestInactivateNegative(UserCycleState incorrectState)
+        [TestMethod]
+        public void TestInactivateNegative()
         {
             // Init
             Mock<UserCycle> cycleMock = new Mock<UserCycle>();
-            cycleMock.SetupGet(x => x.State).Returns(incorrectState);
-            cycleMock.Setup(x => x.Inactivate()).CallBase();
+            cycleMock.Setup(x => x.Inactivate()).Throws<Exception>();
 
             // Test & Verify
             Assert.ThrowsException<Exception>(() => service.Inactivate(cycleMock.Object));
 
-            cycleMock.Verify(x => x.State, Times.Exactly(2));
             cycleMock.Verify(x => x.Inactivate(), Times.Once);
 
             cycleMock.VerifyNoOtherCalls();
@@ -315,7 +309,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestFinishCorrectStateFinishedLessons()
+        public void TestFinishPositive()
         {
             // Init
             Mock<UserCycle> cycleMock = new Mock<UserCycle>();
@@ -336,22 +330,16 @@ namespace UnitTests
             cacheMock.VerifyNoOtherCalls();
         }
 
-        [DataRow(UserCycleState.UnknownUser)]
-        [DataRow(UserCycleState.New)]
-        [DataRow(UserCycleState.Inactive)]
-        [DataRow(UserCycleState.Finished)]
-        [DataTestMethod]
-        public void TestFinishIncorrectState(UserCycleState incorrectState)
+        [TestMethod]
+        public void TestFinishNegative()
         {
             // Init
             Mock<UserCycle> cycleMock = new Mock<UserCycle>();
-            cycleMock.SetupGet(x => x.State).Returns(incorrectState);
-            cycleMock.Setup(x => x.Finish()).CallBase();
+            cycleMock.Setup(x => x.Finish()).Throws<Exception>();
 
             // Test & Verify
             Assert.ThrowsException<Exception>(() => service.Finish(cycleMock.Object));
 
-            cycleMock.Verify(x => x.State, Times.Exactly(2));
             cycleMock.Verify(x => x.Finish(), Times.Once);
 
             cycleMock.VerifyNoOtherCalls();
@@ -362,7 +350,7 @@ namespace UnitTests
         // TODO TestFinishUnfinishedLesson
 
         [TestMethod]
-        public void TestRegisterCycle()
+        public void TestRegisterCyclePositive()
         {
             // Init
             Mock<UserCycle> cycleMock = new Mock<UserCycle>();
@@ -383,7 +371,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestSwapLessonNewIncomplete()
+        public void TestSwapLessonPositiveNewIncomplete()
         {
             // Init
             databaseMock.Setup(x => x.GetUserIncompleteCycle("test")).Returns((IncompleteUserCycle)null);
@@ -415,7 +403,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestSwapLessonExistingIncomplete()
+        public void TestSwapLessonPositiveExistingIncomplete()
         {
             // Init
             databaseMock.Setup(x => x.GetUserIncompleteCycle("test")).Returns(existingIncomplete);
