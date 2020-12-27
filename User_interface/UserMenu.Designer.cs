@@ -36,15 +36,16 @@
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripMenuItem();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.lessonLink = new System.Windows.Forms.LinkLabel();
             this.label1 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
             this.Menu.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonLogout
             // 
-            this.buttonLogout.Location = new System.Drawing.Point(77, 242);
+            this.buttonLogout.Location = new System.Drawing.Point(77, 312);
             this.buttonLogout.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonLogout.Name = "buttonLogout";
             this.buttonLogout.Size = new System.Drawing.Size(100, 35);
@@ -55,7 +56,7 @@
             // 
             // buttonExit
             // 
-            this.buttonExit.Location = new System.Drawing.Point(185, 242);
+            this.buttonExit.Location = new System.Drawing.Point(185, 312);
             this.buttonExit.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonExit.Name = "buttonExit";
             this.buttonExit.Size = new System.Drawing.Size(100, 35);
@@ -113,36 +114,52 @@
             this.toolStripMenuItem7.Size = new System.Drawing.Size(143, 26);
             this.toolStripMenuItem7.Text = "logout";
             // 
-            // tableLayoutPanel1
+            // lessonLink
             // 
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.label1);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(55, 73);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(250, 133);
-            this.tableLayoutPanel1.TabIndex = 5;
+            this.lessonLink.AutoSize = true;
+            this.lessonLink.Location = new System.Drawing.Point(77, 134);
+            this.lessonLink.Name = "lessonLink";
+            this.lessonLink.Size = new System.Drawing.Size(70, 20);
+            this.lessonLink.TabIndex = 5;
+            this.lessonLink.TabStop = true;
+            this.lessonLink.Text = "<lesson>";
             // 
             // label1
             // 
-            this.label1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(21, 23);
+            this.label1.Location = new System.Drawing.Point(77, 93);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(83, 20);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Další lekce:";
+            this.label1.Size = new System.Drawing.Size(80, 20);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "Další lekce";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(199, 93);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(99, 61);
+            this.button1.TabIndex = 7;
+            this.button1.Text = "TODO: Ukázat plán";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(94, 217);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(132, 20);
+            this.label2.TabIndex = 8;
+            this.label2.Text = "TODO: panel kurzu";
             // 
             // UserMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(379, 402);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.lessonLink);
             this.Controls.Add(this.Menu);
             this.Controls.Add(this.labelUser);
             this.Controls.Add(this.buttonExit);
@@ -153,8 +170,6 @@
             this.Text = "UserMenu";
             this.Menu.ResumeLayout(false);
             this.Menu.PerformLayout();
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -170,7 +185,9 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem5;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem6;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem7;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.LinkLabel lessonLink;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label2;
     }
 }
