@@ -191,7 +191,7 @@ namespace UnitTests
             cycleMock.SetupGet(x => x.State).Returns(state);
 
             // Test & Verify
-            Exception exception = Assert.ThrowsException<Exception>(() => cycleMock.Object.Inactivate());
+            IncorrectCycleStateException exception = Assert.ThrowsException<IncorrectCycleStateException>(() => cycleMock.Object.Inactivate());
             Assert.AreEqual("Cycle with state " + state + " cannot be inactivated", exception.Message);
 
             cycleMock.Verify(x => x.Inactivate(), Times.Once);

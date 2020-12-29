@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
@@ -16,6 +17,8 @@ namespace Uceni_jazyku.Cycles
     /// </summary>
     public class CycleService
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(CycleService));
+
         private static CycleService instance;
 
         private readonly ICycleRepository CycleRepository;
@@ -146,9 +149,17 @@ namespace Uceni_jazyku.Cycles
         /// <returns>updated cycle</returns>
         public UserCycle Inactivate(UserCycle cycle)
         {
-            cycle.Inactivate();
-            CycleRepository.UpdateCycle(cycle);
-            ActiveCycleCache.DropCache();
+            log.Info($"Inactivating cycle {cycle.CycleID}");
+            try
+            {
+                cycle.Inactivate();
+                CycleRepository.UpdateCycle(cycle);
+                ActiveCycleCache.DropCache();
+            } 
+            catch (IncorrectCycleStateException e)
+            {
+                log.Error($"Cycle {cycle.CycleID} wasn't inactivated", e);
+            }
             return cycle;
         }
 

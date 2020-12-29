@@ -100,7 +100,7 @@ namespace Uceni_jazyku.Cycles
                 return this;
             }
             else
-                throw new Exception("Cycle with state " + State + " cannot be activated");
+                throw new IncorrectCycleStateException("Cycle with state " + State + " cannot be activated");
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace Uceni_jazyku.Cycles
                 return this;
             }
             else
-                throw new Exception("Cycle with state " + State + " cannot be inactivated");
+                throw new IncorrectCycleStateException("Cycle with state " + State + " cannot be inactivated");
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace Uceni_jazyku.Cycles
                     throw new Exception("Cycle doesn't have finished all lesson so can't be finished");
             }
             else
-                throw new Exception("Cycle with state " + State + " cannot be finished");
+                throw new IncorrectCycleStateException("Cycle with state " + State + " cannot be finished");
         }
 
         /// <summary>

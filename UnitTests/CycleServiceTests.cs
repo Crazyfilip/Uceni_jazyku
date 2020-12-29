@@ -7,6 +7,8 @@ using Uceni_jazyku.Cycles.UserCycles;
 using Uceni_jazyku.Cycles.LanguageCycles;
 using System.Collections.Generic;
 using Moq;
+using log4net;
+using System.Reflection;
 
 namespace UnitTests
 {
@@ -22,6 +24,14 @@ namespace UnitTests
         UserCycle cycle1, cycle2;
         UserProgramItem item1, item2, item3, item4;
         IncompleteUserCycle newIncomplete, existingIncomplete;
+        static readonly Mock<ILog> log4netMock = new Mock<ILog>();
+
+        [ClassInitialize]
+        public static void ClassInit(TestContext testContext)
+        {
+            var field = typeof(CycleService).GetField("log", BindingFlags.Static | BindingFlags.NonPublic);
+            field.SetValue(null, log4netMock.Object);
+        }
 
         [TestInitialize]
         public void TestInitialization()
@@ -30,6 +40,7 @@ namespace UnitTests
             databaseMock = new Mock<ICycleRepository>();
             cacheMock = new Mock<IActiveCycleCache>();
             service = CycleService.GetInstance(databaseMock.Object, cacheMock.Object);
+            log4netMock.Reset();
 
             LanguageCycle example = LanguageCycle.LanguageCycleExample();
             item1 = new UserProgramItem(example.CycleID, example.PlanNext());
@@ -295,17 +306,25 @@ namespace UnitTests
         public void TestInactivateNegative()
         {
             // Init
+            string cycleId = "test";
+
             Mock<UserCycle> cycleMock = new Mock<UserCycle>();
-            cycleMock.Setup(x => x.Inactivate()).Throws<Exception>();
+            cycleMock.Setup(x => x.Inactivate()).Throws<IncorrectCycleStateException>();
+            cycleMock.SetupGet(x => x.CycleID).Returns(cycleId);
 
-            // Test & Verify
-            Assert.ThrowsException<Exception>(() => service.Inactivate(cycleMock.Object));
+            // Test 
+            UserCycle result = service.Inactivate(cycleMock.Object);
 
+            // Verify
             cycleMock.Verify(x => x.Inactivate(), Times.Once);
+            cycleMock.Verify(x => x.CycleID, Times.Exactly(2));
+            log4netMock.Verify(x => x.Info($"Inactivating cycle {cycleId}"), Times.Once);
+            log4netMock.Verify(x => x.Error($"Cycle {cycleId} wasn't inactivated", It.Is<Exception>(x => x is IncorrectCycleStateException)), Times.Once);
 
             cycleMock.VerifyNoOtherCalls();
             databaseMock.VerifyNoOtherCalls();
             cacheMock.VerifyNoOtherCalls();
+            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
