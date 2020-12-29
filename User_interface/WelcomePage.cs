@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using Uceni_jazyku.Cycles;
+using Uceni_jazyku.Cycles.Program;
 
 namespace User_interface
 {
@@ -17,7 +18,8 @@ namespace User_interface
         {
             InitializeComponent();
             userCycle = cycle;
-            labelWelcome.Text = labelWelcome.Text.Replace("<username>",cycle.Username);
+            labelWelcome.Text = labelWelcome.Text.Replace("<username>", cycle.Username);
+            lessonLink.Text = lessonLink.Text.Replace("<lesson>", ((UserProgramItem)cycle.GetNext()).LessonRef.Lesson);
         }
 
         private void buttonExit_Click(object sender, EventArgs e)
@@ -35,7 +37,6 @@ namespace User_interface
         {
             CycleService cycleService = CycleService.GetInstance();
             cycleService.Inactivate(userCycle);
-            // TODO get cycle in UnknownUser state from service
             UserCycle unknownUserCycle = new UserCycle();
             new LoginPage(unknownUserCycle).Show();
             Hide();
@@ -44,6 +45,11 @@ namespace User_interface
         private void linkLanguageSettings_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             new LanguageSettingPage().Show();
+        }
+
+        private void lessonLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            // TODO open test window
         }
     }
 }

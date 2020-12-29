@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using Uceni_jazyku.Cycles;
+using Uceni_jazyku.Cycles.Program;
 
 namespace User_interface
 {
@@ -12,6 +13,8 @@ namespace User_interface
         {
             InitializeComponent();
             this.userCycle = userCycle;
+            labelUser.Text = labelUser.Text.Replace("<username>", userCycle.Username);
+            lessonLink.Text = lessonLink.Text.Replace("<lesson>", ((UserProgramItem)userCycle.GetNext()).LessonRef.Lesson);
         }
 
         private void buttonLogout_Click(object sender, EventArgs e)
