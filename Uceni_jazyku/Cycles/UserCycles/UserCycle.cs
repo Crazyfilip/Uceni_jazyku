@@ -133,7 +133,7 @@ namespace Uceni_jazyku.Cycles
                     State = UserCycleState.Finished;
                 }
                 else
-                    throw new Exception("Cycle doesn't have finished all lesson so can't be finished");
+                    throw new Exception("Cycle doesn't have finished all lesson so can't be finished"); // TODO replace with more suitable exception type
             }
             else
                 throw new IncorrectCycleStateException("Cycle with state " + State + " cannot be finished");

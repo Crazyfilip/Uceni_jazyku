@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
@@ -13,6 +14,7 @@ namespace Uceni_jazyku.User_database
     /// </summary>
     public class UserAccountRepository : IUserAccountRepository
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(UserAccountRepository));
         private List<UserAccount> userDatabase = new List<UserAccount>();
         private string databasePath = "./users/accounts.txt";
 
@@ -24,12 +26,14 @@ namespace Uceni_jazyku.User_database
         {
             if (File.Exists(databasePath))
             {
+                log.Trace("Loading data from file");
                 var serializer = new DataContractSerializer(typeof(List<UserAccount>));
                 using XmlReader reader = XmlReader.Create(databasePath);
                 userDatabase = (List<UserAccount>)serializer.ReadObject(reader);
             }
             else
             {
+                log.Trace("Initializing new collection");
                 userDatabase = new List<UserAccount>();
             }
         }
@@ -46,17 +50,20 @@ namespace Uceni_jazyku.User_database
 
         public void AddUserAccount(UserAccount userAccount)
         {
+            log.Info("Adding user account to repository");
             userDatabase.Add(userAccount);
             SaveDatabase();
         }
 
         public UserAccount GetUserAccount(string username)
         {
+            log.Info($"Looking for account with username: {username}");
             return userDatabase.Find(x => x.username == username);
         }
 
         private void SaveDatabase()
         {
+            log.Trace("Saving repository to file");
             var serializer = new DataContractSerializer(typeof(List<UserAccount>));
             using XmlWriter writer = XmlWriter.Create(databasePath);
             serializer.WriteObject(writer, userDatabase);

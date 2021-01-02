@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Windows.Forms;
 using Uceni_jazyku.Cycles;
 using Uceni_jazyku.Cycles.Program;
@@ -7,6 +8,7 @@ namespace User_interface
 {
     public partial class WelcomePage : Form
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(WelcomePage));
         private UserCycle userCycle;
         
         public WelcomePage()
@@ -16,6 +18,7 @@ namespace User_interface
 
         public WelcomePage(UserCycle cycle)
         {
+            log.Info("test");
             InitializeComponent();
             userCycle = cycle;
             labelWelcome.Text = labelWelcome.Text.Replace("<username>", cycle.Username);

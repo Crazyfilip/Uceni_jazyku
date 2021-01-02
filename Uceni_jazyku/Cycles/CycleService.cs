@@ -70,6 +70,7 @@ namespace Uceni_jazyku.Cycles
         /// <returns>true if there is cached active cycle</returns>
         public bool UserActiveCycleExists()
         {
+            log.Info("Looking into cache if there is user active cycle present");
             return ActiveCycleCache.IsCacheFilled();
         }
 
@@ -79,6 +80,7 @@ namespace Uceni_jazyku.Cycles
         /// <returns>active cycle</returns>
         public UserCycle GetActiveCycle()
         {
+            log.Info("Retriving user active cycle from cache");
             return ActiveCycleCache.GetFromCache();
         }
 
@@ -90,19 +92,24 @@ namespace Uceni_jazyku.Cycles
         /// <returns>active cycle for user</returns>
         public virtual UserCycle GetUserCycle(string username)
         {
+            log.Info($"Getting cycle for user {username}");
+            log.Trace($"Looking if there is existing inactive cycle for user {username}");
             UserCycle result = CycleRepository.GetOldestUserInactiveCycle(username);
             if (result != null)
             {
+                log.Trace($"Obtained {result.CycleID}");
                  return Activate(result);
             }
             else
             {
+                log.Trace($"No cycle found, new must be created and activated");
                 return Activate(GetNewCycle(username));
             }
         }
 
         private string GenerateNewId()
         {
+            log.Trace("Generating cycleID");
             return "cycle" + CycleRepository.GetCyclesCount();
         }
         /// <summary>
@@ -112,12 +119,14 @@ namespace Uceni_jazyku.Cycles
         /// <returns>instance of UserNewCycle</returns>
         public UserCycle GetNewCycle(string username)
         {
+            log.Info($"Creating new cycle for user {username}");
             UserCycle newCycle = new UserCycle
             {
                 CycleID = GenerateNewId()
             }; 
             newCycle.AssignUser(username);
             CycleRepository.PutCycle(newCycle);
+            log.Trace($"New cycle created with id {newCycle.CycleID}");
             return newCycle;
         }
 
@@ -129,16 +138,25 @@ namespace Uceni_jazyku.Cycles
         /// <returns>updated cycle</returns>
         public UserCycle Activate(UserCycle cycle)
         {
+            log.Info($"Activating cycle {cycle.CycleID}");
             if (cycle.State == UserCycleState.New)
             {
+                log.Info($"Assigning program to cycle {cycle.CycleID}");
                 // TODO assign program from planner based on user model
                 LanguageCycle example = LanguageCycle.LanguageCycleExample();
                 RegisterCycle(example);
                 cycle.AssignProgram(new List<Program.UserProgramItem>() { new Program.UserProgramItem(example.CycleID, example.PlanNext())});
             }
-            cycle.Activate();
-            CycleRepository.UpdateCycle(cycle);
-            ActiveCycleCache.InsertToCache(cycle);
+            try
+            {
+                cycle.Activate();
+                CycleRepository.UpdateCycle(cycle);
+                ActiveCycleCache.InsertToCache(cycle);
+            }
+            catch (IncorrectCycleStateException e)
+            {
+                log.Warn($"Cycle {cycle.CycleID} wasn't activated", e);
+            }
             return cycle;
         }
 
@@ -158,7 +176,7 @@ namespace Uceni_jazyku.Cycles
             } 
             catch (IncorrectCycleStateException e)
             {
-                log.Error($"Cycle {cycle.CycleID} wasn't inactivated", e);
+                log.Warn($"Cycle {cycle.CycleID} wasn't inactivated", e);
             }
             return cycle;
         }
@@ -169,9 +187,21 @@ namespace Uceni_jazyku.Cycles
         /// <param name="cycle">cycle to finish</param>
         public void Finish(UserCycle cycle)
         {
-            cycle.Finish();
-            CycleRepository.UpdateCycle(cycle);
-            ActiveCycleCache.DropCache();
+            log.Info($"Finishing cycle {cycle.CycleID}");
+            try
+            {
+                cycle.Finish();
+                CycleRepository.UpdateCycle(cycle);
+                ActiveCycleCache.DropCache();
+            }
+            catch (IncorrectCycleStateException e)
+            {
+                log.Warn($"Cycle {cycle.CycleID} wasn't finished", e);
+            }
+            catch (Exception e)
+            {
+                log.Warn($"Cycle {cycle.CycleID} wasn't finished", e);
+            }
         }
 
         /// <summary>
@@ -180,7 +210,9 @@ namespace Uceni_jazyku.Cycles
         /// <param name="cycle">cycle to register</param>
         public void RegisterCycle(AbstractCycle cycle)
         {
+            log.Info("Registering cycle");
             cycle.CycleID = GenerateNewId();
+            log.Trace($"Registered cycle got id {cycle.CycleID}");
             CycleRepository.PutCycle(cycle);
         }
 
@@ -191,15 +223,19 @@ namespace Uceni_jazyku.Cycles
         /// <param name="item">lesson to swap</param>
         public void SwapLesson(UserCycle cycle, UserProgramItem item)
         {
+            log.Info($"Swapping lesson in cycle {cycle.CycleID}"); // TODO UserProgramItem should have also some id
             UserProgramItem swappedItem = cycle.SwapLesson(item);
             CycleRepository.UpdateCycle(cycle);
             if (cycle.State == UserCycleState.Active)
             {
                 ActiveCycleCache.InsertToCache(cycle);
             }
+            log.Info($"Placing swapped lesson to incomplete cycle");
+            log.Trace($"Looking if there is incomplete user cycle for user {cycle.Username}");
             IncompleteUserCycle incompleteCycle = CycleRepository.GetUserIncompleteCycle(cycle.Username);
             if (incompleteCycle == null)
             {
+                log.Trace("No incomplete user cycle found creating new");
                 incompleteCycle = new IncompleteUserCycle(cycle.Username);
                 RegisterCycle(incompleteCycle);
             }
