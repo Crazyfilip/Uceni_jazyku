@@ -155,7 +155,7 @@ namespace UnitTests
             cycleMock.SetupGet(x => x.State).Returns(state);
 
             // Test & Verify
-            Exception exception = Assert.ThrowsException<Exception>(() => cycleMock.Object.Activate());
+            IncorrectCycleStateException exception = Assert.ThrowsException<IncorrectCycleStateException>(() => cycleMock.Object.Activate());
             Assert.AreEqual("Cycle with state " + state + " cannot be activated", exception.Message);
 
             cycleMock.Verify(x => x.Activate(), Times.Once);
@@ -226,7 +226,7 @@ namespace UnitTests
             cycleMock.SetupGet(x => x.State).Returns(state);
 
             // Test & Verify
-            Exception exception = Assert.ThrowsException<Exception>(() => cycleMock.Object.Finish());
+            IncorrectCycleStateException exception = Assert.ThrowsException<IncorrectCycleStateException>(() => cycleMock.Object.Finish());
             Assert.AreEqual("Cycle with state " + state + " cannot be finished", exception.Message);
 
             cycleMock.Verify(x => x.Finish(), Times.Once);

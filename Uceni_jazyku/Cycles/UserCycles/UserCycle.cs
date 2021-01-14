@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -33,6 +34,8 @@ namespace Uceni_jazyku.Cycles
 
         [DataMember]
         public virtual bool IsProgramAssigned { get; protected set; }
+
+        private static readonly ILog log = LogManager.GetLogger(typeof(ActiveCycleCache));
 
         public UserCycle() { }
 

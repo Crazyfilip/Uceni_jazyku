@@ -68,10 +68,13 @@ namespace UnitTests
 
             // Verify
             Assert.IsTrue(result);
+
             cacheMock.Verify(x => x.IsCacheFilled(), Times.Once);
+            log4netMock.Verify(x => x.Info("Looking into cache if there is user active cycle present"), Times.Once);
 
             databaseMock.VerifyNoOtherCalls();
             cacheMock.VerifyNoOtherCalls();
+            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
@@ -85,10 +88,13 @@ namespace UnitTests
 
             // Verify
             Assert.IsFalse(result);
+
             cacheMock.Verify(x => x.IsCacheFilled(), Times.Once);
+            log4netMock.Verify(x => x.Info("Looking into cache if there is user active cycle present"), Times.Once);
 
             databaseMock.VerifyNoOtherCalls();
             cacheMock.VerifyNoOtherCalls();
+            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
@@ -112,8 +118,20 @@ namespace UnitTests
             databaseMock.Verify(x => x.UpdateCycle(result), Times.Once);
             cacheMock.Verify(x => x.InsertToCache(result), Times.Once);
 
+            log4netMock.Verify(x => x.Info("Getting cycle for user test"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Looking if there is existing inactive cycle for user test"), Times.Once);
+            log4netMock.Verify(x => x.Debug("No cycle found, new must be created and activated"), Times.Once);
+            log4netMock.Verify(x => x.Info("Creating new cycle for user test"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Generating cycleID"), Times.Exactly(2));
+            log4netMock.Verify(x => x.Debug("New cycle created with id cycle0"), Times.Once);
+            log4netMock.Verify(x => x.Info("Activating cycle cycle0"), Times.Once);
+            log4netMock.Verify(x => x.Info("Assigning program to cycle cycle0"), Times.Once);
+            log4netMock.Verify(x => x.Info("Registering cycle"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Registered cycle got id cycle0"), Times.Once);
+
             databaseMock.VerifyNoOtherCalls();
             cacheMock.VerifyNoOtherCalls();
+            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
@@ -122,6 +140,7 @@ namespace UnitTests
             // Init
             Mock<UserCycle> cycleMock = new Mock<UserCycle>();
             cycleMock.SetupGet(x => x.State).Returns(UserCycleState.Inactive);
+            cycleMock.SetupGet(x => x.CycleID).Returns("testId");
             cycleMock.Setup(x => x.Activate()).Returns(cycleMock.Object);
             databaseMock.Setup(x => x.GetOldestUserInactiveCycle("test")).Returns(cycleMock.Object);
             databaseMock.Setup(x => x.UpdateCycle(cycleMock.Object)).Verifiable();
@@ -135,13 +154,19 @@ namespace UnitTests
 
             databaseMock.Verify(x => x.GetOldestUserInactiveCycle("test"), Times.Once);
             cycleMock.Verify(x => x.State, Times.Once);
+            cycleMock.Verify(x => x.CycleID, Times.Exactly(2));
             cycleMock.Verify(x => x.Activate(), Times.Once);
             databaseMock.Verify(x => x.UpdateCycle(cycleMock.Object), Times.Once);
             cacheMock.Verify(x => x.InsertToCache(cycleMock.Object), Times.Once);
+            log4netMock.Verify(x => x.Info("Getting cycle for user test"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Looking if there is existing inactive cycle for user test"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Obtained testId"), Times.Once);
+            log4netMock.Verify(x => x.Info("Activating cycle testId"), Times.Once);
 
             cacheMock.VerifyNoOtherCalls();
             databaseMock.VerifyNoOtherCalls();
             cycleMock.VerifyNoOtherCalls();
+            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
@@ -156,9 +181,11 @@ namespace UnitTests
             // Verify
             Assert.IsNull(result);
             cacheMock.Verify(x => x.GetFromCache(), Times.Once);
+            log4netMock.Verify(x => x.Info("Retriving user active cycle from cache"), Times.Once);
 
             databaseMock.VerifyNoOtherCalls();
             cacheMock.VerifyNoOtherCalls();
+            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
@@ -174,10 +201,12 @@ namespace UnitTests
             // Verify
             Assert.AreEqual(cycleMock.Object, result);
             cacheMock.Verify(x => x.GetFromCache(), Times.Once);
+            log4netMock.Verify(x => x.Info("Retriving user active cycle from cache"), Times.Once);
 
             cycleMock.VerifyNoOtherCalls();
             databaseMock.VerifyNoOtherCalls();
             cacheMock.VerifyNoOtherCalls();
+            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
@@ -194,17 +223,24 @@ namespace UnitTests
             Assert.AreEqual("test", result.Username);
             databaseMock.Verify(x => x.PutCycle(result), Times.Once);
             databaseMock.Verify(x => x.GetCyclesCount(), Times.Once);
+            log4netMock.Verify(x => x.Info("Creating new cycle for user test"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Generating cycleID"), Times.Once);
+            log4netMock.Verify(x => x.Debug("New cycle created with id cycle0"), Times.Once);
 
             databaseMock.VerifyNoOtherCalls();
             cacheMock.VerifyNoOtherCalls();
+            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
         public void TestActivatePositiveNewCycle()
         {
             //Init
+            string cycleId = "test";
+
             Mock<UserCycle> cycleMock = new Mock<UserCycle>();
             cycleMock.SetupGet(x => x.State).Returns(UserCycleState.New);
+            cycleMock.SetupGet(x => x.CycleID).Returns(cycleId);
             cycleMock.Setup(x => x.AssignProgram(It.IsAny<List<UserProgramItem>>())).Returns(cycleMock.Object);
             cycleMock.Setup(x => x.Activate()).Returns(cycleMock.Object);
             databaseMock.Setup(x => x.PutCycle(It.IsAny<AbstractCycle>())).Verifiable();
@@ -218,24 +254,34 @@ namespace UnitTests
             Assert.AreSame(cycleMock.Object, result);
 
             cycleMock.Verify(x => x.State, Times.Once);
+            cycleMock.Verify(x => x.CycleID, Times.Exactly(2));
             cycleMock.Verify(x => x.AssignProgram(It.IsAny<List<UserProgramItem>>()), Times.Once);
             cycleMock.Verify(x => x.Activate(), Times.Once);
             databaseMock.Verify(x => x.GetCyclesCount(), Times.Once);
             databaseMock.Verify(x => x.PutCycle(It.IsAny<AbstractCycle>()), Times.Once);
             databaseMock.Verify(x => x.UpdateCycle(cycleMock.Object), Times.Once);
             cacheMock.Verify(x => x.InsertToCache(cycleMock.Object), Times.Once);
+            log4netMock.Verify(x => x.Info($"Activating cycle {cycleId}"), Times.Once);
+            log4netMock.Verify(x => x.Info($"Assigning program to cycle {cycleId}"), Times.Once);
+            log4netMock.Verify(x => x.Info("Registering cycle"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Generating cycleID"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Registered cycle got id cycle0"), Times.Once);
 
             cycleMock.VerifyNoOtherCalls();
             databaseMock.VerifyNoOtherCalls();
             cacheMock.VerifyNoOtherCalls();
+            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
         public void TestActivatePositiveInactiveCycle()
         {
             // Init
+            string cycleId = "test";
+
             Mock<UserCycle> cycleMock = new Mock<UserCycle>();
             cycleMock.SetupGet(x => x.State).Returns(UserCycleState.Inactive);
+            cycleMock.SetupGet(x => x.CycleID).Returns(cycleId);
             cycleMock.Setup(x => x.Activate()).Returns(cycleMock.Object);
             databaseMock.Setup(x => x.UpdateCycle(cycleMock.Object)).Verifiable();
             cacheMock.Setup(x => x.InsertToCache(cycleMock.Object)).Verifiable();
@@ -247,13 +293,16 @@ namespace UnitTests
             Assert.AreSame(cycleMock.Object, result);
 
             cycleMock.Verify(x => x.State, Times.Once);
+            cycleMock.Verify(x => x.CycleID, Times.Once);
             cycleMock.Verify(x => x.Activate(), Times.Once);
             databaseMock.Verify(x => x.UpdateCycle(cycleMock.Object), Times.Once);
             cacheMock.Verify(x => x.InsertToCache(cycleMock.Object), Times.Once);
+            log4netMock.Verify(x => x.Info($"Activating cycle {cycleId}"), Times.Once);
 
             cycleMock.VerifyNoOtherCalls();
             databaseMock.VerifyNoOtherCalls();
             cacheMock.VerifyNoOtherCalls();
+            log4netMock.VerifyNoOtherCalls();
         }
 
         [DataRow(UserCycleState.UnknownUser)]
@@ -263,27 +312,37 @@ namespace UnitTests
         public void TestActivateNegative(UserCycleState incorrectState)
         {
             // Init
+            string cycleId = "test";
+
             Mock<UserCycle> cycleMock = new Mock<UserCycle>();
             cycleMock.SetupGet(x => x.State).Returns(incorrectState);
-            cycleMock.Setup(x => x.Activate()).Throws<Exception>();
+            cycleMock.SetupGet(x => x.CycleID).Returns(cycleId);
+            cycleMock.Setup(x => x.Activate()).Throws<IncorrectCycleStateException>();
 
-            // Test & Verify
-            Assert.ThrowsException<Exception>(() => service.Activate(cycleMock.Object));
+            // Test
+            service.Activate(cycleMock.Object);
 
+            // Verify
             cycleMock.Verify(x => x.State, Times.Once);
+            cycleMock.Verify(x => x.CycleID, Times.Exactly(2));
             cycleMock.Verify(x => x.Activate(), Times.Once);
+            log4netMock.Verify(x => x.Info("Activating cycle test"), Times.Once);
+            log4netMock.Verify(x => x.Warn($"Cycle {cycleId} wasn't activated", It.Is<Exception>(x => x is IncorrectCycleStateException)), Times.Once);
 
             cycleMock.VerifyNoOtherCalls();
             databaseMock.VerifyNoOtherCalls();
             cacheMock.VerifyNoOtherCalls();
+            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
         public void TestInactivatePositive()
         {
             // Init
+            string cycleId = "test";
             Mock<UserCycle> cycleMock = new Mock<UserCycle>();
             cycleMock.Setup(x => x.Inactivate()).Returns(cycleMock.Object);
+            cycleMock.SetupGet(x => x.CycleID).Returns(cycleId);
             databaseMock.Setup(x => x.UpdateCycle(cycleMock.Object)).Verifiable();
             cacheMock.Setup(x => x.DropCache()).Verifiable();
 
@@ -294,12 +353,15 @@ namespace UnitTests
             Assert.AreSame(cycleMock.Object, result);
 
             cycleMock.Verify(x => x.Inactivate(), Times.Once);
+            cycleMock.Verify(x => x.CycleID, Times.Once);
             databaseMock.Verify(x => x.UpdateCycle(cycleMock.Object), Times.Once);
             cacheMock.Verify(x => x.DropCache(), Times.Once);
+            log4netMock.Verify(x => x.Info("Inactivating cycle test"), Times.Once);
 
             cycleMock.VerifyNoOtherCalls();
             databaseMock.VerifyNoOtherCalls();
             cacheMock.VerifyNoOtherCalls();
+            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
@@ -319,7 +381,7 @@ namespace UnitTests
             cycleMock.Verify(x => x.Inactivate(), Times.Once);
             cycleMock.Verify(x => x.CycleID, Times.Exactly(2));
             log4netMock.Verify(x => x.Info($"Inactivating cycle {cycleId}"), Times.Once);
-            log4netMock.Verify(x => x.Error($"Cycle {cycleId} wasn't inactivated", It.Is<Exception>(x => x is IncorrectCycleStateException)), Times.Once);
+            log4netMock.Verify(x => x.Warn($"Cycle {cycleId} wasn't inactivated", It.Is<Exception>(x => x is IncorrectCycleStateException)), Times.Once);
 
             cycleMock.VerifyNoOtherCalls();
             databaseMock.VerifyNoOtherCalls();
@@ -331,8 +393,11 @@ namespace UnitTests
         public void TestFinishPositive()
         {
             // Init
+            string cycleId = "test";
+
             Mock<UserCycle> cycleMock = new Mock<UserCycle>();
-            cycleMock.Setup(x => x.Finish()).Verifiable(); // may be call base
+            cycleMock.Setup(x => x.Finish()).Verifiable();
+            cycleMock.SetupGet(x => x.CycleID).Returns(cycleId);
             cacheMock.Setup(x => x.DropCache()).Verifiable();
             databaseMock.Setup(x => x.UpdateCycle(cycleMock.Object)).Verifiable();
 
@@ -342,11 +407,14 @@ namespace UnitTests
             // Verify
             cacheMock.Verify(x => x.DropCache(), Times.Once);
             cycleMock.Verify(x => x.Finish(), Times.Once);
+            cycleMock.Verify(x => x.CycleID, Times.Once);
             databaseMock.Verify(x => x.UpdateCycle(cycleMock.Object), Times.Once);
+            log4netMock.Verify(x => x.Info("Finishing cycle test"), Times.Once);
 
             cycleMock.VerifyNoOtherCalls();
             databaseMock.VerifyNoOtherCalls();
             cacheMock.VerifyNoOtherCalls();
+            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
@@ -354,16 +422,22 @@ namespace UnitTests
         {
             // Init
             Mock<UserCycle> cycleMock = new Mock<UserCycle>();
-            cycleMock.Setup(x => x.Finish()).Throws<Exception>();
+            cycleMock.Setup(x => x.Finish()).Throws<IncorrectCycleStateException>();
+            cycleMock.SetupGet(x => x.CycleID).Returns("cycle0");
 
-            // Test & Verify
-            Assert.ThrowsException<Exception>(() => service.Finish(cycleMock.Object));
+            // Test
+           service.Finish(cycleMock.Object);
 
+            // Verify
             cycleMock.Verify(x => x.Finish(), Times.Once);
+            cycleMock.Verify(x => x.CycleID, Times.Exactly(2));
+            log4netMock.Verify(x => x.Info("Finishing cycle cycle0"), Times.Once);
+            log4netMock.Verify(x => x.Warn("Cycle cycle0 wasn't finished", It.Is<Exception>(x => x is IncorrectCycleStateException)), Times.Once);
 
             cycleMock.VerifyNoOtherCalls();
             databaseMock.VerifyNoOtherCalls();
             cacheMock.VerifyNoOtherCalls();
+            log4netMock.VerifyNoOtherCalls();
         }
 
         // TODO TestFinishUnfinishedLesson
@@ -373,20 +447,27 @@ namespace UnitTests
         {
             // Init
             Mock<UserCycle> cycleMock = new Mock<UserCycle>();
-            cycleMock.SetupSet(x => x.CycleID = It.IsAny<String>()).Verifiable();
+            cycleMock.SetupSet(x => x.CycleID = "cycle0").Verifiable();
+            cycleMock.Setup(x => x.CycleID).Returns("cycle0");
+            databaseMock.Setup(x => x.GetCyclesCount()).Returns(0);
             databaseMock.Setup(x => x.PutCycle(cycleMock.Object)).Verifiable();
 
             // Test
             service.RegisterCycle(cycleMock.Object);
 
             // Verify
-            cycleMock.VerifySet(x => x.CycleID = It.IsAny<String>(), Times.Once);
+            cycleMock.VerifySet(x => x.CycleID = "cycle0", Times.Once);
+            cycleMock.Verify(x => x.CycleID, Times.Once);
             databaseMock.Verify(x => x.PutCycle(cycleMock.Object), Times.Once);
             databaseMock.Verify(x => x.GetCyclesCount(), Times.Once);
+            log4netMock.Verify(x => x.Info("Registering cycle"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Generating cycleID"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Registered cycle got id cycle0"), Times.Once);
 
             cycleMock.VerifyNoOtherCalls();
             databaseMock.VerifyNoOtherCalls();
             cacheMock.VerifyNoOtherCalls();
+            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
@@ -416,9 +497,17 @@ namespace UnitTests
             databaseMock.Verify(x => x.UpdateCycle(cycle1), Times.Once);
             databaseMock.Verify(x => x.UpdateCycle(newIncomplete), Times.Once);
             cacheMock.Verify(x => x.InsertToCache(cycle1), Times.Once);
+            log4netMock.Verify(x => x.Info("Swapping lesson in cycle "), Times.Once);
+            log4netMock.Verify(x => x.Info("Placing swapped lesson to incomplete cycle"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Looking if there is incomplete user cycle for user test"), Times.Once);
+            log4netMock.Verify(x => x.Debug("No incomplete user cycle found creating new"), Times.Once);
+            log4netMock.Verify(x => x.Info("Registering cycle"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Generating cycleID"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Registered cycle got id cycle0"), Times.Once);
 
             databaseMock.VerifyNoOtherCalls();
             cacheMock.VerifyNoOtherCalls();
+            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
@@ -443,9 +532,13 @@ namespace UnitTests
             databaseMock.Verify(x => x.GetUserIncompleteCycle("test"), Times.Once);
             databaseMock.Verify(x => x.UpdateCycle(cycle2), Times.Once);
             databaseMock.Verify(x => x.UpdateCycle(existingIncomplete), Times.Once);
+            log4netMock.Verify(x => x.Info("Swapping lesson in cycle "), Times.Once);
+            log4netMock.Verify(x => x.Info("Placing swapped lesson to incomplete cycle"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Looking if there is incomplete user cycle for user test"), Times.Once);
 
             databaseMock.VerifyNoOtherCalls();
             cacheMock.VerifyNoOtherCalls();
+            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestCleanup]

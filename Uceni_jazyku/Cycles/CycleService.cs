@@ -1,9 +1,6 @@
 ﻿using log4net;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization;
-using System.Xml;
 using Uceni_jazyku.Cycles.LanguageCycles;
 using Uceni_jazyku.Cycles.Program;
 using Uceni_jazyku.Cycles.UserCycles;
@@ -93,23 +90,23 @@ namespace Uceni_jazyku.Cycles
         public virtual UserCycle GetUserCycle(string username)
         {
             log.Info($"Getting cycle for user {username}");
-            log.Trace($"Looking if there is existing inactive cycle for user {username}");
+            log.Debug($"Looking if there is existing inactive cycle for user {username}");
             UserCycle result = CycleRepository.GetOldestUserInactiveCycle(username);
             if (result != null)
             {
-                log.Trace($"Obtained {result.CycleID}");
+                log.Debug($"Obtained {result.CycleID}");
                  return Activate(result);
             }
             else
             {
-                log.Trace($"No cycle found, new must be created and activated");
+                log.Debug($"No cycle found, new must be created and activated");
                 return Activate(GetNewCycle(username));
             }
         }
 
         private string GenerateNewId()
         {
-            log.Trace("Generating cycleID");
+            log.Debug("Generating cycleID");
             return "cycle" + CycleRepository.GetCyclesCount();
         }
         /// <summary>
@@ -126,7 +123,7 @@ namespace Uceni_jazyku.Cycles
             }; 
             newCycle.AssignUser(username);
             CycleRepository.PutCycle(newCycle);
-            log.Trace($"New cycle created with id {newCycle.CycleID}");
+            log.Debug($"New cycle created with id {newCycle.CycleID}");
             return newCycle;
         }
 
@@ -212,7 +209,7 @@ namespace Uceni_jazyku.Cycles
         {
             log.Info("Registering cycle");
             cycle.CycleID = GenerateNewId();
-            log.Trace($"Registered cycle got id {cycle.CycleID}");
+            log.Debug($"Registered cycle got id {cycle.CycleID}");
             CycleRepository.PutCycle(cycle);
         }
 
@@ -231,11 +228,11 @@ namespace Uceni_jazyku.Cycles
                 ActiveCycleCache.InsertToCache(cycle);
             }
             log.Info($"Placing swapped lesson to incomplete cycle");
-            log.Trace($"Looking if there is incomplete user cycle for user {cycle.Username}");
+            log.Debug($"Looking if there is incomplete user cycle for user {cycle.Username}");
             IncompleteUserCycle incompleteCycle = CycleRepository.GetUserIncompleteCycle(cycle.Username);
             if (incompleteCycle == null)
             {
-                log.Trace("No incomplete user cycle found creating new");
+                log.Debug("No incomplete user cycle found creating new");
                 incompleteCycle = new IncompleteUserCycle(cycle.Username);
                 RegisterCycle(incompleteCycle);
             }

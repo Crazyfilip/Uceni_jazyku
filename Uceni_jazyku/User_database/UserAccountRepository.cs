@@ -26,14 +26,14 @@ namespace Uceni_jazyku.User_database
         {
             if (File.Exists(databasePath))
             {
-                log.Trace("Loading data from file");
+                log.Debug("Loading data from file");
                 var serializer = new DataContractSerializer(typeof(List<UserAccount>));
                 using XmlReader reader = XmlReader.Create(databasePath);
                 userDatabase = (List<UserAccount>)serializer.ReadObject(reader);
             }
             else
             {
-                log.Trace("Initializing new collection");
+                log.Debug("Initializing new collection");
                 userDatabase = new List<UserAccount>();
             }
         }
@@ -63,7 +63,7 @@ namespace Uceni_jazyku.User_database
 
         private void SaveDatabase()
         {
-            log.Trace("Saving repository to file");
+            log.Debug("Saving repository to file");
             var serializer = new DataContractSerializer(typeof(List<UserAccount>));
             using XmlWriter writer = XmlWriter.Create(databasePath);
             serializer.WriteObject(writer, userDatabase);

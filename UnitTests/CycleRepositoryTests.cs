@@ -1,6 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using log4net;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using Uceni_jazyku.Cycles;
 using Uceni_jazyku.Cycles.UserCycles;
 
@@ -16,11 +19,19 @@ namespace UnitTests
         UserCycle cyclePreUpdate, cyclePostUpdate;
         UserCycle cycleInactive1, cycleInactive2;
         UserCycle cycleIncomplete;
+        static readonly Mock<ILog> log4netMock = new Mock<ILog>();
+
+        [ClassInitialize]
+        public static void ClassInit(TestContext testContext)
+        {
+            var field = typeof(CycleRepository).GetField("log", BindingFlags.Static | BindingFlags.NonPublic);
+            field.SetValue(null, log4netMock.Object);
+        }
 
         [TestInitialize]
         public void Init()
         {
-            cycle = new UserCycle();
+            cycle = new UserCycle() { CycleID = "test" };
             cyclePreUpdate = new UserCycle() { CycleID = "cycle0" };
             cyclePostUpdate = new UserCycle() { CycleID = "cycle0" };
             cyclePostUpdate.AssignUser("test");
@@ -36,16 +47,25 @@ namespace UnitTests
             Directory.CreateDirectory("./cycles/service");
             repository = new CycleRepository(cycles);
 
+            log4netMock.Reset();
         }
 
         [TestMethod]
         public void TestPutCyclePositive()
         {
+            // Preverify
+            Assert.IsFalse(cycles.Contains(cycle));
+
             // Test
             repository.PutCycle(cycle);
 
             // Verify
             Assert.IsTrue(cycles.Contains(cycle));
+
+            log4netMock.Verify(x => x.Info("Adding cycle test to repository"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Saving repository to file"), Times.Once);
+
+            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
@@ -65,6 +85,12 @@ namespace UnitTests
             Assert.IsFalse(cycles.Contains(cyclePreUpdate));
             Assert.IsTrue(cycles.Contains(cyclePostUpdate));
             Assert.AreEqual(numberOfCycles, cycles.Count);
+
+            log4netMock.Verify(x => x.Info("Updating cycle cycle0"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Cycle cycle0 updated"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Saving repository to file"), Times.Once);
+
+            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
@@ -82,6 +108,12 @@ namespace UnitTests
             // Verify
             Assert.IsTrue(cycles.Contains(cycle));
             Assert.AreEqual(numberOfCycles + 1, cycles.Count);
+
+            log4netMock.Verify(x => x.Info("Updating cycle test"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Cycle test added"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Saving repository to file"), Times.Once);
+
+            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
@@ -92,6 +124,10 @@ namespace UnitTests
 
             // Verify
             Assert.IsNull(result);
+
+            log4netMock.Verify(x => x.Info("Getting oldest inactive cycle for user testuser"), Times.Once);
+
+            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
@@ -103,6 +139,10 @@ namespace UnitTests
             // Verify
             Assert.AreEqual(cycleInactive1, result);
             Assert.AreNotEqual(cycleInactive2, result);
+
+            log4netMock.Verify(x => x.Info("Getting oldest inactive cycle for user test"), Times.Once);
+
+            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
@@ -113,6 +153,10 @@ namespace UnitTests
 
             // Verify
             Assert.IsNull(result);
+
+            log4netMock.Verify(x => x.Info("Getting incomplete cycle for user testuser"), Times.Once);
+
+            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
@@ -123,6 +167,10 @@ namespace UnitTests
 
             // Verify
             Assert.AreEqual(cycleIncomplete, result);
+
+            log4netMock.Verify(x => x.Info("Getting incomplete cycle for user test"), Times.Once);
+
+            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestCleanup]
