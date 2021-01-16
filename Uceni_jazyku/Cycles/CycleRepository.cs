@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -24,6 +25,7 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         private List<AbstractCycle> database = new List<AbstractCycle>();
 
+        private static readonly ILog log = LogManager.GetLogger(typeof(ActiveCycleCache));
 
         public CycleRepository()
         {
@@ -46,6 +48,7 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         private void Save()
         {
+            log.Debug("Saving repository to file");
             var serializer = new DataContractSerializer(typeof(List<AbstractCycle>));
             using XmlWriter writer = XmlWriter.Create(path);
             serializer.WriteObject(writer, database ?? new List<AbstractCycle>());
@@ -53,6 +56,7 @@ namespace Uceni_jazyku.Cycles
 
         public void PutCycle(AbstractCycle cycle)
         {
+            log.Info($"Adding cycle {cycle.CycleID} to repository");
             database.Add(cycle);
             Save();
         }
@@ -66,14 +70,17 @@ namespace Uceni_jazyku.Cycles
 
         public void UpdateCycle(AbstractCycle updatedCycle)
         {
+            log.Info($"Updating cycle {updatedCycle.CycleID}");
             int index = database.FindIndex(x => x.CycleID == updatedCycle.CycleID);
             if (index != -1)
             {
                 database[index] = updatedCycle;
+                log.Debug($"Cycle {updatedCycle.CycleID} updated");
             }
             else
             {
                 database.Add(updatedCycle);
+                log.Debug($"Cycle {updatedCycle.CycleID} added");
             }
             Save();
         }
@@ -92,6 +99,7 @@ namespace Uceni_jazyku.Cycles
 
         public UserCycle GetOldestUserInactiveCycle(string username)
         {
+            log.Info($"Getting oldest inactive cycle for user {username}");
             var queryResult = database
                 .Where(x => x is UserCycle)
                 .Where(x =>
@@ -106,6 +114,7 @@ namespace Uceni_jazyku.Cycles
 
         public IncompleteUserCycle GetUserIncompleteCycle(string username)
         {
+            log.Info($"Getting incomplete cycle for user {username}");
             return (IncompleteUserCycle)database
                 .Where(x => x is IncompleteUserCycle)
                 .Where(x =>

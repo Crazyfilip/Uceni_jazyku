@@ -2,6 +2,9 @@
 using System.Windows.Forms;
 using Uceni_jazyku.Cycles;
 using System.IO;
+using log4net;
+using System.Reflection;
+using log4net.Config;
 
 namespace User_interface
 {
@@ -13,6 +16,9 @@ namespace User_interface
         [STAThread]
         static void Main()
         {
+            var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
+            XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
+
             PrepareApp();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

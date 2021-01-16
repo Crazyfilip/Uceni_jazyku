@@ -1,7 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using log4net;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
-using System.IO;
+using System.Reflection;
 using System.Security.Cryptography;
 using Uceni_jazyku.Cycles;
 using Uceni_jazyku.User_database;
@@ -9,13 +10,22 @@ using Uceni_jazyku.User_database;
 namespace UnitTests
 {
     [TestClass]
-    public class UserAccountsTests
+    public class UserAccountServiceTests
     {
         UserAccountService accountService;
         Mock<IUserAccountRepository> repositoryMock;
         Mock<UserAccount> accountMock;
         Mock<CycleService> cycleServiceMock;
         String saltMock;
+
+        static readonly Mock<ILog> log4netMock = new Mock<ILog>();
+
+        [ClassInitialize]
+        public static void ClassInit(TestContext testContext)
+        {
+            var field = typeof(UserAccountService).GetField("log", BindingFlags.Static | BindingFlags.NonPublic);
+            field.SetValue(null, log4netMock.Object);
+        }
 
         [TestInitialize]
         public void Init()
@@ -28,6 +38,7 @@ namespace UnitTests
             byte[] salt;
             new RNGCryptoServiceProvider().GetBytes(salt = new byte[16]);
             saltMock = Convert.ToBase64String(salt);
+            log4netMock.Reset();
         }
 
         [TestMethod]
@@ -45,8 +56,13 @@ namespace UnitTests
 
             repositoryMock.Verify(x => x.GetUserAccount("test"), Times.Once);
             repositoryMock.Verify(x => x.AddUserAccount(It.IsAny<UserAccount>()), Times.Once);
+            log4netMock.Verify(x => x.Info("Verifying if there isn't already account with username test"), Times.Once);
+            log4netMock.Verify(x => x.Info("Creating new user account with username test"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Calculating hash for user test"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Registering user to repository"), Times.Once);
 
             repositoryMock.VerifyNoOtherCalls();
+            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
@@ -62,8 +78,11 @@ namespace UnitTests
             Assert.IsFalse(result);
 
             repositoryMock.Verify(x => x.GetUserAccount("test"), Times.Once);
+            log4netMock.Verify(x => x.Info("Verifying if there isn't already account with username test"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Account with username test already exists"), Times.Once);
 
             repositoryMock.VerifyNoOtherCalls();
+            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
@@ -87,10 +106,15 @@ namespace UnitTests
             accountMock.Verify(x => x.salt, Times.Once);
             accountMock.Verify(x => x.loginCredential, Times.Once);
             cycleServiceMock.Verify(x => x.GetUserCycle("test"), Times.Once);
+            log4netMock.Verify(x => x.Info("Login attempt of user test"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Calculating hash for user test"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Verifying if hash is correct"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Login successful"), Times.Once);
 
             repositoryMock.VerifyNoOtherCalls();
             accountMock.VerifyNoOtherCalls();
             cycleServiceMock.VerifyNoOtherCalls();
+            log4netMock.VerifyNoOtherCalls();
         }
 
 
@@ -107,9 +131,13 @@ namespace UnitTests
             Assert.IsNull(result);
 
             repositoryMock.Verify(x => x.GetUserAccount("fail"), Times.Once);
+            log4netMock.Verify(x => x.Info("Login attempt of user fail"), Times.Once);
+            log4netMock.Verify(x => x.Debug("No account with username: fail"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Login failed"), Times.Once);
 
             repositoryMock.VerifyNoOtherCalls();
             cycleServiceMock.VerifyNoOtherCalls();
+            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
@@ -129,10 +157,15 @@ namespace UnitTests
             repositoryMock.Verify(x => x.GetUserAccount("test"), Times.Once);
             accountMock.Verify(x => x.salt, Times.Once);
             accountMock.Verify(x => x.loginCredential, Times.Once);
+            log4netMock.Verify(x => x.Info("Login attempt of user test"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Calculating hash for user test"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Verifying if hash is correct"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Login failed"), Times.Once);
 
             repositoryMock.VerifyNoOtherCalls();
             accountMock.VerifyNoOtherCalls();
             cycleServiceMock.VerifyNoOtherCalls();
+            log4netMock.VerifyNoOtherCalls();
         }
     }
 }
