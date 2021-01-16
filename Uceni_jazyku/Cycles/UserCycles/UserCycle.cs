@@ -1,12 +1,8 @@
 ﻿using log4net;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Xml.Xsl;
 using Uceni_jazyku.Cycles.Program;
 using Uceni_jazyku.Cycles.UserCycles;
 
@@ -56,6 +52,7 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         /// <param name="name">user's name</param>
         /// <returns>this instance</returns>
+        /// <exception cref="Exception">when user is already assigned</exception>
         public virtual UserCycle AssignUser(string name)
         {
             if (!IsUserAssigned)
@@ -75,7 +72,8 @@ namespace Uceni_jazyku.Cycles
         /// Assign program to cycle if it wasn's assigned yet otherwise throw exception
         /// </summary>
         /// <param name="userProgramItems"></param>
-        /// <returns></returns>
+        /// <returns>this instance</returns>
+        /// <exception cref="Exception">when program is already assigned</exception>
         public virtual UserCycle AssignProgram(List<UserProgramItem> userProgramItems)
         {
             if (!IsProgramAssigned)
@@ -95,6 +93,7 @@ namespace Uceni_jazyku.Cycles
         /// Only new or inactive cycle is possible to activate
         /// </summary>
         /// <returns>this instance</returns>
+        /// <exception cref="IncorrectCycleStateException">when cycle is not in correct state for activating</exception>
         public virtual UserCycle Activate()
         {
             if (State == UserCycleState.New || State == UserCycleState.Inactive)
@@ -111,6 +110,7 @@ namespace Uceni_jazyku.Cycles
         /// Only active cycle is possible to inactivate
         /// </summary>
         /// <returns>this instance</returns>
+        /// <exception cref="IncorrectCycleStateException">when cycle is not in correct state for inactivating</exception>
         public virtual UserCycle Inactivate()
         {
             if (State == UserCycleState.Active)
@@ -127,6 +127,8 @@ namespace Uceni_jazyku.Cycles
         /// Only active cycle with all lessons finished is possible to finish
         /// </summary>
         /// <returns>this instance</returns>
+        /// <exception cref="Exception">when not all lessons are finished</exception>
+        /// <exception cref="IncorrectCycleStateException">when cycle is not in correct state for finishing</exception>
         public virtual void Finish()
         {
             if (State == UserCycleState.Active)
