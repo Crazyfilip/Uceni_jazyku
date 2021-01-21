@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using Moq;
 using log4net;
 using System.Reflection;
+using Uceni_jazyku.Planner;
 
 namespace UnitTests
 {
@@ -21,6 +22,7 @@ namespace UnitTests
         CycleService service;
         Mock<ICycleRepository> databaseMock;
         Mock<IActiveCycleCache> cacheMock;
+        Mock<IProgramPlanner> plannerMock;
         UserCycle cycle1, cycle2;
         UserProgramItem item1, item2, item3, item4;
         IncompleteUserCycle newIncomplete, existingIncomplete;
@@ -39,7 +41,8 @@ namespace UnitTests
             Directory.CreateDirectory("./cycles/service");
             databaseMock = new Mock<ICycleRepository>();
             cacheMock = new Mock<IActiveCycleCache>();
-            service = CycleService.GetInstance(databaseMock.Object, cacheMock.Object);
+            plannerMock = new Mock<IProgramPlanner>();
+            service = CycleService.GetInstance(databaseMock.Object, cacheMock.Object, plannerMock.Object);
             log4netMock.Reset();
 
             LanguageCycle example = LanguageCycle.LanguageCycleExample();
@@ -103,8 +106,10 @@ namespace UnitTests
             // Init
             UserCycle userCycle = new UserCycle().AssignUser("test"); // TODO should be outside of test
             userCycle.CycleID = "cycle1";
+            Mock<List<UserProgramItem>> programMock = new Mock<List<UserProgramItem>>();
             databaseMock.Setup(x => x.GetOldestUserInactiveCycle("test")).Returns((UserCycle)null);
             databaseMock.Setup(x => x.UpdateCycle(userCycle)).Verifiable();
+            plannerMock.Setup(x => x.getNextUserCycleProgram("testUser")).Returns(programMock.Object);
 
             // Test
             UserCycle result = service.GetUserCycle("test");
@@ -112,26 +117,28 @@ namespace UnitTests
             // Verify
             Assert.AreEqual(UserCycleState.Active, result.State);
             Assert.AreEqual("test", result.Username);
+            // Assert.AreSame(programMock.Object, userCycle.UserProgramItems); // TODO should be testable
             databaseMock.Verify(x => x.GetOldestUserInactiveCycle("test"), Times.Once);
-            databaseMock.Verify(x => x.PutCycle(It.IsAny<AbstractCycle>()), Times.Exactly(2)); // result + language cycle, TODO language cycle will go away
-            databaseMock.Verify(x => x.GetCyclesCount(), Times.Exactly(2));
+            databaseMock.Verify(x => x.PutCycle(It.IsAny<AbstractCycle>()), Times.Once);
+            databaseMock.Verify(x => x.GetCyclesCount(), Times.Once);
             databaseMock.Verify(x => x.UpdateCycle(result), Times.Once);
             cacheMock.Verify(x => x.InsertToCache(result), Times.Once);
+            plannerMock.Verify(x => x.getNextUserCycleProgram("test"), Times.Once);
 
             log4netMock.Verify(x => x.Info("Getting cycle for user test"), Times.Once);
             log4netMock.Verify(x => x.Debug("Looking if there is existing inactive cycle for user test"), Times.Once);
             log4netMock.Verify(x => x.Debug("No cycle found, new must be created and activated"), Times.Once);
             log4netMock.Verify(x => x.Info("Creating new cycle for user test"), Times.Once);
-            log4netMock.Verify(x => x.Debug("Generating cycleID"), Times.Exactly(2));
+            log4netMock.Verify(x => x.Debug("Generating cycleID"), Times.Once);
             log4netMock.Verify(x => x.Debug("New cycle created with id cycle0"), Times.Once);
             log4netMock.Verify(x => x.Info("Activating cycle cycle0"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Obtaining cycle program"), Times.Once);
             log4netMock.Verify(x => x.Info("Assigning program to cycle cycle0"), Times.Once);
-            log4netMock.Verify(x => x.Info("Registering cycle"), Times.Once);
-            log4netMock.Verify(x => x.Debug("Registered cycle got id cycle0"), Times.Once);
 
             databaseMock.VerifyNoOtherCalls();
             cacheMock.VerifyNoOtherCalls();
             log4netMock.VerifyNoOtherCalls();
+            plannerMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
@@ -238,14 +245,17 @@ namespace UnitTests
             //Init
             string cycleId = "test";
 
+            Mock<List<UserProgramItem>> programMock = new Mock<List<UserProgramItem>>();
             Mock<UserCycle> cycleMock = new Mock<UserCycle>();
             cycleMock.SetupGet(x => x.State).Returns(UserCycleState.New);
             cycleMock.SetupGet(x => x.CycleID).Returns(cycleId);
-            cycleMock.Setup(x => x.AssignProgram(It.IsAny<List<UserProgramItem>>())).Returns(cycleMock.Object);
+            cycleMock.SetupGet(x => x.Username).Returns("testUser");
+            cycleMock.Setup(x => x.AssignProgram(programMock.Object)).Returns(cycleMock.Object);
             cycleMock.Setup(x => x.Activate()).Returns(cycleMock.Object);
             databaseMock.Setup(x => x.PutCycle(It.IsAny<AbstractCycle>())).Verifiable();
             databaseMock.Setup(x => x.UpdateCycle(cycleMock.Object)).Verifiable();
             cacheMock.Setup(x => x.InsertToCache(cycleMock.Object)).Verifiable();
+            plannerMock.Setup(x => x.getNextUserCycleProgram("testUser")).Returns(programMock.Object);
 
             // Test
             UserCycle result = service.Activate(cycleMock.Object);
@@ -255,21 +265,20 @@ namespace UnitTests
 
             cycleMock.Verify(x => x.State, Times.Once);
             cycleMock.Verify(x => x.CycleID, Times.Exactly(2));
-            cycleMock.Verify(x => x.AssignProgram(It.IsAny<List<UserProgramItem>>()), Times.Once);
+            cycleMock.Verify(x => x.AssignProgram(programMock.Object), Times.Once);
             cycleMock.Verify(x => x.Activate(), Times.Once);
-            databaseMock.Verify(x => x.GetCyclesCount(), Times.Once);
-            databaseMock.Verify(x => x.PutCycle(It.IsAny<AbstractCycle>()), Times.Once);
+            cycleMock.Verify(x => x.Username, Times.Once);
             databaseMock.Verify(x => x.UpdateCycle(cycleMock.Object), Times.Once);
             cacheMock.Verify(x => x.InsertToCache(cycleMock.Object), Times.Once);
+            plannerMock.Verify(x => x.getNextUserCycleProgram("testUser"), Times.Once);
             log4netMock.Verify(x => x.Info($"Activating cycle {cycleId}"), Times.Once);
+            log4netMock.Verify(x => x.Debug($"Obtaining cycle program"), Times.Once);
             log4netMock.Verify(x => x.Info($"Assigning program to cycle {cycleId}"), Times.Once);
-            log4netMock.Verify(x => x.Info("Registering cycle"), Times.Once);
-            log4netMock.Verify(x => x.Debug("Generating cycleID"), Times.Once);
-            log4netMock.Verify(x => x.Debug("Registered cycle got id cycle0"), Times.Once);
 
             cycleMock.VerifyNoOtherCalls();
             databaseMock.VerifyNoOtherCalls();
             cacheMock.VerifyNoOtherCalls();
+            plannerMock.VerifyNoOtherCalls();
             log4netMock.VerifyNoOtherCalls();
         }
 

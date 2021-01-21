@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Uceni_jazyku.Cycles.LanguageCycles;
 using Uceni_jazyku.Cycles.Program;
 using Uceni_jazyku.Cycles.UserCycles;
+using Uceni_jazyku.Planner;
 
 namespace Uceni_jazyku.Cycles
 {
@@ -22,11 +23,14 @@ namespace Uceni_jazyku.Cycles
 
         private readonly IActiveCycleCache ActiveCycleCache;
 
-        public CycleService() : this(null, null){}
+        private readonly IProgramPlanner ProgramPlanner;
 
-        private CycleService(ICycleRepository database, IActiveCycleCache cache) {
+        public CycleService() : this(null, null, null){}
+
+        private CycleService(ICycleRepository database, IActiveCycleCache cache, IProgramPlanner planner) {
             CycleRepository = database ?? new CycleRepository();
             ActiveCycleCache = cache ?? new ActiveCycleCache();
+            ProgramPlanner = planner ?? new MockProgramPlanner();
         }
 
         /// <summary>
@@ -37,7 +41,7 @@ namespace Uceni_jazyku.Cycles
         public static CycleService GetInstance()
         {
             if (instance == null)
-                instance = new CycleService(null, null);
+                instance = new CycleService(null, null, null);
             return instance;
         }
 
@@ -46,10 +50,10 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         /// <param name="database"></param>
         /// <returns>instance <c>CycleService</c></returns>
-        public static CycleService GetInstance(ICycleRepository database, IActiveCycleCache cache)
+        public static CycleService GetInstance(ICycleRepository database, IActiveCycleCache cache, IProgramPlanner planner)
         {
             if (instance == null)
-                instance = new CycleService(database, cache);
+                instance = new CycleService(database, cache, planner);
             return instance;
         }
 
@@ -138,11 +142,10 @@ namespace Uceni_jazyku.Cycles
             log.Info($"Activating cycle {cycle.CycleID}");
             if (cycle.State == UserCycleState.New)
             {
+                log.Debug("Obtaining cycle program");
+                List<UserProgramItem> program = ProgramPlanner.getNextUserCycleProgram(cycle.Username);
                 log.Info($"Assigning program to cycle {cycle.CycleID}");
-                // TODO assign program from planner based on user model
-                LanguageCycle example = LanguageCycle.LanguageCycleExample();
-                RegisterCycle(example);
-                cycle.AssignProgram(new List<Program.UserProgramItem>() { new Program.UserProgramItem(example.CycleID, example.PlanNext())});
+                cycle.AssignProgram(program);
             }
             try
             {
