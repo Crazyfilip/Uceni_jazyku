@@ -9,16 +9,16 @@ namespace Uceni_jazyku.Planner
     {
 
 
-        public LanguageProgramItem getNextLanguageLesson(string username)
+        public UserProgramItem getNextLanguageLesson(string username)
         {
-            return new LanguageProgramItem("lekce x");
+            return new UserProgramItem("test", new LanguageProgramItem("lekce x"));
         }
 
         public List<UserProgramItem> getNextUserCycleProgram(string username)
         {
             List<UserProgramItem> result = new List<UserProgramItem>();
-            result.Add(new UserProgramItem("test", getNextLanguageLesson(username)));
-            result.Add(new UserProgramItem("test", getNextLanguageLesson(username)));
+            result.Add(getNextLanguageLesson(username));
+            result.Add(getNextLanguageLesson(username));
             return result;
         }
     }

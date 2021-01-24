@@ -30,6 +30,7 @@ namespace Uceni_jazyku.Cycles
         private CycleService(ICycleRepository database, IActiveCycleCache cache, IProgramPlanner planner) {
             CycleRepository = database ?? new CycleRepository();
             ActiveCycleCache = cache ?? new ActiveCycleCache();
+            // TODO replace mock planner by real implementation
             ProgramPlanner = planner ?? new MockProgramPlanner();
         }
 
@@ -241,6 +242,30 @@ namespace Uceni_jazyku.Cycles
             }
             incompleteCycle.AddLesson(swappedItem);
             CycleRepository.UpdateCycle(incompleteCycle);
+        }
+
+        /// <summary>
+        /// Get from planner next lesson for user.
+        /// It will put lesson to incomplete cycle and return its description.
+        /// </summary>
+        /// <param name="username">username</param>
+        /// <returns>Lesson description</returns>
+        public string GetNextLesson(string username)
+        {
+            log.Info("Getting next planned lesson");
+            UserProgramItem item = ProgramPlanner.getNextLanguageLesson(username);
+            log.Debug($"Looking if there is incomplete user cycle for user {username}");
+            IncompleteUserCycle incompleteCycle = CycleRepository.GetUserIncompleteCycle(username);
+            if (incompleteCycle == null)
+            {
+                log.Debug("No incomplete user cycle found creating new");
+                incompleteCycle = new IncompleteUserCycle(username);
+                RegisterCycle(incompleteCycle);
+            }
+            log.Debug($"Placing lesson {item.LessonRef.Lesson} to cycle {incompleteCycle.CycleID}");
+            incompleteCycle.AddLesson(item);
+            CycleRepository.UpdateCycle(incompleteCycle);
+            return item.LessonRef.Lesson;
         }
     }
 }

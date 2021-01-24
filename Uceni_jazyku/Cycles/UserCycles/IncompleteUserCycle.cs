@@ -14,6 +14,8 @@ namespace Uceni_jazyku.Cycles.UserCycles
     [DataContract]
     public class IncompleteUserCycle : UserCycle
     {
+        public IncompleteUserCycle() { }
+
         public IncompleteUserCycle(string username)
         {
             this.Username = username;
@@ -25,7 +27,7 @@ namespace Uceni_jazyku.Cycles.UserCycles
         /// Add lesson to beginning of the cycle
         /// </summary>
         /// <param name="item">lesson to add</param>
-        public void AddLesson(UserProgramItem item)
+        public virtual void AddLesson(UserProgramItem item)
         {
             UserProgramItems.Insert(0, item);
         }

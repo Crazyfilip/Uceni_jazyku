@@ -9,6 +9,6 @@ namespace Uceni_jazyku.Planner
     {
         List<UserProgramItem> getNextUserCycleProgram(string username);
 
-        LanguageProgramItem getNextLanguageLesson(string username);
+        UserProgramItem getNextLanguageLesson(string username);
     }
 }

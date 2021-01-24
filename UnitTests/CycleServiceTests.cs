@@ -550,6 +550,86 @@ namespace UnitTests
             log4netMock.VerifyNoOtherCalls();
         }
 
+        [TestMethod]
+        public void TestGetNextLessonPositiveNewIncomplete()
+        {
+            // Init
+            Mock<LanguageProgramItem> languageItemMock = new Mock<LanguageProgramItem>();
+            languageItemMock.SetupGet(x => x.Lesson).Returns("testLesson");
+            Mock<UserProgramItem> userItemMock = new Mock<UserProgramItem>();
+            userItemMock.SetupGet(x => x.LessonRef).Returns(languageItemMock.Object);
+
+            plannerMock.Setup(x => x.getNextLanguageLesson("test")).Returns(userItemMock.Object);
+            databaseMock.Setup(x => x.GetUserIncompleteCycle("test")).Returns((IncompleteUserCycle)null);
+            databaseMock.Setup(x => x.GetCyclesCount()).Returns(0);
+
+            // test
+            string result = service.GetNextLesson("test");
+
+            // verify
+            Assert.AreEqual("testLesson", result);
+
+            languageItemMock.Verify(x => x.Lesson, Times.Exactly(2));
+            databaseMock.Verify(x => x.GetUserIncompleteCycle("test"), Times.Once);
+            databaseMock.Verify(x => x.GetCyclesCount(), Times.Once);
+            databaseMock.Verify(x => x.PutCycle(It.IsAny<IncompleteUserCycle>()), Times.Once);
+            databaseMock.Verify(x => x.UpdateCycle(It.IsAny<IncompleteUserCycle>()), Times.Once);
+            log4netMock.Verify(x => x.Info("Getting next planned lesson"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Looking if there is incomplete user cycle for user test"), Times.Once);
+            log4netMock.Verify(x => x.Debug("No incomplete user cycle found creating new"), Times.Once);
+            log4netMock.Verify(x => x.Info("Registering cycle"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Generating cycleID"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Registered cycle got id cycle0"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Placing lesson testLesson to cycle cycle0"), Times.Once);
+            plannerMock.Verify(x => x.getNextLanguageLesson("test"), Times.Once);
+
+            languageItemMock.VerifyNoOtherCalls();
+            userItemMock.VerifyNoOtherCalls();
+            databaseMock.VerifyNoOtherCalls();
+            cacheMock.VerifyNoOtherCalls();
+            log4netMock.VerifyNoOtherCalls();
+            plannerMock.VerifyNoOtherCalls();
+        }
+
+        [TestMethod]
+        public void TestGetNextLessonPositiveExistingIncomplete()
+        {
+            // Init
+            Mock<LanguageProgramItem> languageItemMock = new Mock<LanguageProgramItem>();
+            languageItemMock.SetupGet(x => x.Lesson).Returns("testLesson");
+            Mock<UserProgramItem> userItemMock = new Mock<UserProgramItem>();
+            userItemMock.SetupGet(x => x.LessonRef).Returns(languageItemMock.Object);
+            Mock<IncompleteUserCycle> cycleMock = new Mock<IncompleteUserCycle>();
+            cycleMock.SetupGet(x => x.CycleID).Returns("cycle0");
+
+            plannerMock.Setup(x => x.getNextLanguageLesson("test")).Returns(userItemMock.Object);
+            databaseMock.Setup(x => x.GetUserIncompleteCycle("test")).Returns(cycleMock.Object);
+
+            // test
+            string result = service.GetNextLesson("test");
+
+            // verify
+            Assert.AreEqual("testLesson", result);
+
+            languageItemMock.Verify(x => x.Lesson, Times.Exactly(2));
+            databaseMock.Verify(x => x.GetUserIncompleteCycle("test"), Times.Once);
+            databaseMock.Verify(x => x.UpdateCycle(cycleMock.Object), Times.Once);
+            log4netMock.Verify(x => x.Info("Getting next planned lesson"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Looking if there is incomplete user cycle for user test"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Placing lesson testLesson to cycle cycle0"), Times.Once);
+            cycleMock.Verify(x => x.CycleID, Times.Once);
+            cycleMock.Verify(x => x.AddLesson(userItemMock.Object), Times.Once);
+            plannerMock.Verify(x => x.getNextLanguageLesson("test"), Times.Once);
+
+            languageItemMock.VerifyNoOtherCalls();
+            userItemMock.VerifyNoOtherCalls();
+            cycleMock.VerifyNoOtherCalls();
+            databaseMock.VerifyNoOtherCalls();
+            cacheMock.VerifyNoOtherCalls();
+            log4netMock.VerifyNoOtherCalls();
+            plannerMock.VerifyNoOtherCalls();
+        }
+
         [TestCleanup]
         public void TestCleanUp()
         {
