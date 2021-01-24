@@ -49,7 +49,9 @@ namespace Uceni_jazyku.Cycles
         /// <summary>
         /// Get instance of service. For database instance will be used the provided one if service instance wasn't initialized yet.
         /// </summary>
-        /// <param name="database"></param>
+        /// <param name="database">database</param>
+        /// <param name="cache">cache</param>
+        /// <param name="planner">planner</param>
         /// <returns>instance <c>CycleService</c></returns>
         public static CycleService GetInstance(ICycleRepository database, IActiveCycleCache cache, IProgramPlanner planner)
         {

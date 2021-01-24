@@ -5,6 +5,7 @@ using Uceni_jazyku.Cycles.Program;
 
 namespace Uceni_jazyku.Planner
 {
+    /// <inheritdoc/>
     public class ProgramPlanner : IProgramPlanner
     {
         // TODO add dependencies
