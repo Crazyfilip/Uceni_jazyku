@@ -38,7 +38,7 @@
             this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripMenuItem();
             this.lessonLink = new System.Windows.Forms.LinkLabel();
             this.label1 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.buttonShowPlan = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.Menu.SuspendLayout();
             this.SuspendLayout();
@@ -133,14 +133,15 @@
             this.label1.TabIndex = 6;
             this.label1.Text = "Další lekce";
             // 
-            // button1
+            // buttonShowPlan
             // 
-            this.button1.Location = new System.Drawing.Point(199, 93);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(99, 61);
-            this.button1.TabIndex = 7;
-            this.button1.Text = "TODO: Ukázat plán";
-            this.button1.UseVisualStyleBackColor = true;
+            this.buttonShowPlan.Location = new System.Drawing.Point(199, 93);
+            this.buttonShowPlan.Name = "buttonShowPlan";
+            this.buttonShowPlan.Size = new System.Drawing.Size(99, 61);
+            this.buttonShowPlan.TabIndex = 7;
+            this.buttonShowPlan.Text = "Ukázat plán";
+            this.buttonShowPlan.UseVisualStyleBackColor = true;
+            this.buttonShowPlan.Click += new System.EventHandler(this.buttonShowPlan_Click);
             // 
             // label2
             // 
@@ -157,7 +158,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(379, 402);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.buttonShowPlan);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.lessonLink);
             this.Controls.Add(this.Menu);
@@ -187,7 +188,7 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem7;
         private System.Windows.Forms.LinkLabel lessonLink;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button buttonShowPlan;
         private System.Windows.Forms.Label label2;
     }
 }
