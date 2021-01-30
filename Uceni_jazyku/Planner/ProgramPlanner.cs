@@ -9,7 +9,7 @@ namespace Uceni_jazyku.Planner
     public class ProgramPlanner : IProgramPlanner
     {
         // TODO add dependencies
-        // Language (+ ILanguageTopicSelectStrategy), PlannerHistory, UserModel
+        // Language (+ ILanguageTopicSelectStrategy), PlannerHistory, UserModel, Feedback
 
         public UserProgramItem getNextLanguageLesson(string username)
         {
