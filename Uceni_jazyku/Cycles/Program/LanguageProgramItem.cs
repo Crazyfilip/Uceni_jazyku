@@ -11,7 +11,7 @@ namespace Uceni_jazyku.Cycles.Program
     public class LanguageProgramItem : ProgramItem
     {
         [DataMember]
-        public string Lesson { get; private set; }
+        public virtual string Lesson { get; private set; }
 
         [DataMember]
         public bool Planned { get; private set; }

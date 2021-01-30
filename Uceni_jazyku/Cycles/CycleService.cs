@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Uceni_jazyku.Cycles.LanguageCycles;
 using Uceni_jazyku.Cycles.Program;
 using Uceni_jazyku.Cycles.UserCycles;
+using Uceni_jazyku.Planner;
 
 namespace Uceni_jazyku.Cycles
 {
@@ -22,11 +23,15 @@ namespace Uceni_jazyku.Cycles
 
         private readonly IActiveCycleCache ActiveCycleCache;
 
-        public CycleService() : this(null, null){}
+        private readonly IProgramPlanner ProgramPlanner;
 
-        private CycleService(ICycleRepository database, IActiveCycleCache cache) {
+        public CycleService() : this(null, null, null){}
+
+        private CycleService(ICycleRepository database, IActiveCycleCache cache, IProgramPlanner planner) {
             CycleRepository = database ?? new CycleRepository();
             ActiveCycleCache = cache ?? new ActiveCycleCache();
+            // TODO replace mock planner by real implementation
+            ProgramPlanner = planner ?? new MockProgramPlanner();
         }
 
         /// <summary>
@@ -37,19 +42,21 @@ namespace Uceni_jazyku.Cycles
         public static CycleService GetInstance()
         {
             if (instance == null)
-                instance = new CycleService(null, null);
+                instance = new CycleService(null, null, null);
             return instance;
         }
 
         /// <summary>
         /// Get instance of service. For database instance will be used the provided one if service instance wasn't initialized yet.
         /// </summary>
-        /// <param name="database"></param>
+        /// <param name="database">database</param>
+        /// <param name="cache">cache</param>
+        /// <param name="planner">planner</param>
         /// <returns>instance <c>CycleService</c></returns>
-        public static CycleService GetInstance(ICycleRepository database, IActiveCycleCache cache)
+        public static CycleService GetInstance(ICycleRepository database, IActiveCycleCache cache, IProgramPlanner planner)
         {
             if (instance == null)
-                instance = new CycleService(database, cache);
+                instance = new CycleService(database, cache, planner);
             return instance;
         }
 
@@ -138,11 +145,10 @@ namespace Uceni_jazyku.Cycles
             log.Info($"Activating cycle {cycle.CycleID}");
             if (cycle.State == UserCycleState.New)
             {
+                log.Debug("Obtaining cycle program");
+                List<UserProgramItem> program = ProgramPlanner.getNextUserCycleProgram(cycle.Username);
                 log.Info($"Assigning program to cycle {cycle.CycleID}");
-                // TODO assign program from planner based on user model
-                LanguageCycle example = LanguageCycle.LanguageCycleExample();
-                RegisterCycle(example);
-                cycle.AssignProgram(new List<Program.UserProgramItem>() { new Program.UserProgramItem(example.CycleID, example.PlanNext())});
+                cycle.AssignProgram(program);
             }
             try
             {
@@ -238,6 +244,30 @@ namespace Uceni_jazyku.Cycles
             }
             incompleteCycle.AddLesson(swappedItem);
             CycleRepository.UpdateCycle(incompleteCycle);
+        }
+
+        /// <summary>
+        /// Get from planner next lesson for user.
+        /// It will put lesson to incomplete cycle and return its description.
+        /// </summary>
+        /// <param name="username">username</param>
+        /// <returns>Lesson description</returns>
+        public string GetNextLesson(string username)
+        {
+            log.Info("Getting next planned lesson");
+            UserProgramItem item = ProgramPlanner.getNextLanguageLesson(username);
+            log.Debug($"Looking if there is incomplete user cycle for user {username}");
+            IncompleteUserCycle incompleteCycle = CycleRepository.GetUserIncompleteCycle(username);
+            if (incompleteCycle == null)
+            {
+                log.Debug("No incomplete user cycle found creating new");
+                incompleteCycle = new IncompleteUserCycle(username);
+                RegisterCycle(incompleteCycle);
+            }
+            log.Debug($"Placing lesson {item.LessonRef.Lesson} to cycle {incompleteCycle.CycleID}");
+            incompleteCycle.AddLesson(item);
+            CycleRepository.UpdateCycle(incompleteCycle);
+            return item.LessonRef.Lesson;
         }
     }
 }

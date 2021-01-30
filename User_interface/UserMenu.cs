@@ -32,5 +32,10 @@ namespace User_interface
         {
             Application.Exit();
         }
+
+        private void buttonShowPlan_Click(object sender, EventArgs e)
+        {
+            new PlanView(userCycle).Show();
+        }
     }
 }
