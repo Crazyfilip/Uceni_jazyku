@@ -21,7 +21,7 @@ namespace Uceni_jazyku.Cycles
         public int FinishedEvents { get; protected set; }
 
         [DataMember]
-        public virtual string CycleID { get; set; }
+        public virtual string CycleID { get; set; } // TODO should be init only
 
         /// <summary>
         /// Update cycle when user did progress in learning => set first unfinished lesson as finished
