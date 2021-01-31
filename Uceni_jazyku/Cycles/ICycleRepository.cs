@@ -23,13 +23,6 @@ namespace Uceni_jazyku.Cycles
         /// <param name="updatedCycle"></param>
         void UpdateCycle(AbstractCycle updatedCycle);
 
-
-        /// <summary>
-        /// Getter for number of existing cycles
-        /// </summary>
-        /// <returns>number of cycles in the repository</returns>
-        int GetCyclesCount();
-
         /// <summary>
         /// Search for user's oldest inactive cycle
         /// </summary>

@@ -31,6 +31,8 @@ namespace Uceni_jazyku.Cycles
         [DataMember]
         public virtual bool IsProgramAssigned { get; protected set; }
 
+        public virtual DateTime DateCreated { get; protected set; } = DateTime.Now;
+
         private static readonly ILog log = LogManager.GetLogger(typeof(ActiveCycleCache));
 
         public UserCycle() { }
@@ -150,7 +152,7 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         /// <param name="newLesson"></param>
         /// <returns>Last item of the program</returns>
-        public UserProgramItem SwapLesson(UserProgramItem newLesson)
+        public virtual UserProgramItem SwapLesson(UserProgramItem newLesson)
         {
             UserProgramItem item = UserProgramItems.Last();
             UserProgramItems.Insert(FinishedEvents, newLesson);

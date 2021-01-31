@@ -36,9 +36,7 @@ namespace UnitTests
             cyclePostUpdate = new UserCycle() { CycleID = "cycle0" };
             cyclePostUpdate.AssignUser("test");
             cycleInactive1 = new UserCycle().AssignUser("test").Activate().Inactivate();
-            cycleInactive1.CycleID = "cycle1"; // TODO refactor when CycleID will be changed
             cycleInactive2 = new UserCycle().AssignUser("test").Activate().Inactivate();
-            cycleInactive2.CycleID = "cycle2"; // TODO refactor when CycleID will be changed
             cycleIncomplete = new IncompleteUserCycle("test") { CycleID = "cycle3" };
 
             cycles = new List<AbstractCycle>() { cyclePreUpdate, cycleInactive1, cycleInactive2, cycleIncomplete };

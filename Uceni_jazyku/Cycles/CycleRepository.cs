@@ -61,13 +61,6 @@ namespace Uceni_jazyku.Cycles
             Save();
         }
 
-        // TODO this method is used for generating cycleID so once generating will change remove this
-        [Obsolete]
-        public int GetCyclesCount()
-        {
-            return database.Count;
-        }
-
         public void UpdateCycle(AbstractCycle updatedCycle)
         {
             log.Info($"Updating cycle {updatedCycle.CycleID}");
@@ -85,18 +78,6 @@ namespace Uceni_jazyku.Cycles
             Save();
         }
 
-        /// <summary>
-        /// getter of cycle number from its id
-        /// </summary>
-        /// <param name="cycle">cycle</param>
-        /// <returns>cycle number</returns>
-        // TODO delete this method, cycle should rather to have field like DateCreated based on which will be chosen oldest one
-        [Obsolete]
-        private int getCycleNumber(AbstractCycle cycle)
-        {
-            return int.Parse(cycle.CycleID.Substring(5)); // cycleID format is: cycle<number>
-        }
-
         public UserCycle GetOldestUserInactiveCycle(string username)
         {
             log.Info($"Getting oldest inactive cycle for user {username}");
@@ -108,7 +89,7 @@ namespace Uceni_jazyku.Cycles
                     return cycle.Username == username && cycle.State == UserCycleState.Inactive;
                 })
                 .ToList();
-            queryResult.Sort((x, y) => getCycleNumber(x).CompareTo(getCycleNumber(y)));
+            queryResult.Sort((x, y) => ((UserCycle)x).DateCreated.CompareTo(((UserCycle)y).DateCreated));
             return (queryResult.Count > 0) ? ((UserCycle) queryResult.First()) : null;
         }
 
