@@ -31,7 +31,10 @@ namespace Uceni_jazyku.Cycles
         [DataMember]
         public virtual bool IsProgramAssigned { get; protected set; }
 
-        private static readonly ILog log = LogManager.GetLogger(typeof(ActiveCycleCache));
+        [DataMember]
+        public virtual DateTime DateCreated { get; protected set; } = DateTime.Now; // TODO should be init only
+
+        private static readonly ILog log = LogManager.GetLogger(typeof(UserCycle));
 
         public UserCycle() { }
 
@@ -150,7 +153,7 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         /// <param name="newLesson"></param>
         /// <returns>Last item of the program</returns>
-        public UserProgramItem SwapLesson(UserProgramItem newLesson)
+        public virtual UserProgramItem SwapLesson(UserProgramItem newLesson)
         {
             UserProgramItem item = UserProgramItems.Last();
             UserProgramItems.Insert(FinishedEvents, newLesson);
@@ -171,6 +174,7 @@ namespace Uceni_jazyku.Cycles
                 && (this.Username == cycle.Username)
                 && (this.IsUserAssigned == cycle.IsUserAssigned)
                 && (this.IsProgramAssigned == cycle.IsProgramAssigned)
+                && (this.DateCreated == cycle.DateCreated)
                 && (this.UserProgramItems.SequenceEqual(cycle.UserProgramItems));
             return result;
         }
