@@ -32,12 +32,12 @@ namespace UnitTests
         public void Init()
         {
             cycle = new UserCycle() { CycleID = "test" };
-            cyclePreUpdate = new UserCycle() { CycleID = "cycle0" };
-            cyclePostUpdate = new UserCycle() { CycleID = "cycle0" };
+            cyclePreUpdate = new UserCycle() { CycleID = "test_id" };
+            cyclePostUpdate = new UserCycle() { CycleID = "test_id" };
             cyclePostUpdate.AssignUser("test");
             cycleInactive1 = new UserCycle().AssignUser("test").Activate().Inactivate();
             cycleInactive2 = new UserCycle().AssignUser("test").Activate().Inactivate();
-            cycleIncomplete = new IncompleteUserCycle("test") { CycleID = "cycle3" };
+            cycleIncomplete = new IncompleteUserCycle("test");
 
             cycles = new List<AbstractCycle>() { cyclePreUpdate, cycleInactive1, cycleInactive2, cycleIncomplete };
 
@@ -84,8 +84,8 @@ namespace UnitTests
             Assert.IsTrue(cycles.Contains(cyclePostUpdate));
             Assert.AreEqual(numberOfCycles, cycles.Count);
 
-            log4netMock.Verify(x => x.Info("Updating cycle cycle0"), Times.Once);
-            log4netMock.Verify(x => x.Debug("Cycle cycle0 updated"), Times.Once);
+            log4netMock.Verify(x => x.Info("Updating cycle test_id"), Times.Once);
+            log4netMock.Verify(x => x.Debug("Cycle test_id updated"), Times.Once);
             log4netMock.Verify(x => x.Debug("Saving repository to file"), Times.Once);
 
             log4netMock.VerifyNoOtherCalls();
