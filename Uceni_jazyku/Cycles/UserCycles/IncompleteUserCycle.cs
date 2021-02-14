@@ -14,13 +14,14 @@ namespace Uceni_jazyku.Cycles.UserCycles
     [DataContract]
     public class IncompleteUserCycle : UserCycle
     {
-        public IncompleteUserCycle() { }
+        public int limit { get; init; }
 
-        public IncompleteUserCycle(string username)
+        public IncompleteUserCycle() {}
+
+        public IncompleteUserCycle(int limit)
         {
-            this.Username = username;
             this.State = UserCycleState.Inactive;
-            IsUserAssigned = true;
+            this.limit = limit;
         }
 
         /// <summary>

@@ -25,7 +25,7 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         private List<AbstractCycle> database = new List<AbstractCycle>();
 
-        private static readonly ILog log = LogManager.GetLogger(typeof(ActiveCycleCache));
+        private static ILog log = LogManager.GetLogger(typeof(ActiveCycleCache));
 
         public CycleRepository()
         {

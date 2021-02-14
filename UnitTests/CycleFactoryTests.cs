@@ -22,27 +22,29 @@ namespace UnitTests
         public void TestCreateCyclePositive()
         {
             // Test
-            UserCycle result = CycleFactory.CreateCycle();
+            UserCycle result = CycleFactory.CreateCycle("test");
 
             // Verify
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.CycleID);
-            Assert.AreEqual(UserCycleState.UnknownUser, result.State);
             Assert.IsNotNull(result.DateCreated);
+            Assert.AreEqual(UserCycleState.New, result.State);
+            Assert.AreEqual("test", result.Username);
         }
 
         [TestMethod]
         public void TestCreateIncompleteCyclePositive()
         {
             // Test
-            IncompleteUserCycle result = CycleFactory.CreateIncompleteCycle("test");
+            IncompleteUserCycle result = CycleFactory.CreateIncompleteCycle("test", 0);
 
             // Verify
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.CycleID);
+            Assert.IsNotNull(result.DateCreated);
             Assert.AreEqual(UserCycleState.Inactive, result.State);
             Assert.AreEqual("test", result.Username);
-            Assert.IsNotNull(result.DateCreated);
+            Assert.AreEqual(0, result.limit);
         }
     }
 }

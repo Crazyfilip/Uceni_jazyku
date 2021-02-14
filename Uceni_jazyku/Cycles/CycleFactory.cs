@@ -9,17 +9,27 @@ namespace Uceni_jazyku.Cycles
     /// CycleID is generated using System.Guid
     public class CycleFactory : ICycleFactory
     {
-        public UserCycle CreateCycle()
+        public UserCycle CreateCycle(string username)
         {
-            return new UserCycle() { CycleID = getGUID() };
+            return new UserCycle() 
+            { 
+                CycleID = GetGUID(), 
+                DateCreated = DateTime.Now, 
+                Username = username 
+            };
         }
 
-        public IncompleteUserCycle CreateIncompleteCycle(string username)
+        public IncompleteUserCycle CreateIncompleteCycle(string username, int limit)
         {
-            return new IncompleteUserCycle(username) { CycleID = getGUID() };
+            return new IncompleteUserCycle(limit)
+            { 
+                CycleID = GetGUID(), 
+                DateCreated = DateTime.Now, 
+                Username = username
+            };
         }
 
-        private string getGUID()
+        private string GetGUID()
         {
             return System.Guid.NewGuid().ToString();
         }

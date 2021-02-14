@@ -9,7 +9,6 @@ namespace Uceni_jazyku.Cycles.UserCycles
     /// </summary>
     public enum UserCycleState
     {
-        UnknownUser,
         New,
         Active,
         Inactive,
