@@ -12,7 +12,7 @@ namespace Uceni_jazyku.User_database
     /// </summary>
     public class UserAccountService
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(UserAccountService));
+        private static ILog log = LogManager.GetLogger(typeof(UserAccountService));
         private IUserAccountRepository userAccountRepository;
         private CycleService cycleService;
 

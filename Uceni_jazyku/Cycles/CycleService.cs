@@ -15,7 +15,7 @@ namespace Uceni_jazyku.Cycles
     /// </summary>
     public class CycleService
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(CycleService));
+        private static ILog log = LogManager.GetLogger(typeof(CycleService));
 
         private static CycleService instance;
 
@@ -123,8 +123,7 @@ namespace Uceni_jazyku.Cycles
         public UserCycle GetNewCycle(string username)
         {
             log.Info($"Creating new cycle for user {username}");
-            UserCycle newCycle = CycleFactory.CreateCycle();
-            newCycle.AssignUser(username);
+            UserCycle newCycle = CycleFactory.CreateCycle(username);
             CycleRepository.PutCycle(newCycle);
             log.Debug($"New cycle created with id {newCycle.CycleID}");
             return newCycle;
@@ -247,7 +246,7 @@ namespace Uceni_jazyku.Cycles
             if (incompleteCycle == null)
             {
                 log.Debug("No incomplete user cycle found creating new");
-                incompleteCycle = CycleFactory.CreateIncompleteCycle(username);
+                incompleteCycle = CycleFactory.CreateIncompleteCycle(username, 0); // TODO set limit properly
                 CycleRepository.PutCycle(incompleteCycle);
             }
             return incompleteCycle;

@@ -9,7 +9,7 @@ namespace Uceni_jazyku.Cycles
     /// <inheritdoc/>
     public class ActiveCycleCache : IActiveCycleCache
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(ActiveCycleCache));
+        private static ILog log = LogManager.GetLogger(typeof(ActiveCycleCache));
         private readonly string activeCycleCacheFile = "cycles/service/active-cycle.xml";
 
         public void DropCache()

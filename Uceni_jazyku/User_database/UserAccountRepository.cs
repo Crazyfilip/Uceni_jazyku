@@ -14,7 +14,7 @@ namespace Uceni_jazyku.User_database
     /// </summary>
     public class UserAccountRepository : IUserAccountRepository
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(UserAccountRepository));
+        private static ILog log = LogManager.GetLogger(typeof(UserAccountRepository));
         private List<UserAccount> userDatabase = new List<UserAccount>();
         private string databasePath = "./users/accounts.txt";
 

@@ -1,6 +1,7 @@
 ﻿using log4net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -33,11 +34,10 @@ namespace UnitTests
         {
             cycle = new UserCycle() { CycleID = "test" };
             cyclePreUpdate = new UserCycle() { CycleID = "test_id" };
-            cyclePostUpdate = new UserCycle() { CycleID = "test_id" };
-            cyclePostUpdate.AssignUser("test");
-            cycleInactive1 = new UserCycle().AssignUser("test").Activate().Inactivate();
-            cycleInactive2 = new UserCycle().AssignUser("test").Activate().Inactivate();
-            cycleIncomplete = new IncompleteUserCycle("test");
+            cyclePostUpdate = new UserCycle() { CycleID = "test_id", Username = "test" };
+            cycleInactive1 = new UserCycle() { Username = "test", DateCreated = DateTime.Now }.Activate().Inactivate();
+            cycleInactive2 = new UserCycle() { Username = "test", DateCreated = DateTime.Now.AddMinutes(1) }.Activate().Inactivate();
+            cycleIncomplete = new IncompleteUserCycle() { Username = "test" };
 
             cycles = new List<AbstractCycle>() { cyclePreUpdate, cycleInactive1, cycleInactive2, cycleIncomplete };
 

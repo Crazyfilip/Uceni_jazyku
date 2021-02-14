@@ -15,13 +15,13 @@ namespace Uceni_jazyku.Cycles
         /// Create user cycle in initial state, cycleId and DateCreated
         /// </summary>
         /// <returns>instance of user cycle</returns>
-        UserCycle CreateCycle();
+        UserCycle CreateCycle(string username);
 
         /// <summary>
         /// Create incomplete user cycle with cycleId and DateCreated
         /// </summary>
         /// <param name="username">username</param>
         /// <returns>instance of incomplete user cycle</returns>
-        IncompleteUserCycle CreateIncompleteCycle(string username);
+        IncompleteUserCycle CreateIncompleteCycle(string username, int limit);
     }
 }
