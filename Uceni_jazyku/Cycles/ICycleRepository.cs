@@ -36,5 +36,12 @@ namespace Uceni_jazyku.Cycles
         /// <param name="username">user's name</param>
         /// <returns>user's incomplete cycle or null</returns>
         IncompleteUserCycle GetUserIncompleteCycle(string username);
+
+        /// <summary>
+        /// Search for all user's cycles which are not in finished state
+        /// </summary>
+        /// <param name="username">user's name</param>
+        /// <returns>List of not finished user's cycles</returns>
+        List<UserCycle> GetNotFinishedCycles(string username);
     }
 }

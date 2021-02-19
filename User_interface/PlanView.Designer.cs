@@ -70,9 +70,9 @@ namespace User_interface
             this.labelPlannedLessons.AutoSize = true;
             this.labelPlannedLessons.Location = new System.Drawing.Point(56, 13);
             this.labelPlannedLessons.Name = "labelPlannedLessons";
-            this.labelPlannedLessons.Size = new System.Drawing.Size(157, 20);
+            this.labelPlannedLessons.Size = new System.Drawing.Size(113, 20);
             this.labelPlannedLessons.TabIndex = 3;
-            this.labelPlannedLessons.Text = "TODO Planned lessons";
+            this.labelPlannedLessons.Text = "Planned lessons";
             // 
             // PlanView
             // 

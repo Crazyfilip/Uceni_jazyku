@@ -81,28 +81,35 @@ namespace Uceni_jazyku.Cycles
         public UserCycle GetOldestUserInactiveCycle(string username)
         {
             log.Info($"Getting oldest inactive cycle for user {username}");
-            var queryResult = database
+            List<UserCycle> queryResult = database
                 .Where(x => x is UserCycle)
-                .Where(x =>
-                {
-                    UserCycle cycle = (UserCycle)x;
-                    return cycle.Username == username && cycle.State == UserCycleState.Inactive;
-                })
+                .Cast<UserCycle>()
+                .Where(x => x.Username == username && x.State == UserCycleState.Inactive)
                 .ToList();
-            queryResult.Sort((x, y) => ((UserCycle)x).DateCreated.CompareTo(((UserCycle)y).DateCreated));
-            return (queryResult.Count > 0) ? ((UserCycle) queryResult.First()) : null;
+            queryResult.Sort((x, y) => x.DateCreated.CompareTo(y.DateCreated));
+            return queryResult.FirstOrDefault();
         }
 
         public IncompleteUserCycle GetUserIncompleteCycle(string username)
         {
             log.Info($"Getting incomplete cycle for user {username}");
-            return (IncompleteUserCycle)database
+            return database
                 .Where(x => x is IncompleteUserCycle)
-                .Where(x =>
-                {
-                    IncompleteUserCycle cycle = (IncompleteUserCycle)x;
-                    return cycle.Username == username;
-                }).FirstOrDefault();
+                .Cast<IncompleteUserCycle>()
+                .Where(x => x.Username == username)
+                .FirstOrDefault();
+        }
+
+        public List<UserCycle> GetNotFinishedCycles(string username)
+        {
+            log.Info($"Getting cycles which are not in finished state for user {username}");
+            List<UserCycle> result = database
+                .Where(x => x is UserCycle)
+                .Cast<UserCycle>()
+                .Where(x => x.Username == username && x.State != UserCycleState.Finished)
+                .ToList();
+            result.Sort((x,y) => x.DateCreated.CompareTo(y.DateCreated));
+            return result;
         }
     }
 }

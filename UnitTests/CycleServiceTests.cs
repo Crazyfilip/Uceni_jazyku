@@ -651,6 +651,67 @@ namespace UnitTests
             plannerMock.VerifyNoOtherCalls();
         }
 
+        [TestMethod]
+        public void TestGetPlannedUnfinishedLessonsPositive()
+        {
+            // Init
+            Mock<LanguageProgramItem> languageItem1 = new();
+            Mock<LanguageProgramItem> languageItem2 = new();
+            languageItem1.SetupGet(x => x.Finished).Returns(true);
+            languageItem2.SetupGet(x => x.Finished).Returns(false);
+
+            Mock<UserProgramItem> userItem1 = new();
+            Mock<UserProgramItem> userItem2 = new();
+            userItem1.SetupGet(x => x.LessonRef).Returns(languageItem1.Object);
+            userItem2.SetupGet(x => x.LessonRef).Returns(languageItem2.Object);
+
+            Mock<UserCycle> cycleMock = new();
+            cycleMock.SetupGet(x => x.UserProgramItems).Returns(new List<UserProgramItem>() { userItem1.Object, userItem2.Object });
+            databaseMock.Setup(x => x.GetNotFinishedCycles("test")).Returns(new List<UserCycle>() { cycleMock.Object });
+
+            // Test
+            List<UserProgramItem> result = service.GetPlannedUnfinishedLessons("test");
+
+            // Verify
+            CollectionAssert.AreEqual(new List<UserProgramItem>() { userItem2.Object }, result);
+
+            databaseMock.Verify(x => x.GetNotFinishedCycles("test"), Times.Once);
+            languageItem1.Verify(x => x.Finished, Times.Once);
+            languageItem2.Verify(x => x.Finished, Times.Once);
+            userItem1.Verify(x => x.LessonRef, Times.Once);
+            userItem2.Verify(x => x.LessonRef, Times.Once);
+            cycleMock.Verify(x => x.UserProgramItems, Times.Once);
+            log4netMock.Verify(x => x.Info("Getting unfinished planned lessons for user test"), Times.Once);
+
+            languageItem1.VerifyNoOtherCalls();
+            languageItem2.VerifyNoOtherCalls();
+            userItem1.VerifyNoOtherCalls();
+            userItem2.VerifyNoOtherCalls();
+            cycleMock.VerifyNoOtherCalls();
+            databaseMock.VerifyNoOtherCalls();
+            log4netMock.VerifyNoOtherCalls();
+        }
+
+        [TestMethod]
+        public void TestGetPlannedUnfinishedLessonsNegative()
+        {
+            // Init
+            databaseMock.Setup(x => x.GetNotFinishedCycles("test")).Returns(new List<UserCycle> { });
+
+            // Test
+            List<UserProgramItem> result = service.GetPlannedUnfinishedLessons("test");
+
+            // Verify
+            CollectionAssert.AreEqual(new List<UserProgramItem> {}, result);
+
+            databaseMock.Verify(x => x.GetNotFinishedCycles("test"), Times.Once);
+            log4netMock.Verify(x => x.Info("Getting unfinished planned lessons for user test"), Times.Once);
+
+            databaseMock.VerifyNoOtherCalls();
+            log4netMock.VerifyNoOtherCalls();
+
+        }
+
         [TestCleanup]
         public void TestCleanUp()
         {
