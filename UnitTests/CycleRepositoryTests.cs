@@ -19,6 +19,7 @@ namespace UnitTests
         UserCycle cycle;
         UserCycle cyclePreUpdate, cyclePostUpdate;
         UserCycle cycleInactive1, cycleInactive2;
+        UserCycle cycleFinished;
         UserCycle cycleIncomplete;
         static readonly Mock<ILog> log4netMock = new Mock<ILog>();
 
@@ -34,10 +35,11 @@ namespace UnitTests
         {
             cycle = new UserCycle() { CycleID = "test" };
             cyclePreUpdate = new UserCycle() { CycleID = "test_id" };
-            cyclePostUpdate = new UserCycle() { CycleID = "test_id", Username = "test" };
+            cyclePostUpdate = new UserCycle() { CycleID = "test_id", Username = "testUpdate" };
             cycleInactive1 = new UserCycle() { Username = "test", DateCreated = DateTime.Now }.Activate().Inactivate();
             cycleInactive2 = new UserCycle() { Username = "test", DateCreated = DateTime.Now.AddMinutes(1) }.Activate().Inactivate();
-            cycleIncomplete = new IncompleteUserCycle() { Username = "test" };
+            cycleFinished = new UserCycle() { Username = "test", DateCreated = DateTime.Now.AddMinutes(-1) }.Activate().Finish();
+            cycleIncomplete = new IncompleteUserCycle() { Username = "test", DateCreated = DateTime.Now.AddMinutes(2) };
 
             cycles = new List<AbstractCycle>() { cyclePreUpdate, cycleInactive1, cycleInactive2, cycleIncomplete };
 
@@ -167,6 +169,35 @@ namespace UnitTests
             Assert.AreEqual(cycleIncomplete, result);
 
             log4netMock.Verify(x => x.Info("Getting incomplete cycle for user test"), Times.Once);
+
+            log4netMock.VerifyNoOtherCalls();
+        }
+
+        [TestMethod]
+        public void TestGetNotFinishedCyclesPositive()
+        {
+            // Test
+            List<UserCycle> result = repository.GetNotFinishedCycles("test");
+
+            // Verify
+            CollectionAssert.AreEqual(new List<UserCycle>() { cycleInactive1, cycleInactive2, cycleIncomplete }, result);
+            Assert.IsFalse(result.Contains(cycleFinished));
+
+            log4netMock.Verify(x => x.Info("Getting cycles which are not in finished state for user test"), Times.Once);
+
+            log4netMock.VerifyNoOtherCalls();
+        }
+
+        [TestMethod]
+        public void TestGetNotFinishedCyclesNegative()
+        {
+            // Test
+            List<UserCycle> result = repository.GetNotFinishedCycles("testtest");
+
+            // Verify
+            CollectionAssert.AreEqual(new List<UserCycle>(), result);
+
+            log4netMock.Verify(x => x.Info("Getting cycles which are not in finished state for user testtest"), Times.Once);
 
             log4netMock.VerifyNoOtherCalls();
         }

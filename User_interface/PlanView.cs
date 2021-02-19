@@ -18,8 +18,8 @@ namespace User_interface
         public PlanView(UserCycle userCycle)
         {
             InitializeComponent();
-            cycleService = CycleService.GetInstance();
             this.userCycle = userCycle;
+            cycleService = CycleService.GetInstance();
             cycleService.GetPlannedUnfinishedLessons(userCycle.Username).ForEach(x => listBoxPlannedLessons.Items.Add(x.LessonRef.Lesson));
         }
 

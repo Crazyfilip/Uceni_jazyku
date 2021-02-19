@@ -252,8 +252,14 @@ namespace Uceni_jazyku.Cycles
             return incompleteCycle;
         }
 
+        /// <summary>
+        /// Retrieve all unfinished planned lesson for user
+        /// </summary>
+        /// <param name="username">user's name</param>
+        /// <returns>List of lessons</returns>
         public List<UserProgramItem> GetPlannedUnfinishedLessons(string username)
         {
+            log.Info($"Getting unfinished planned lessons for user {username}");
             List<UserCycle> userCycles = CycleRepository.GetNotFinishedCycles(username);
             List<UserProgramItem> result = new();
             userCycles

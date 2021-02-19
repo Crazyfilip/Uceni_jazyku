@@ -107,13 +107,14 @@ namespace Uceni_jazyku.Cycles
         /// <returns>this instance</returns>
         /// <exception cref="Exception">when not all lessons are finished</exception>
         /// <exception cref="IncorrectCycleStateException">when cycle is not in correct state for finishing</exception>
-        public virtual void Finish()
+        public virtual UserCycle Finish()
         {
             if (State == UserCycleState.Active)
             {
                 if (UserProgramItems.TrueForAll(x => x.LessonRef.Finished))
                 {
                     State = UserCycleState.Finished;
+                    return this;
                 }
                 else
                     throw new Exception("Cycle doesn't have finished all lesson so can't be finished"); // TODO replace with more suitable exception type
