@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using Uceni_jazyku.Cycles;
+using Uceni_jazyku.Cycles.Program;
 
 namespace User_interface
 {
@@ -19,6 +20,7 @@ namespace User_interface
             InitializeComponent();
             cycleService = CycleService.GetInstance();
             this.userCycle = userCycle;
+            cycleService.GetPlannedUnfinishedLessons(userCycle.Username).ForEach(x => listBoxPlannedLessons.Items.Add(x.LessonRef.Lesson));
         }
 
         private void listBoxPlannedLessons_SelectedValueChanged(object sender, EventArgs e)

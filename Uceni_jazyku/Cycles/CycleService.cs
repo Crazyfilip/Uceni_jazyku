@@ -251,5 +251,19 @@ namespace Uceni_jazyku.Cycles
             }
             return incompleteCycle;
         }
+
+        public List<UserProgramItem> GetPlannedUnfinishedLessons(string username)
+        {
+            List<UserCycle> userCycles = CycleRepository.GetNotFinishedCycles(username);
+            List<UserProgramItem> result = new();
+            userCycles
+                .ForEach(x => x.UserProgramItems
+                    .ForEach(y =>
+                    {
+                        if (!y.LessonRef.Finished)
+                            result.Add(y);
+                    }));
+            return result;
+        }
     }
 }
