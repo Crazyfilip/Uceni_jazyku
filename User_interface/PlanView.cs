@@ -6,7 +6,6 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using Uceni_jazyku.Cycles;
-using Uceni_jazyku.Cycles.Program;
 
 namespace User_interface
 {

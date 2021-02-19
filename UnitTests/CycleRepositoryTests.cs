@@ -41,7 +41,7 @@ namespace UnitTests
             cycleFinished = new UserCycle() { Username = "test", DateCreated = DateTime.Now.AddMinutes(-1) }.Activate().Finish();
             cycleIncomplete = new IncompleteUserCycle() { Username = "test", DateCreated = DateTime.Now.AddMinutes(2) };
 
-            cycles = new List<AbstractCycle>() { cyclePreUpdate, cycleInactive1, cycleInactive2, cycleIncomplete };
+            cycles = new List<AbstractCycle>() { cyclePreUpdate, cycleInactive1, cycleInactive2, cycleIncomplete, cycleFinished };
 
 
             Directory.CreateDirectory("./cycles/service");
