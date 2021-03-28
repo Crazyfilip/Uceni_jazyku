@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Uceni_jazyku.Cycles.Program;
+using Uceni_jazyku.Language;
 
 namespace Uceni_jazyku.Planner
 {
@@ -15,13 +16,16 @@ namespace Uceni_jazyku.Planner
         /// </summary>
         /// <param name="username">username</param>
         /// <returns>List of lessons (program)</returns>
-        List<UserProgramItem> getNextUserCycleProgram(string username);
+        List<UserProgramItem> GetNextUserCycleProgram(string username);
 
         /// <summary>
         /// Get following lesson for user
         /// </summary>
         /// <param name="username">username</param>
         /// <returns>Lesson</returns>
-        UserProgramItem getNextLanguageLesson(string username);
+        UserProgramItem GetNextLanguageLesson(string username);
+        UserProgramItem GetNextLanguageLesson(string username, string topicId);
+
+        void SetCourse(LanguageCourse languageCourse);
     }
 }

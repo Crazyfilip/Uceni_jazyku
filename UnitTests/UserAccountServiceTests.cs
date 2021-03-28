@@ -5,6 +5,7 @@ using System;
 using System.Reflection;
 using System.Security.Cryptography;
 using Uceni_jazyku.Cycles;
+using Uceni_jazyku.Language;
 using Uceni_jazyku.User_database;
 
 namespace UnitTests
@@ -16,6 +17,7 @@ namespace UnitTests
         Mock<IUserAccountRepository> repositoryMock;
         Mock<UserAccount> accountMock;
         Mock<CycleService> cycleServiceMock;
+        Mock<LanguageCourseService> languageCourseServiceMock;
         String saltMock;
 
         static readonly Mock<ILog> log4netMock = new Mock<ILog>();
@@ -33,7 +35,8 @@ namespace UnitTests
             accountMock = new Mock<UserAccount>();
             repositoryMock = new Mock<IUserAccountRepository>();
             cycleServiceMock = new Mock<CycleService>();
-            accountService = new UserAccountService(repositoryMock.Object, cycleServiceMock.Object);
+            languageCourseServiceMock = new Mock<LanguageCourseService>();
+            accountService = new UserAccountService(repositoryMock.Object, cycleServiceMock.Object, languageCourseServiceMock.Object);
 
             byte[] salt;
             new RNGCryptoServiceProvider().GetBytes(salt = new byte[16]);
@@ -90,11 +93,16 @@ namespace UnitTests
         {
             // Init
             Mock<UserCycle> cycleMock = new Mock<UserCycle>();
+            Mock<LanguageCourse> courseMock = new Mock<LanguageCourse>();
 
             repositoryMock.Setup(x => x.GetUserAccount("test")).Returns(accountMock.Object);
             accountMock.SetupGet(x => x.salt).Returns("CcDMwpJNSEIIBxhizhYGBw==");
             accountMock.SetupGet(x => x.loginCredential).Returns("2RN00+i/w/sl/0AmqkWTUOpOtig=");
+
+            languageCourseServiceMock.Setup(x => x.GetActiveLanguageCourse("test")).Returns(courseMock.Object);
+
             cycleServiceMock.Setup(x => x.GetUserCycle("test")).Returns(cycleMock.Object);
+            cycleServiceMock.Setup(x => x.SetActiveCourse("test", courseMock.Object, false)).Verifiable();
 
             // Test
             UserCycle result = accountService.Login("test", "test");
@@ -106,6 +114,7 @@ namespace UnitTests
             accountMock.Verify(x => x.salt, Times.Once);
             accountMock.Verify(x => x.loginCredential, Times.Once);
             cycleServiceMock.Verify(x => x.GetUserCycle("test"), Times.Once);
+            cycleServiceMock.Verify(x => x.SetActiveCourse("test", courseMock.Object, false), Times.Once);
             log4netMock.Verify(x => x.Info("Login attempt of user test"), Times.Once);
             log4netMock.Verify(x => x.Debug("Calculating hash for user test"), Times.Once);
             log4netMock.Verify(x => x.Debug("Verifying if hash is correct"), Times.Once);

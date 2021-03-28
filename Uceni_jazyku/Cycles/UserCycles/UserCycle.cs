@@ -13,9 +13,20 @@ namespace Uceni_jazyku.Cycles
     /// User cycle reflects user's activity in learning and application
     /// Has role in internal process of adapting to user's progress
     /// </summary>
+    [KnownType(typeof(UserCycle))]
+    [KnownType(typeof(IncompleteUserCycle))]
     [DataContract]
-    public class UserCycle : AbstractCycle
+    public class UserCycle
     {
+        [DataMember]
+        public virtual string CycleID { get; init; }
+
+        [DataMember]
+        public virtual string CourseID { get; init; }
+
+        [DataMember]
+        public int FinishedEvents { get; protected set; }
+
         [DataMember]
         public virtual string Username { get; init; }
 
@@ -35,13 +46,20 @@ namespace Uceni_jazyku.Cycles
 
         public UserCycle() { }
 
-        public override void Update()
+        /// <summary>
+        /// Update cycle when user did progress in learning => set first unfinished lesson as finished
+        /// </summary>
+        public virtual void Update() // TODO different name?
         {
             UserProgramItem item = UserProgramItems[FinishedEvents++];
             item.LessonRef.Finish();
         }
 
-        public override ProgramItem GetNext()
+        /// <summary>
+        /// Get first unfinished lesson
+        /// </summary>
+        /// <returns>Lesson</returns>
+        public virtual ProgramItem GetNext()
         {
             return UserProgramItems[FinishedEvents];
         }

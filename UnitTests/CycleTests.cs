@@ -4,9 +4,9 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uceni_jazyku.Cycles;
-using Uceni_jazyku.Cycles.LanguageCycles;
 using Uceni_jazyku.Cycles.Program;
 using Uceni_jazyku.Cycles.UserCycles;
+using Uceni_jazyku.Language;
 
 namespace UnitTests
 {
@@ -30,10 +30,14 @@ namespace UnitTests
             cycleInactive = new UserCycle() { Username = "test" }.Activate().Inactivate();
             cycleActiveWithProgram = new UserCycle() { Username = "test" }.AssignProgram(new List<UserProgramItem>()).Activate();
 
-            LanguageCycle example = LanguageCycle.LanguageCycleExample();
-            item1 = new UserProgramItem(example.CycleID, example.PlanNext());
-            item2 = new UserProgramItem(example.CycleID, example.PlanNext());
-            item3 = new UserProgramItem(example.CycleID, example.PlanNext());
+            LanguageProgramItem languageItem1 = new LanguageProgramItem("lesson1");
+            LanguageProgramItem languageItem2 = new LanguageProgramItem("lesson2");
+            LanguageProgramItem languageItem3 = new LanguageProgramItem("lesson3");
+
+            LanguageTopic example = new LanguageTopic() { TopicId = "topic_id", Lessons = new List<LanguageProgramItem>() { languageItem1, languageItem2, languageItem3 } };
+            item1 = new UserProgramItem(example.TopicId, example.PlanNextLesson());
+            item2 = new UserProgramItem(example.TopicId, example.PlanNextLesson());
+            item3 = new UserProgramItem(example.TopicId, example.PlanNextLesson());
 
             swappingList = new List<UserProgramItem>() { item1, item2 };
             cycleSwap = new UserCycle().AssignProgram(swappingList);
