@@ -133,7 +133,7 @@ namespace Uceni_jazyku.Cycles
         public UserCycle GetNewCycle(string username)
         {
             log.Info($"Creating new cycle for user {username}");
-            UserCycle newCycle = CycleFactory.CreateCycle(username);
+            UserCycle newCycle = CycleFactory.CreateCycle(username, ActiveCourse.CourseId);
             CycleRepository.PutCycle(newCycle);
             log.Debug($"New cycle created with id {newCycle.CycleID}");
             return newCycle;
@@ -283,7 +283,7 @@ namespace Uceni_jazyku.Cycles
             if (incompleteCycle == null)
             {
                 log.Debug("No incomplete user cycle found creating new");
-                incompleteCycle = CycleFactory.CreateIncompleteCycle(username, 0); // TODO set limit properly
+                incompleteCycle = CycleFactory.CreateIncompleteCycle(username, ActiveCourse.CourseId, 0); // TODO set limit properly
                 CycleRepository.PutCycle(incompleteCycle);
             }
             return incompleteCycle;
