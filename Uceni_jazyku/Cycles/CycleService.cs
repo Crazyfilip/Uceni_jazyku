@@ -215,12 +215,18 @@ namespace Uceni_jazyku.Cycles
 
         #region Others methods
 
-        // TODO only for testing 
+        // Only for testing 
         public void SetActiveCourse(LanguageCourse languageCourse)
         {
             ActiveCourse = languageCourse;
         }
 
+        /// <summary>
+        /// Set as active language course provided course, reset planner a reset cache if needed
+        /// </summary>
+        /// <param name="username">username</param>
+        /// <param name="languageCourse">LanguageCourse</param>
+        /// <param name="cacheReset">flag if cache reset is needed</param>
         public virtual void SetActiveCourse(string username, LanguageCourse languageCourse, bool cacheReset)
         {
             ActiveCourse = languageCourse;
@@ -268,6 +274,12 @@ namespace Uceni_jazyku.Cycles
             return item.LessonRef.Lesson;
         }
 
+        /// <summary>
+        /// Get lesson from LanguageTopic chosen by user
+        /// </summary>
+        /// <param name="username">username</param>
+        /// <param name="topicId">language topic id</param>
+        /// <returns>lesson</returns>
         public string GetNextLesson(string username, string topicId)
         {
             log.Info($"Getting next lesson from topic {topicId}");

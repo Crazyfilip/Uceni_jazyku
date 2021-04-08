@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace Uceni_jazyku.Language.Impl
 {
+    /// <summary>
+    /// Simple implementation of language course.
+    /// Language topics are stored in list and their order is given by their order in list
+    /// </summary>
     public class SimpleLanguageCourse : LanguageCourse
     {
         public SimpleLanguageCourse() { }

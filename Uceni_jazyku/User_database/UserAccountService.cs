@@ -29,6 +29,7 @@ namespace Uceni_jazyku.User_database
         /// </summary>
         /// <param name="repository">object implementing IUserAccountRepository</param>
         /// <param name="cycleService">instance of CycleService</param>
+        /// <param name="languageCourseService">instance of LanguageCourseService</param>
         public UserAccountService(IUserAccountRepository repository, CycleService cycleService, LanguageCourseService languageCourseService)
         {
             userAccountRepository = repository ?? new UserAccountRepository();

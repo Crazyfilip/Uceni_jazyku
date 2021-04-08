@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace Uceni_jazyku.Language
 {
+    /// <summary>
+    /// Abstract form of language course
+    /// Topics are stored in generic collection
+    /// </summary>
     public abstract class LanguageCourse : ILanguageTopicSelectStrategy
     {
         public virtual string CourseId { get; init; }
@@ -17,6 +21,10 @@ namespace Uceni_jazyku.Language
 
         public abstract List<LanguageTopic> getNextLayer();
 
+        /// <summary>
+        /// Set in course that topic was picked by planner or user
+        /// </summary>
+        /// <param name="topicId">id of topic</param>
         public void PickTopic(string topicId)
         {
             LanguageTopic lesson = topics.Where(x => x.TopicId == topicId).Single();

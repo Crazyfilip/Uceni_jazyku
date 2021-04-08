@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Uceni_jazyku.Language
 {
+    /// <summary>
+    /// Service class for managing language courses
+    /// </summary>
     public class LanguageCourseService
     {
         private readonly ILanguageCourseRepository languageCourseRepository;
@@ -37,6 +40,11 @@ namespace Uceni_jazyku.Language
             return instance;
         }
         
+        /// <summary>
+        /// Get user's active course
+        /// </summary>
+        /// <param name="username">username</param>
+        /// <returns>Active language course</returns>
         public virtual LanguageCourse GetActiveLanguageCourse(string username)
         {
             return languageCourseRepository.GetActiveCourse(username);

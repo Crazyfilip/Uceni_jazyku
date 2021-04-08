@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Uceni_jazyku.Language
 {
+    /// <summary>
+    /// Repository for language courses
+    /// </summary>
     public interface ILanguageCourseRepository
     {
         /// <summary>
@@ -16,10 +19,10 @@ namespace Uceni_jazyku.Language
         LanguageCourse GetActiveCourse(string username);
 
         /// <summary>
-        /// 
+        /// Get all user's inactive language courses
         /// </summary>
-        /// <param name="username"></param>
-        /// <returns></returns>
+        /// <param name="username">username</param>
+        /// <returns>List of language courses</returns>
         List<LanguageCourse> GetInactiveLanguageCourses(string username);
     }
 }

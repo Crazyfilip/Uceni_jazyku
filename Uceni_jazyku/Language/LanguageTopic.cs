@@ -3,6 +3,9 @@ using Uceni_jazyku.Cycles.Program;
 
 namespace Uceni_jazyku.Language
 {
+    /// <summary>
+    /// Class representing topic of group of lessons
+    /// </summary>
     public class LanguageTopic
     {
         public virtual string TopicId { get; init; }
@@ -12,11 +15,18 @@ namespace Uceni_jazyku.Language
         public int PlannedLessons { get; private set; }
         public int FinishedLessons { get; private set; }
 
+        /// <summary>
+        /// Get next unplanned lesson, if no lesson is available then return null
+        /// </summary>
+        /// <returns>Next lesson</returns>
         public virtual LanguageProgramItem PlanNextLesson()
         {
             return PlannedLessons < Lessons.Count ? Lessons[PlannedLessons++] : null;
         }
 
+        /// <summary>
+        /// Mark first unfinished lesson as finished
+        /// </summary>
         public void FinishLesson()
         {
             Lessons[FinishedLessons++].Finish();
