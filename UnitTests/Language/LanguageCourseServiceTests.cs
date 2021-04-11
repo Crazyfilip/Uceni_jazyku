@@ -14,6 +14,7 @@ namespace UnitTests.Language
         [TestInitialize]
         public void Init()
         {
+            Mock<LanguageCourse> mock = new();
             languageCourseRepositoryMock = new Mock<ILanguageCourseRepository>();
             languageCourseService = LanguageCourseService.GetInstance(languageCourseRepositoryMock.Object);
         }

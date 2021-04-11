@@ -14,6 +14,8 @@ namespace Uceni_jazyku.Cycles
         /// <summary>
         /// Create user cycle in initial state, cycleId and DateCreated
         /// </summary>
+        /// <param name="username">username</param>
+        /// <param name="courseId">language course id</param>
         /// <returns>instance of user cycle</returns>
         UserCycle CreateCycle(string username, string courseId);
 
@@ -21,6 +23,8 @@ namespace Uceni_jazyku.Cycles
         /// Create incomplete user cycle with cycleId and DateCreated
         /// </summary>
         /// <param name="username">username</param>
+        /// <param name="courseId">language course id</param>
+        /// <param name="limit">number of lessons in cycle</param>
         /// <returns>instance of incomplete user cycle</returns>
         IncompleteUserCycle CreateIncompleteCycle(string username, string courseId, int limit);
     }

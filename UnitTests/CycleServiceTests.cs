@@ -717,6 +717,54 @@ namespace UnitTests
 
         }
 
+        [TestMethod]
+        public void TestSetActiveCoursePositiveNoCacheReset()
+        {
+            // Init
+            Mock<LanguageCourse> languageCourse = new();
+
+            // Test
+            service.SetActiveCourse("test", languageCourse.Object, false);
+
+            // Verify
+            Assert.AreEqual(languageCourse.Object, service.ActiveCourse);
+            plannerMock.Verify(x => x.SetCourse(languageCourse.Object), Times.Once);
+
+            languageCourse.VerifyNoOtherCalls();
+            plannerMock.VerifyNoOtherCalls();
+            cacheMock.VerifyNoOtherCalls();
+        }
+
+        [TestMethod]
+        public void TestSetActiveCoursePositiveWithCacheReset()
+        {
+            // Init
+            Mock<UserCycle> cycleMock = new();
+            cycleMock.SetupGet(x => x.State).Returns(UserCycleState.Inactive);
+            Mock<LanguageCourse> languageCourse = new();
+            languageCourse.SetupGet(x => x.CourseId).Returns("course_id");
+            databaseMock.Setup(x => x.GetOldestUserInactiveCycle("test", "course_id")).Returns(cycleMock.Object);
+
+            // Test
+            service.SetActiveCourse("test", languageCourse.Object, true);
+
+            // Verify
+            Assert.AreEqual(languageCourse.Object, service.ActiveCourse);
+            plannerMock.Verify(x => x.SetCourse(languageCourse.Object), Times.Once);
+            cycleMock.Verify(x => x.CycleID, Times.Exactly(2));
+            cycleMock.Verify(x => x.State, Times.Once);
+            cycleMock.Verify(x => x.Activate(), Times.Once);
+            languageCourse.Verify(x => x.CourseId, Times.Once);
+            cacheMock.Verify(x => x.InsertToCache(cycleMock.Object), Times.Once);
+            databaseMock.Verify(x => x.UpdateCycle(cycleMock.Object), Times.Once);
+
+            cycleMock.VerifyNoOtherCalls();
+            languageCourse.VerifyNoOtherCalls();
+            plannerMock.VerifyNoOtherCalls();
+            cacheMock.VerifyNoOtherCalls();
+            databaseMock.VerifyNoOtherCalls();
+        }
+
         [TestCleanup]
         public void TestCleanUp()
         {

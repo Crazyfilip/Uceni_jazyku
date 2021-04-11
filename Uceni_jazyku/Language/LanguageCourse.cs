@@ -16,8 +16,7 @@ namespace Uceni_jazyku.Language
         public string Username { get; init; }
         public bool Active { get; set; }
 
-        protected ICollection<LanguageTopic> topics;
-        protected Dictionary<LanguageTopic, bool> pickedTopics;
+        public virtual ICollection<LanguageTopic> topics { get; protected set; }
 
         public abstract List<LanguageTopic> getNextLayer();
 
@@ -25,10 +24,10 @@ namespace Uceni_jazyku.Language
         /// Set in course that topic was picked by planner or user
         /// </summary>
         /// <param name="topicId">id of topic</param>
-        public void PickTopic(string topicId)
+        public virtual void TopicPicked(string topicId)
         {
-            LanguageTopic lesson = topics.Where(x => x.TopicId == topicId).Single();
-            pickedTopics.Add(lesson, true);
+            LanguageTopic t = topics.Where(x => x.TopicId == topicId).FirstOrDefault();
+            t?.TopicPicked();
         }
 
         public abstract LanguageTopic selectNextTopic();

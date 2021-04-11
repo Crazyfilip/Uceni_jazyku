@@ -15,6 +15,8 @@ namespace Uceni_jazyku.Language
         public int PlannedLessons { get; private set; }
         public int FinishedLessons { get; private set; }
 
+        public virtual bool Picked { get; private set; }
+
         /// <summary>
         /// Get next unplanned lesson, if no lesson is available then return null
         /// </summary>
@@ -30,6 +32,11 @@ namespace Uceni_jazyku.Language
         public void FinishLesson()
         {
             Lessons[FinishedLessons++].Finish();
+        }
+
+        public virtual void TopicPicked()
+        {
+            Picked = true;
         }
     }
 }

@@ -222,18 +222,19 @@ namespace Uceni_jazyku.Cycles
         }
 
         /// <summary>
-        /// Set as active language course provided course, reset planner a reset cache if needed
+        /// Set as active language course provided course, reset planner and reset active cycle if needed
         /// </summary>
         /// <param name="username">username</param>
         /// <param name="languageCourse">LanguageCourse</param>
-        /// <param name="cacheReset">flag if cache reset is needed</param>
-        public virtual void SetActiveCourse(string username, LanguageCourse languageCourse, bool cacheReset)
+        /// <param name="activeCycleReset">flag if active cycle reset is needed</param>
+        public virtual void SetActiveCourse(string username, LanguageCourse languageCourse, bool activeCycleReset)
         {
             ActiveCourse = languageCourse;
             ProgramPlanner.SetCourse(languageCourse);
-            if (cacheReset)
+            if (activeCycleReset)
             {
-                ActiveCycleCache.InsertToCache(GetUserCycle(username));
+                // reset of cache done during GetUserCycle(string)
+                GetUserCycle(username);
             }
         }
         
@@ -280,6 +281,7 @@ namespace Uceni_jazyku.Cycles
         /// <param name="username">username</param>
         /// <param name="topicId">language topic id</param>
         /// <returns>lesson</returns>
+        // TODO add tests when implemented call from UI
         public string GetNextLesson(string username, string topicId)
         {
             log.Info($"Getting next lesson from topic {topicId}");
