@@ -35,7 +35,7 @@ namespace Uceni_jazyku.Cycles.Program
         /// <summary>
         /// Set Finished flag to true
         /// </summary>
-        public void Finish()
+        public virtual void Finish()
         {
             Finished = true;
         }

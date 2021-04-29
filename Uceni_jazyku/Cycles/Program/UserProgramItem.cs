@@ -13,19 +13,20 @@ namespace Uceni_jazyku.Cycles.Program
     public class UserProgramItem : ProgramItem
     {
         [DataMember]
-        public string LanguageCycleRef { get; private set; }
+        public string LanguageTopicRef { get; init; }
         [DataMember]
-        public virtual LanguageProgramItem LessonRef { get; private set; }
+        public virtual LanguageProgramItem LessonRef { get; init; }
 
         public UserProgramItem() { }
 
         /// <summary>
         /// Initialization of program item
         /// </summary>
-        /// <param name="langCycleId">Reference </param>
-        public UserProgramItem(string langCycleId, LanguageProgramItem languageProgramItem)
+        /// <param name="langTopicId">Reference to language topic</param>
+        /// <param name="languageProgramItem">language item from topic</param>
+        public UserProgramItem(string langTopicId, LanguageProgramItem languageProgramItem)
         {
-            LanguageCycleRef = langCycleId;
+            LanguageTopicRef = langTopicId;
             LessonRef = languageProgramItem;
         }
     }

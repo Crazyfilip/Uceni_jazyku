@@ -22,7 +22,7 @@ namespace UnitTests
         public void TestCreateCyclePositive()
         {
             // Test
-            UserCycle result = CycleFactory.CreateCycle("test");
+            UserCycle result = CycleFactory.CreateCycle("test", "test_course");
 
             // Verify
             Assert.IsNotNull(result);
@@ -30,13 +30,14 @@ namespace UnitTests
             Assert.IsNotNull(result.DateCreated);
             Assert.AreEqual(UserCycleState.New, result.State);
             Assert.AreEqual("test", result.Username);
+            Assert.AreEqual("test_course", result.CourseID);
         }
 
         [TestMethod]
         public void TestCreateIncompleteCyclePositive()
         {
             // Test
-            IncompleteUserCycle result = CycleFactory.CreateIncompleteCycle("test", 0);
+            IncompleteUserCycle result = CycleFactory.CreateIncompleteCycle("test", "test_course", 0);
 
             // Verify
             Assert.IsNotNull(result);
@@ -44,6 +45,7 @@ namespace UnitTests
             Assert.IsNotNull(result.DateCreated);
             Assert.AreEqual(UserCycleState.Inactive, result.State);
             Assert.AreEqual("test", result.Username);
+            Assert.AreEqual("test_course", result.CourseID);
             Assert.AreEqual(0, result.limit);
         }
     }

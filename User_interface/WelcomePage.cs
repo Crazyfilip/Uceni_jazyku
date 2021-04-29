@@ -3,6 +3,7 @@ using System;
 using System.Windows.Forms;
 using Uceni_jazyku.Cycles;
 using Uceni_jazyku.Cycles.Program;
+using Uceni_jazyku.Language;
 
 namespace User_interface
 {
@@ -10,6 +11,7 @@ namespace User_interface
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(WelcomePage));
         private UserCycle userCycle;
+        private CycleService cycleService = CycleService.GetInstance();
         
         public WelcomePage()
         {
@@ -21,6 +23,7 @@ namespace User_interface
             log.Info("test");
             InitializeComponent();
             userCycle = cycle;
+            cycleService.SetActiveCourse(userCycle.Username, LanguageCourseService.GetInstance().GetActiveLanguageCourse(userCycle.Username), false);
             labelWelcome.Text = labelWelcome.Text.Replace("<username>", cycle.Username);
             lessonLink.Text = lessonLink.Text.Replace("<lesson>", ((UserProgramItem)cycle.GetNext()).LessonRef.Lesson);
         }
@@ -38,7 +41,6 @@ namespace User_interface
 
         private void linkDifferentUser_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            CycleService cycleService = CycleService.GetInstance();
             cycleService.Inactivate(userCycle);
             UserCycle unknownUserCycle = new UserCycle();
             new LoginPage(unknownUserCycle).Show();

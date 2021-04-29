@@ -14,7 +14,7 @@ namespace UnitTests
     public class CycleRepositoryTests
     {
         ICycleRepository repository;
-        List<AbstractCycle> cycles;
+        List<UserCycle> cycles;
 
         UserCycle cycle;
         UserCycle cyclePreUpdate, cyclePostUpdate;
@@ -36,12 +36,12 @@ namespace UnitTests
             cycle = new UserCycle() { CycleID = "test" };
             cyclePreUpdate = new UserCycle() { CycleID = "test_id" };
             cyclePostUpdate = new UserCycle() { CycleID = "test_id", Username = "testUpdate" };
-            cycleInactive1 = new UserCycle() { Username = "test", DateCreated = DateTime.Now }.Activate().Inactivate();
-            cycleInactive2 = new UserCycle() { Username = "test", DateCreated = DateTime.Now.AddMinutes(1) }.Activate().Inactivate();
-            cycleFinished = new UserCycle() { Username = "test", DateCreated = DateTime.Now.AddMinutes(-1) }.Activate().Finish();
-            cycleIncomplete = new IncompleteUserCycle() { Username = "test", DateCreated = DateTime.Now.AddMinutes(2) };
+            cycleInactive1 = new UserCycle() { CourseID = "test_course", Username = "test", DateCreated = DateTime.Now }.Activate().Inactivate();
+            cycleInactive2 = new UserCycle() { CourseID = "test_course", Username = "test", DateCreated = DateTime.Now.AddMinutes(1) }.Activate().Inactivate();
+            cycleFinished = new UserCycle() { CourseID = "test_course", Username = "test", DateCreated = DateTime.Now.AddMinutes(-1) }.Activate().Finish();
+            cycleIncomplete = new IncompleteUserCycle() { CourseID = "test_course", Username = "test", DateCreated = DateTime.Now.AddMinutes(2) };
 
-            cycles = new List<AbstractCycle>() { cyclePreUpdate, cycleInactive1, cycleInactive2, cycleIncomplete, cycleFinished };
+            cycles = new List<UserCycle>() { cyclePreUpdate, cycleInactive1, cycleInactive2, cycleIncomplete, cycleFinished };
 
 
             Directory.CreateDirectory("./cycles/service");
@@ -120,7 +120,7 @@ namespace UnitTests
         public void TestGetOldestUserInactiveCycleNegative()
         {
             // Test
-            UserCycle result = repository.GetOldestUserInactiveCycle("testuser");
+            UserCycle result = repository.GetOldestUserInactiveCycle("testuser", "test_course");
 
             // Verify
             Assert.IsNull(result);
@@ -134,7 +134,7 @@ namespace UnitTests
         public void TestGetOldestUserInactiveCyclePositive()
         {
             // Test
-            UserCycle result = repository.GetOldestUserInactiveCycle("test");
+            UserCycle result = repository.GetOldestUserInactiveCycle("test", "test_course");
 
             // Verify
             Assert.AreEqual(cycleInactive1, result);
@@ -149,7 +149,7 @@ namespace UnitTests
         public void TestGetUserIncompleteCycleNegative()
         {
             //Test
-            IncompleteUserCycle result = repository.GetUserIncompleteCycle("testuser");
+            IncompleteUserCycle result = repository.GetUserIncompleteCycle("testuser", "test_course");
 
             // Verify
             Assert.IsNull(result);
@@ -163,7 +163,7 @@ namespace UnitTests
         public void TestGetUserIncompleteCycleExisting()
         {
             // Test
-            IncompleteUserCycle result = repository.GetUserIncompleteCycle("test");
+            IncompleteUserCycle result = repository.GetUserIncompleteCycle("test", "test_course");
 
             // Verify
             Assert.AreEqual(cycleIncomplete, result);
@@ -177,7 +177,7 @@ namespace UnitTests
         public void TestGetNotFinishedCyclesPositive()
         {
             // Test
-            List<UserCycle> result = repository.GetNotFinishedCycles("test");
+            List<UserCycle> result = repository.GetNotFinishedCycles("test", "test_course");
 
             // Verify
             CollectionAssert.AreEqual(new List<UserCycle>() { cycleInactive1, cycleInactive2, cycleIncomplete }, result);
@@ -192,7 +192,7 @@ namespace UnitTests
         public void TestGetNotFinishedCyclesNegative()
         {
             // Test
-            List<UserCycle> result = repository.GetNotFinishedCycles("testtest");
+            List<UserCycle> result = repository.GetNotFinishedCycles("testtest", "test_course");
 
             // Verify
             CollectionAssert.AreEqual(new List<UserCycle>(), result);

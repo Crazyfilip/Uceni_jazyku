@@ -1,9 +1,9 @@
 ﻿using log4net;
 using System;
 using System.Collections.Generic;
-using Uceni_jazyku.Cycles.LanguageCycles;
 using Uceni_jazyku.Cycles.Program;
 using Uceni_jazyku.Cycles.UserCycles;
+using Uceni_jazyku.Language;
 using Uceni_jazyku.Planner;
 
 namespace Uceni_jazyku.Cycles
@@ -19,6 +19,8 @@ namespace Uceni_jazyku.Cycles
 
         private static CycleService instance;
 
+        public LanguageCourse ActiveCourse { get; private set; }
+
         private readonly ICycleRepository CycleRepository;
 
         private readonly IActiveCycleCache ActiveCycleCache;
@@ -27,6 +29,7 @@ namespace Uceni_jazyku.Cycles
 
         private readonly ICycleFactory CycleFactory;
 
+        #region Initialization
         public CycleService() : this(null, null, null, null){}
 
         private CycleService(ICycleRepository database, IActiveCycleCache cache, IProgramPlanner planner, ICycleFactory cycleFactory) {
@@ -72,6 +75,10 @@ namespace Uceni_jazyku.Cycles
             instance = null;
         }
 
+        #endregion
+
+        #region ActiveCycleCache methods
+
         /// <summary>
         /// test presence of cached active cycle
         /// </summary>
@@ -92,6 +99,9 @@ namespace Uceni_jazyku.Cycles
             return ActiveCycleCache.GetFromCache();
         }
 
+        #endregion
+
+        #region Creating and updating user cycles
         /// <summary>
         /// Get active cycle for given user
         /// when login or when active cycle was finished
@@ -102,7 +112,7 @@ namespace Uceni_jazyku.Cycles
         {
             log.Info($"Getting cycle for user {username}");
             log.Debug($"Looking if there is existing inactive cycle for user {username}");
-            UserCycle result = CycleRepository.GetOldestUserInactiveCycle(username);
+            UserCycle result = CycleRepository.GetOldestUserInactiveCycle(username, ActiveCourse.CourseId);
             if (result != null)
             {
                 log.Debug($"Obtained {result.CycleID}");
@@ -123,7 +133,7 @@ namespace Uceni_jazyku.Cycles
         public UserCycle GetNewCycle(string username)
         {
             log.Info($"Creating new cycle for user {username}");
-            UserCycle newCycle = CycleFactory.CreateCycle(username);
+            UserCycle newCycle = CycleFactory.CreateCycle(username, ActiveCourse.CourseId);
             CycleRepository.PutCycle(newCycle);
             log.Debug($"New cycle created with id {newCycle.CycleID}");
             return newCycle;
@@ -141,7 +151,7 @@ namespace Uceni_jazyku.Cycles
             if (cycle.State == UserCycleState.New)
             {
                 log.Debug("Obtaining cycle program");
-                List<UserProgramItem> program = ProgramPlanner.getNextUserCycleProgram(cycle.Username);
+                List<UserProgramItem> program = ProgramPlanner.GetNextUserCycleProgram(cycle.Username);
                 log.Info($"Assigning program to cycle {cycle.CycleID}");
                 cycle.AssignProgram(program);
             }
@@ -201,7 +211,33 @@ namespace Uceni_jazyku.Cycles
                 log.Warn($"Cycle {cycle.CycleID} wasn't finished", e);
             }
         }
+        #endregion
 
+        #region Others methods
+
+        // Only for testing 
+        public void SetActiveCourse(LanguageCourse languageCourse)
+        {
+            ActiveCourse = languageCourse;
+        }
+
+        /// <summary>
+        /// Set as active language course provided course, reset planner and reset active cycle if needed
+        /// </summary>
+        /// <param name="username">username</param>
+        /// <param name="languageCourse">LanguageCourse</param>
+        /// <param name="activeCycleReset">flag if active cycle reset is needed</param>
+        public virtual void SetActiveCourse(string username, LanguageCourse languageCourse, bool activeCycleReset)
+        {
+            ActiveCourse = languageCourse;
+            ProgramPlanner.SetCourse(languageCourse);
+            if (activeCycleReset)
+            {
+                // reset of cache done during GetUserCycle(string)
+                GetUserCycle(username);
+            }
+        }
+        
         /// <summary>
         /// Insert lesson to cycle and place removed lesson from that cycle to new incomplete cycle
         /// </summary>
@@ -231,7 +267,7 @@ namespace Uceni_jazyku.Cycles
         public string GetNextLesson(string username)
         {
             log.Info("Getting next planned lesson");
-            UserProgramItem item = ProgramPlanner.getNextLanguageLesson(username);
+            UserProgramItem item = ProgramPlanner.GetNextLanguageLesson(username);
             IncompleteUserCycle incompleteCycle = GetIncompleteUserCycle(username);
             log.Debug($"Placing lesson {item.LessonRef.Lesson} to cycle {incompleteCycle.CycleID}");
             incompleteCycle.AddLesson(item);
@@ -239,14 +275,29 @@ namespace Uceni_jazyku.Cycles
             return item.LessonRef.Lesson;
         }
 
+        /// <summary>
+        /// Get lesson from LanguageTopic chosen by user
+        /// </summary>
+        /// <param name="username">username</param>
+        /// <param name="topicId">language topic id</param>
+        /// <returns>lesson</returns>
+        // TODO add tests when implemented call from UI
+        public string GetNextLesson(string username, string topicId)
+        {
+            log.Info($"Getting next lesson from topic {topicId}");
+            UserProgramItem item = ProgramPlanner.GetNextLanguageLesson(username, topicId);
+            // TODO swap lesson to active cycle
+            return item.LessonRef.Lesson;
+        }
+
         private IncompleteUserCycle GetIncompleteUserCycle(string username)
         {
             log.Debug($"Looking if there is incomplete user cycle for user {username}");
-            IncompleteUserCycle incompleteCycle = CycleRepository.GetUserIncompleteCycle(username);
+            IncompleteUserCycle incompleteCycle = CycleRepository.GetUserIncompleteCycle(username, ActiveCourse.CourseId);
             if (incompleteCycle == null)
             {
                 log.Debug("No incomplete user cycle found creating new");
-                incompleteCycle = CycleFactory.CreateIncompleteCycle(username, 0); // TODO set limit properly
+                incompleteCycle = CycleFactory.CreateIncompleteCycle(username, ActiveCourse.CourseId, 0); // TODO set limit properly
                 CycleRepository.PutCycle(incompleteCycle);
             }
             return incompleteCycle;
@@ -260,7 +311,7 @@ namespace Uceni_jazyku.Cycles
         public List<UserProgramItem> GetPlannedUnfinishedLessons(string username)
         {
             log.Info($"Getting unfinished planned lessons for user {username}");
-            List<UserCycle> userCycles = CycleRepository.GetNotFinishedCycles(username);
+            List<UserCycle> userCycles = CycleRepository.GetNotFinishedCycles(username, ActiveCourse.CourseId);
             List<UserProgramItem> result = new();
             userCycles
                 .ForEach(x => x.UserProgramItems
@@ -271,5 +322,6 @@ namespace Uceni_jazyku.Cycles
                     }));
             return result;
         }
+        #endregion
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using System.Security.Cryptography;
 using log4net;
+using Uceni_jazyku.Language;
 
 namespace Uceni_jazyku.User_database
 {
@@ -13,13 +14,14 @@ namespace Uceni_jazyku.User_database
     public class UserAccountService
     {
         private static ILog log = LogManager.GetLogger(typeof(UserAccountService));
-        private IUserAccountRepository userAccountRepository;
-        private CycleService cycleService;
+        private readonly IUserAccountRepository userAccountRepository;
+        private readonly CycleService cycleService;
+        private readonly LanguageCourseService languageCourseService;
 
         /// <summary>
         /// This constructor calls UserAccountService(IUserAccountRepository, CycleService) with null values
         /// </summary>
-        public UserAccountService() : this(null, null) {}
+        public UserAccountService() : this(null, null, null) {}
 
         /// <summary>
         /// Constructor of UserAccountService. When IUserAccountRepository or CycleService are not provided (null values)
@@ -27,10 +29,12 @@ namespace Uceni_jazyku.User_database
         /// </summary>
         /// <param name="repository">object implementing IUserAccountRepository</param>
         /// <param name="cycleService">instance of CycleService</param>
-        public UserAccountService(IUserAccountRepository repository, CycleService cycleService)
+        /// <param name="languageCourseService">instance of LanguageCourseService</param>
+        public UserAccountService(IUserAccountRepository repository, CycleService cycleService, LanguageCourseService languageCourseService)
         {
             userAccountRepository = repository ?? new UserAccountRepository();
             this.cycleService = cycleService ?? CycleService.GetInstance();
+            this.languageCourseService = languageCourseService ?? LanguageCourseService.GetInstance();
         }
 
         /// <summary>
@@ -45,6 +49,7 @@ namespace Uceni_jazyku.User_database
             if (VerifyUser(username, password))
             {
                 log.Debug("Login successful");
+                cycleService.SetActiveCourse(username, languageCourseService.GetActiveLanguageCourse(username), false);
                 return cycleService.GetUserCycle(username);
             }
             else
