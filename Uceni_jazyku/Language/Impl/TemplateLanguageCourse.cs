@@ -12,6 +12,8 @@ namespace Uceni_jazyku.Language.Impl
     [DataContract]
     public class TemplateLanguageCourse : LanguageCourse
     {
+        // TODO metadata?!
+
         public TemplateLanguageCourse(ICollection<LanguageTopic> topics)
         {
             this.topics = topics;
