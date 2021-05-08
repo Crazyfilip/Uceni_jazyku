@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Uceni_jazyku.Language.Impl;
 
 namespace Uceni_jazyku.Language
 {
@@ -12,30 +8,32 @@ namespace Uceni_jazyku.Language
     public class LanguageCourseService
     {
         private readonly ILanguageCourseRepository languageCourseRepository;
+        private ILanguageCourseFactory languageCourseFactory;
 
         private static LanguageCourseService instance;
 
-        public LanguageCourseService() : this(null) { } 
+        public LanguageCourseService() : this(null, null) { } 
 
-        private LanguageCourseService(ILanguageCourseRepository languageCourseRepository)
+        private LanguageCourseService(ILanguageCourseRepository languageCourseRepository, ILanguageCourseFactory languageCourseFactory)
         {
             this.languageCourseRepository = languageCourseRepository ?? new LanguageCourseRepository();
+            this.languageCourseFactory = languageCourseFactory ?? new SimpleLanguageCourseFactory();
         }
 
         public static LanguageCourseService GetInstance()
         {
             if (instance == null)
             {
-                instance = new LanguageCourseService(null);
+                instance = new LanguageCourseService(null, null);
             }
             return instance;
         }
 
-        public static LanguageCourseService GetInstance(ILanguageCourseRepository languageCourseRepository)
+        public static LanguageCourseService GetInstance(ILanguageCourseRepository languageCourseRepository, ILanguageCourseFactory languageCourseFactory)
         {
             if (instance == null)
             {
-                instance = new LanguageCourseService(languageCourseRepository);
+                instance = new LanguageCourseService(languageCourseRepository, languageCourseFactory);
             }
             return instance;
         }
@@ -48,6 +46,14 @@ namespace Uceni_jazyku.Language
         public virtual LanguageCourse GetActiveLanguageCourse(string username)
         {
             return languageCourseRepository.GetActiveCourse(username);
+        }
+
+        public virtual LanguageCourse GetLanguageCourseInstanceFromTemplate(string templateId, string username)
+        {
+            TemplateLanguageCourse template = languageCourseRepository.GetTemplate(templateId);
+            LanguageCourse course = languageCourseFactory.GetLanguageCourse(template, username);
+            languageCourseRepository.InsertCourse(course);
+            return course;
         }
     }
 }

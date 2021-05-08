@@ -109,6 +109,10 @@ namespace Uceni_jazyku.User_database
             userAccount.loginCredential = Convert.ToBase64String(pbkdf2.GetBytes(20));
             log.Debug("Registering user to repository");
             userAccountRepository.AddUserAccount(userAccount);
+
+            // TODO will be in serapate method as in UI course is setup in second step
+            LanguageCourse course = languageCourseService.GetLanguageCourseInstanceFromTemplate("template-default", username);
+            cycleService.SetActiveCourse(course);
             return true;
         }
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Uceni_jazyku.Language.Impl;
 
 namespace Uceni_jazyku.Language
 {
@@ -24,5 +25,18 @@ namespace Uceni_jazyku.Language
         /// <param name="username">username</param>
         /// <returns>List of language courses</returns>
         List<LanguageCourse> GetInactiveLanguageCourses(string username);
+
+        /// <summary>
+        /// Get template language course
+        /// </summary>
+        /// <param name="templateId">id of template</param>
+        /// <returns>template course</returns>
+        TemplateLanguageCourse GetTemplate(string templateId);
+
+        /// <summary>
+        /// Inserting course to database
+        /// </summary>
+        /// <param name="languageCourse">LanguageCourse</param>
+        void InsertCourse(LanguageCourse languageCourse);
     }
 }
