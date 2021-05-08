@@ -48,6 +48,12 @@ namespace Uceni_jazyku.Language
             return languageCourseRepository.GetActiveCourse(username);
         }
 
+        /// <summary>
+        /// Get new instance of language course based on template
+        /// </summary>
+        /// <param name="templateId">id of template</param>
+        /// <param name="username">username</param>
+        /// <returns></returns>
         public virtual LanguageCourse GetLanguageCourseInstanceFromTemplate(string templateId, string username)
         {
             TemplateLanguageCourse template = languageCourseRepository.GetTemplate(templateId);
