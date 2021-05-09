@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using Uceni_jazyku.Language.Impl;
 
 namespace Uceni_jazyku.Language
 {
@@ -28,6 +29,13 @@ namespace Uceni_jazyku.Language
             }
         }
 
+        private void Save()
+        {
+            var serializer = new DataContractSerializer(typeof(List<LanguageCourse>));
+            using XmlWriter writer = XmlWriter.Create(path);
+            serializer.WriteObject(writer, languageCourses ?? new List<LanguageCourse>());
+        }
+
         public LanguageCourseRepository(ICollection<LanguageCourse> languageCourses)
         {
             this.languageCourses = languageCourses;
@@ -35,12 +43,30 @@ namespace Uceni_jazyku.Language
 
         public LanguageCourse GetActiveCourse(string username)
         {
-            return languageCourses.Where(x => x.Username == username && x.Active).SingleOrDefault();
+            return languageCourses
+                .Where(x => x.Username == username && x.Active)
+                .SingleOrDefault();
         }
 
         public List<LanguageCourse> GetInactiveLanguageCourses(string username)
         {
-            return languageCourses.Where(x => x.Username == username && !x.Active).ToList();
+            return languageCourses
+                .Where(x => x.Username == username && !x.Active)
+                .ToList();
+        }
+
+        public TemplateLanguageCourse GetTemplate(string templateId)
+        {
+            return languageCourses
+                .Where(x => x.CourseId == templateId && x is TemplateLanguageCourse)
+                .Cast<TemplateLanguageCourse>()
+                .FirstOrDefault();
+        }
+
+        public void InsertCourse(LanguageCourse languageCourse)
+        {
+            languageCourses.Add(languageCourse);
+            Save();
         }
     }
 }

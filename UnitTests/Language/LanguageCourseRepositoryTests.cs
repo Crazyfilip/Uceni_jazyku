@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using System.IO;
 using Uceni_jazyku.Language;
 using Uceni_jazyku.Language.Impl;
 
@@ -13,12 +14,19 @@ namespace UnitTests.Language
         readonly LanguageCourse languageCourseActive2_1 = new SimpleLanguageCourse() { Active = true, CourseId = "active_id2", Username = "tester" };
         readonly LanguageCourse languageCourseInactive1_1 = new SimpleLanguageCourse() { Active = false, CourseId = "inactive_id3", Username = "test" };
         readonly LanguageCourse languageCourseInactive1_2 = new SimpleLanguageCourse() { Active = false, CourseId = "inactive_id4", Username = "test" };
+        readonly LanguageCourse templateLanguageCourse = new TemplateLanguageCourse(new List<LanguageTopic>()) { CourseId = "template_id" };
+        readonly LanguageCourse testLanguageCourse = new SimpleLanguageCourse() { CourseId = "test" };
+        List<LanguageCourse> languageCourses;
 
         [TestInitialize]
         public void Init()
         {
-            List<LanguageCourse> languageCourses = new List<LanguageCourse>() { languageCourseActive1_1, languageCourseActive2_1, languageCourseInactive1_1, languageCourseInactive1_2 };
+            languageCourses = new List<LanguageCourse>() 
+            { languageCourseActive1_1, languageCourseActive2_1, 
+              languageCourseInactive1_1, languageCourseInactive1_2, 
+              templateLanguageCourse };
 
+            Directory.CreateDirectory("./courses/service");
             languageCourseRepository = new LanguageCourseRepository(languageCourses);
         }
 
@@ -65,6 +73,55 @@ namespace UnitTests.Language
             // Verify
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Count == 0);
+        }
+
+        [TestMethod]
+        public void TestGetTemplatePositive()
+        {
+            // Test
+            TemplateLanguageCourse result = languageCourseRepository.GetTemplate("template_id");
+
+            // Verify
+            Assert.AreEqual(templateLanguageCourse, result);
+        }
+
+        [TestMethod]
+        public void TestGetTemplateNegativeNullWhenNotFound()
+        {
+            // Test
+            TemplateLanguageCourse result = languageCourseRepository.GetTemplate("no_template");
+
+            // Verify
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void TestGetTemplateNegativeNullWhenIdExistsButNotTemplate()
+        {
+            // Test
+            TemplateLanguageCourse result = languageCourseRepository.GetTemplate("active_id1");
+
+            // Verify
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void TestInsertCoursePositive()
+        {
+            // Preverify
+            Assert.IsFalse(languageCourses.Contains(testLanguageCourse));
+
+            // Test
+            languageCourseRepository.InsertCourse(testLanguageCourse);
+
+            // Verify
+            Assert.IsTrue(languageCourses.Contains(testLanguageCourse));
+        }
+
+        [TestCleanup]
+        public void CleanUp()
+        {
+            Directory.Delete("./courses", true);
         }
     }
 }

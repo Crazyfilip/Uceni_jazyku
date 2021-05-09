@@ -13,6 +13,7 @@ namespace Uceni_jazyku.Language.Impl
     public class TemplateLanguageCourse : LanguageCourse
     {
         // TODO metadata?!
+        public TemplateLanguageCourse() { }
 
         public TemplateLanguageCourse(ICollection<LanguageTopic> topics)
         {
