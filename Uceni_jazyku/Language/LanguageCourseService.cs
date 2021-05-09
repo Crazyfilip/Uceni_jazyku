@@ -37,6 +37,11 @@ namespace Uceni_jazyku.Language
             }
             return instance;
         }
+
+        public static void deallocate()
+        {
+            instance = null;
+        }
         
         /// <summary>
         /// Get user's active course

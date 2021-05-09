@@ -67,5 +67,11 @@ namespace UnitTests.Language
             languageCourseRepositoryMock.VerifyNoOtherCalls();
             languageCourseFactoryMock.VerifyNoOtherCalls();
         }
+
+        [TestCleanup]
+        public void CleanUp()
+        {
+            LanguageCourseService.deallocate();
+        }
     }
 }
