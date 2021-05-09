@@ -19,12 +19,22 @@ namespace Uceni_jazyku.Language
         LanguageCourse GetLanguageCourse(TemplateLanguageCourse template, string username);
 
         /// <summary>
-        /// Create instance of partial language course based on selected topics chosen by user
+        /// Create instance of partial language course based only on selected topics chosen by user
         /// </summary>
         /// <param name="template">template of language course</param>
         /// <param name="username">username</param>
         /// <param name="selectedTopics">selected topics</param>
         /// <returns>instance of partial language course</returns>
-        LanguageCourse GetLanguageCourse(TemplateLanguageCourse template, string username, ICollection<string> selectedTopics);
+        LanguageCourse GetPartialLanguageCourse(TemplateLanguageCourse template, string username, ICollection<string> selectedTopics);
+
+        /// <summary>
+        /// Create instance of partial language course based on user's goals.
+        /// Next to goals it should pick also topics which are needed for that goal.
+        /// </summary>
+        /// <param name="template">template of language course</param>
+        /// <param name="username">username</param>
+        /// <param name="goals">selected goals</param>
+        /// <returns>instance of partial language course based on goals</returns>
+        LanguageCourse GetGoalBasedLanguageCourse(TemplateLanguageCourse template, string username, ICollection<string> goals);
     }
 }

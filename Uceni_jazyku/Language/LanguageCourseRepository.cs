@@ -58,7 +58,7 @@ namespace Uceni_jazyku.Language
         public TemplateLanguageCourse GetTemplate(string templateId)
         {
             return languageCourses
-                .Where(x => x.CourseId == templateId)
+                .Where(x => x.CourseId == templateId && x is TemplateLanguageCourse)
                 .Cast<TemplateLanguageCourse>()
                 .FirstOrDefault();
         }
