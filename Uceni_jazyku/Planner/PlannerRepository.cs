@@ -10,10 +10,10 @@ using Uceni_jazyku.Language;
 
 namespace Uceni_jazyku.Planner
 {
-    // TODO more suitable name
+    /// <inheritdoc/>
     public class PlannerRepository : IPlannerRepository
     {
-        private List<AbstractPlannerMemory> plannerMemories;
+        private List<AbstractPlannerMemory> plannerMemories = new List<AbstractPlannerMemory>();
         private string path = "./planners/database.xml";
 
         public PlannerRepository() 
@@ -39,19 +39,22 @@ namespace Uceni_jazyku.Planner
             serializer.WriteObject(writer, plannerMemories ?? new List<AbstractPlannerMemory>());
         }
 
-        public AbstractPlannerMemory GetMemory(string username, string course_id)
+        /// <inheritdoc/>
+        public AbstractPlannerMemory GetMemory(string course_id)
         {
             return plannerMemories
-                .Where(x => x.Username == username && x.CourseId == course_id)
+                .Where(x => x.CourseId == course_id)
                 .FirstOrDefault();
         }
 
+        /// <inheritdoc/>
         public void InsertMemory(AbstractPlannerMemory plannerMemory)
         {
             plannerMemories.Add(plannerMemory);
             Save();
         }
 
+        /// <inheritdoc/>
         public void UpdateMemory(AbstractPlannerMemory plannerMemory)
         {
             int index = plannerMemories.FindIndex(x => x.MemoryId == plannerMemory.MemoryId);

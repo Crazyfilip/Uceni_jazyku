@@ -21,7 +21,7 @@ namespace UnitTests.Planner
         {
             Directory.CreateDirectory("./planners");
 
-            memory = new PlannerMemory() { Username = "test", CourseId = "course_id", MemoryId = "memory_id"};
+            memory = new PlannerMemory() { CourseId = "course_id", MemoryId = "memory_id"};
             plannerMemories = new List<AbstractPlannerMemory>() { memory };
             plannerRepository = new PlannerRepository(plannerMemories);
         }
@@ -30,21 +30,17 @@ namespace UnitTests.Planner
         public void TestGetMemoryPositive()
         {
             // Test
-            AbstractPlannerMemory result = plannerRepository.GetMemory("test", "course_id");
+            AbstractPlannerMemory result = plannerRepository.GetMemory("course_id");
 
             // Verify
             Assert.IsNotNull(result);
             Assert.AreEqual(memory, result);
         }
-
-        [DataRow("invalid", "course_id")]
-        [DataRow("test", "invalid")]
-        [DataRow("invalid", "invalid")]
-        [DataTestMethod]
-        public void TestGetMemoryNegative(string username, string courseId)
+        [TestMethod]
+        public void TestGetMemoryNegative()
         {
             // Test
-            AbstractPlannerMemory result = plannerRepository.GetMemory(username, courseId);
+            AbstractPlannerMemory result = plannerRepository.GetMemory("invalid");
 
             // Verify
             Assert.IsNull(result);
@@ -54,7 +50,7 @@ namespace UnitTests.Planner
         public void TestInsertMemoryPositive()
         {
             // Init
-            AbstractPlannerMemory memoryAdd = new PlannerMemory() { Username = "test2", CourseId = "course2_id" };
+            AbstractPlannerMemory memoryAdd = new PlannerMemory() { CourseId = "course2_id" };
 
             // Preverify
             Assert.AreEqual(1, plannerMemories.Count);

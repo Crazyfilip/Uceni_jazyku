@@ -34,16 +34,27 @@ namespace Uceni_jazyku.Language
             Lessons[FinishedLessons++].Finish();
         }
 
+        /// <summary>
+        /// Mark that topic was picked in course
+        /// </summary>
         public virtual void TopicPicked()
         {
             Picked = true;
         }
 
+        /// <summary>
+        /// Test if all lessons are finished
+        /// </summary>
+        /// <returns>true if all lessons are finished otherwise false</returns>
         public bool FinishedAll()
         {
             return Lessons.TrueForAll(x => x.Finished);
         }
 
+        /// <summary>
+        /// Test if all lessons are planned
+        /// </summary>
+        /// <returns>true if all lessons are planned otherwise false</returns>
         public virtual bool PlannedAll()
         {
             return Lessons.TrueForAll(x => x.Planned);

@@ -27,7 +27,7 @@ namespace Uceni_jazyku.Planner
             // TODO feedback
             if (plannerMemory.AnyUnfinishedTopic())
             {
-                topic = plannerMemory.GetNext();
+                topic = plannerMemory.GetNextTopic();
             } 
             else
             {
@@ -58,10 +58,17 @@ namespace Uceni_jazyku.Planner
             return result;
         }
 
-        public void SetCourse(string username, LanguageCourse languageCourse)
+        public void SetCourse(LanguageCourse languageCourse)
         {
             this.languageCourse = languageCourse;
-            plannerMemory = plannerRepository.GetMemory(username, languageCourse.CourseId);
+            plannerMemory = plannerRepository.GetMemory(languageCourse.CourseId) ?? InitMemory(languageCourse.CourseId);
+        }
+
+        private AbstractPlannerMemory InitMemory(string courseId)
+        {
+            AbstractPlannerMemory result = new PlannerMemory() { CourseId = courseId, MemoryId = Guid.NewGuid().ToString() };
+            plannerRepository.InsertMemory(result);
+            return result;
         }
     }
 }

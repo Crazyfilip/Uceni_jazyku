@@ -45,12 +45,13 @@ namespace User_interface
             Directory.CreateDirectory("./users");
             Directory.CreateDirectory("./cycles/service");
             Directory.CreateDirectory("./courses/service");
+            Directory.CreateDirectory("./planners");
             PrepateTemplateCourses();
         }
 
         private static void PrepateTemplateCourses()
         {
-            if (File.Exists("./courses/service/database.xml"))
+            if (!File.Exists("./courses/service/database.xml"))
             {
                 LanguageTopic topic1 = new LanguageTopic() { TopicId = "a-id", Description = "A", Lessons = new List<LanguageProgramItem> { new LanguageProgramItem("A1"), new LanguageProgramItem("A2") } };
                 LanguageTopic topic2 = new LanguageTopic() { TopicId = "b-id", Description = "B", Lessons = new List<LanguageProgramItem> { new LanguageProgramItem("B1"), new LanguageProgramItem("B2") } };

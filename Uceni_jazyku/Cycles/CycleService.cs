@@ -230,7 +230,7 @@ namespace Uceni_jazyku.Cycles
         public virtual void SetActiveCourse(string username, LanguageCourse languageCourse, bool activeCycleReset)
         {
             ActiveCourse = languageCourse;
-            ProgramPlanner.SetCourse(username, languageCourse);
+            ProgramPlanner.SetCourse(languageCourse);
             if (activeCycleReset)
             {
                 // reset of cache done during GetUserCycle(string)

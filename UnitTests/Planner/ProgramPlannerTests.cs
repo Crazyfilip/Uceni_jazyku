@@ -26,9 +26,9 @@ namespace UnitTests.Planner
             languageCourse.Setup(x => x.CourseId).Returns("course_id");
             plannerMemory = new Mock<AbstractPlannerMemory>();
             plannerRepository = new Mock<IPlannerRepository>();
-            plannerRepository.Setup(x => x.GetMemory("test", "course_id")).Returns(plannerMemory.Object);
+            plannerRepository.Setup(x => x.GetMemory("course_id")).Returns(plannerMemory.Object);
             programPlanner = new ProgramPlanner(plannerRepository.Object);
-            programPlanner.SetCourse("test", languageCourse.Object);
+            programPlanner.SetCourse(languageCourse.Object);
 
             plannerRepository.Reset();
             languageCourse.Reset();
@@ -58,7 +58,7 @@ namespace UnitTests.Planner
             topic.Verify(x => x.PlannedAll(), Times.Once);
             topic.Verify(x => x.TopicId, Times.Once);
             plannerMemory.Verify(x => x.AnyUnfinishedTopic(), Times.Once);
-            plannerMemory.Verify(x => x.GetNext(), Times.Never);
+            plannerMemory.Verify(x => x.GetNextTopic(), Times.Never);
             plannerRepository.Verify(x => x.UpdateMemory(plannerMemory.Object), Times.Once);
             languageCourse.Verify(x => x.selectNextTopic(), Times.Once);
 
@@ -80,7 +80,7 @@ namespace UnitTests.Planner
             topic.Setup(x => x.PlannedAll()).Returns(true);
             topic.SetupGet(x => x.TopicId).Returns("test_id");
             plannerMemory.Setup(x => x.AnyUnfinishedTopic()).Returns(true);
-            plannerMemory.Setup(x => x.GetNext()).Returns(topic.Object);
+            plannerMemory.Setup(x => x.GetNextTopic()).Returns(topic.Object);
 
             // Test
             UserProgramItem result = programPlanner.GetNextLanguageLesson("test");
@@ -93,7 +93,7 @@ namespace UnitTests.Planner
             topic.Verify(x => x.PlannedAll(), Times.Once);
             topic.Verify(x => x.TopicId, Times.Once);
             plannerMemory.Verify(x => x.AnyUnfinishedTopic(), Times.Once);
-            plannerMemory.Verify(x => x.GetNext(), Times.Once);
+            plannerMemory.Verify(x => x.GetNextTopic(), Times.Once);
             plannerRepository.Verify(x => x.UpdateMemory(plannerMemory.Object), Times.Once);
             languageCourse.Verify(x => x.selectNextTopic(), Times.Never);
 
@@ -120,7 +120,7 @@ namespace UnitTests.Planner
             plannerMemory.Setup(x => x.AnyUnfinishedTopic()).Returns(fromMemory);
             if (fromMemory)
             {
-                plannerMemory.Setup(x => x.GetNext()).Returns(topic.Object);
+                plannerMemory.Setup(x => x.GetNextTopic()).Returns(topic.Object);
             }
             else
             {
@@ -142,12 +142,12 @@ namespace UnitTests.Planner
             plannerRepository.Verify(x => x.UpdateMemory(plannerMemory.Object), Times.Once);
             if (fromMemory)
             {
-                plannerMemory.Verify(x => x.GetNext(), Times.Once);
+                plannerMemory.Verify(x => x.GetNextTopic(), Times.Once);
                 languageCourse.Verify(x => x.selectNextTopic(), Times.Never);
             }
             else
             {
-                plannerMemory.Verify(x => x.GetNext(), Times.Never);
+                plannerMemory.Verify(x => x.GetNextTopic(), Times.Never);
                 languageCourse.Verify(x => x.selectNextTopic(), Times.Once);
             }
 
@@ -175,7 +175,7 @@ namespace UnitTests.Planner
             plannerMemory.Setup(x => x.AnyUnfinishedTopic()).Returns(fromMemory);
             if (fromMemory)
             {
-                plannerMemory.Setup(x => x.GetNext()).Returns(topic.Object);
+                plannerMemory.Setup(x => x.GetNextTopic()).Returns(topic.Object);
             }
             else
             {
@@ -198,12 +198,12 @@ namespace UnitTests.Planner
             plannerRepository.Verify(x => x.UpdateMemory(plannerMemory.Object), Times.Once);
             if (fromMemory)
             {
-                plannerMemory.Verify(x => x.GetNext(), Times.Once);
+                plannerMemory.Verify(x => x.GetNextTopic(), Times.Once);
                 languageCourse.Verify(x => x.selectNextTopic(), Times.Never);
             }
             else
             {
-                plannerMemory.Verify(x => x.GetNext(), Times.Never);
+                plannerMemory.Verify(x => x.GetNextTopic(), Times.Never);
                 languageCourse.Verify(x => x.selectNextTopic(), Times.Once);
             }
 
