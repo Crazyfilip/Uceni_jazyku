@@ -728,7 +728,7 @@ namespace UnitTests
 
             // Verify
             Assert.AreEqual(languageCourse.Object, service.ActiveCourse);
-            plannerMock.Verify(x => x.SetCourse(languageCourse.Object), Times.Once);
+            plannerMock.Verify(x => x.SetCourse("test", languageCourse.Object), Times.Once);
 
             languageCourse.VerifyNoOtherCalls();
             plannerMock.VerifyNoOtherCalls();
@@ -750,7 +750,7 @@ namespace UnitTests
 
             // Verify
             Assert.AreEqual(languageCourse.Object, service.ActiveCourse);
-            plannerMock.Verify(x => x.SetCourse(languageCourse.Object), Times.Once);
+            plannerMock.Verify(x => x.SetCourse("test", languageCourse.Object), Times.Once);
             cycleMock.Verify(x => x.CycleID, Times.Exactly(2));
             cycleMock.Verify(x => x.State, Times.Once);
             cycleMock.Verify(x => x.Activate(), Times.Once);

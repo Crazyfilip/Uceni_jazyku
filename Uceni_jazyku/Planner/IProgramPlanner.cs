@@ -38,6 +38,6 @@ namespace Uceni_jazyku.Planner
         /// Save current state of planner and reset planner for new course
         /// </summary>
         /// <param name="languageCourse">LanguageCourse</param>
-        void SetCourse(LanguageCourse languageCourse);
+        void SetCourse(string username, LanguageCourse languageCourse);
     }
 }

@@ -38,5 +38,15 @@ namespace Uceni_jazyku.Language
         {
             Picked = true;
         }
+
+        public bool FinishedAll()
+        {
+            return Lessons.TrueForAll(x => x.Finished);
+        }
+
+        public virtual bool PlannedAll()
+        {
+            return Lessons.TrueForAll(x => x.Planned);
+        }
     }
 }

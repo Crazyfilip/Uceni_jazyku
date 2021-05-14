@@ -37,7 +37,7 @@ namespace Uceni_jazyku.Cycles
             ActiveCycleCache = cache ?? new ActiveCycleCache();
             CycleFactory = cycleFactory ?? new CycleFactory();
             // TODO replace mock planner by real implementation
-            ProgramPlanner = planner ?? new MockProgramPlanner();
+            ProgramPlanner = planner ?? new ProgramPlanner();
         }
 
         /// <summary>
@@ -230,7 +230,7 @@ namespace Uceni_jazyku.Cycles
         public virtual void SetActiveCourse(string username, LanguageCourse languageCourse, bool activeCycleReset)
         {
             ActiveCourse = languageCourse;
-            ProgramPlanner.SetCourse(languageCourse);
+            ProgramPlanner.SetCourse(username, languageCourse);
             if (activeCycleReset)
             {
                 // reset of cache done during GetUserCycle(string)
