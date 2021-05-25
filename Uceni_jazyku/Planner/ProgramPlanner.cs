@@ -9,15 +9,36 @@ namespace Uceni_jazyku.Planner
     public class ProgramPlanner : IProgramPlanner
     {
         LanguageCourse languageCourse;
+        IPlannerRepository plannerRepository;
+        AbstractPlannerMemory plannerMemory;
         // TODO add dependencies
-        // PlannerHistory, UserModel, Feedback
+        // UserModel, Feedback
 
-        public ProgramPlanner() { }
+        public ProgramPlanner() : this(null) { }
+
+        public ProgramPlanner(IPlannerRepository plannerRepository)
+        {
+            this.plannerRepository = plannerRepository ?? new PlannerRepository();
+        }
 
         public UserProgramItem GetNextLanguageLesson(string username)
         {
-            LanguageTopic topic = languageCourse.selectNextTopic(); // TODO with PlannerHistory can pick unfinished topic
+            LanguageTopic topic;
+            // TODO feedback
+            if (plannerMemory.AnyUnfinishedTopic())
+            {
+                topic = plannerMemory.GetNextTopic();
+            } 
+            else
+            {
+                topic = languageCourse.selectNextTopic();
+            }
             LanguageProgramItem item = topic.PlanNextLesson();
+            if (!topic.PlannedAll())
+            {
+                plannerMemory.InsertTopic(topic);
+            }
+            plannerRepository.UpdateMemory(plannerMemory);
             return new UserProgramItem(topic.TopicId, item);
         }
 
@@ -28,13 +49,26 @@ namespace Uceni_jazyku.Planner
 
         public List<UserProgramItem> GetNextUserCycleProgram(string username)
         {
-            throw new NotImplementedException();
+            List<UserProgramItem> result = new List<UserProgramItem>();
+            // TODO from UserModel get length of cycle
+            for (int i = 0; i < 1; i++)
+            {
+                result.Add(GetNextLanguageLesson(username));
+            }
+            return result;
         }
 
         public void SetCourse(LanguageCourse languageCourse)
         {
             this.languageCourse = languageCourse;
-            // TODO save and reset planner
+            plannerMemory = plannerRepository.GetMemory(languageCourse.CourseId) ?? InitMemory(languageCourse.CourseId);
+        }
+
+        private AbstractPlannerMemory InitMemory(string courseId)
+        {
+            AbstractPlannerMemory result = new PlannerMemory() { CourseId = courseId, MemoryId = Guid.NewGuid().ToString() };
+            plannerRepository.InsertMemory(result);
+            return result;
         }
     }
 }

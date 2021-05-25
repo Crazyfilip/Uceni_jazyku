@@ -112,7 +112,7 @@ namespace Uceni_jazyku.User_database
 
             // TODO will be in serapate method as in UI course is setup in second step
             LanguageCourse course = languageCourseService.GetLanguageCourseInstanceFromTemplate("template-default", username);
-            cycleService.SetActiveCourse(course);
+            cycleService.SetActiveCourse(username, course, true);
             return true;
         }
     }

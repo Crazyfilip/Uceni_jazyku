@@ -37,7 +37,7 @@ namespace Uceni_jazyku.Cycles
             ActiveCycleCache = cache ?? new ActiveCycleCache();
             CycleFactory = cycleFactory ?? new CycleFactory();
             // TODO replace mock planner by real implementation
-            ProgramPlanner = planner ?? new MockProgramPlanner();
+            ProgramPlanner = planner ?? new ProgramPlanner();
         }
 
         /// <summary>
