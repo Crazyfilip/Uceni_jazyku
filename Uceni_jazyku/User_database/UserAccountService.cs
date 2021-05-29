@@ -3,6 +3,7 @@ using System;
 using System.Security.Cryptography;
 using log4net;
 using Uceni_jazyku.Language;
+using Uceni_jazyku.User;
 
 namespace Uceni_jazyku.User_database
 {
@@ -15,13 +16,14 @@ namespace Uceni_jazyku.User_database
     {
         private static ILog log = LogManager.GetLogger(typeof(UserAccountService));
         private readonly IUserAccountRepository userAccountRepository;
+        private readonly IUserModelRepository userModelRepository;
         private readonly CycleService cycleService;
         private readonly LanguageCourseService languageCourseService;
 
         /// <summary>
         /// This constructor calls UserAccountService(IUserAccountRepository, CycleService) with null values
         /// </summary>
-        public UserAccountService() : this(null, null, null) {}
+        public UserAccountService() : this(null, null, null, null) {}
 
         /// <summary>
         /// Constructor of UserAccountService. When IUserAccountRepository or CycleService are not provided (null values)
@@ -30,9 +32,10 @@ namespace Uceni_jazyku.User_database
         /// <param name="repository">object implementing IUserAccountRepository</param>
         /// <param name="cycleService">instance of CycleService</param>
         /// <param name="languageCourseService">instance of LanguageCourseService</param>
-        public UserAccountService(IUserAccountRepository repository, CycleService cycleService, LanguageCourseService languageCourseService)
+        public UserAccountService(IUserAccountRepository repository, CycleService cycleService, LanguageCourseService languageCourseService, IUserModelRepository userModelRepository)
         {
             userAccountRepository = repository ?? new UserAccountRepository();
+            userModelRepository = userModelRepository ?? new UserModelRepository();
             this.cycleService = cycleService ?? CycleService.GetInstance();
             this.languageCourseService = languageCourseService ?? LanguageCourseService.GetInstance();
         }
@@ -97,8 +100,10 @@ namespace Uceni_jazyku.User_database
             }
             log.Info($"Creating new user account with username {username}");
 
-            userAccount = new UserAccount();
-            userAccount.username = username;
+            userAccount = new UserAccount
+            {
+                username = username
+            };
 
             log.Debug($"Calculating hash for user {username}");
             byte[] salt;
@@ -113,7 +118,14 @@ namespace Uceni_jazyku.User_database
             // TODO will be in serapate method as in UI course is setup in second step
             LanguageCourse course = languageCourseService.GetLanguageCourseInstanceFromTemplate("template-default", username);
             cycleService.SetActiveCourse(username, course, false);
+            CreateUserModel(username, course.CourseId);
             return true;
+        }
+
+        private void CreateUserModel(string username, string coursesId)
+        {
+            UserModel userModel = new UserModel() { Username = username, CourseId = coursesId, ModelId = Guid.NewGuid().ToString() };
+            userModelRepository.InsertUserModel(userModel);
         }
     }
 }

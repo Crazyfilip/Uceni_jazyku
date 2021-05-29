@@ -28,7 +28,7 @@ namespace Uceni_jazyku.Planner
             return result;
         }
 
-        public void SetCourse(LanguageCourse languageCourse)
+        public void SetPlanner(LanguageCourse languageCourse, string username)
         {
         }
     }
