@@ -37,5 +37,11 @@ namespace Uceni_jazyku.User
                 .Where(x => x.Username == username && x.CourseId == courseId)
                 .FirstOrDefault();
         }
+
+        public void InsertUserModel(UserModel userModel)
+        {
+            database.Add(userModel);
+            Save();
+        }
     }
 }

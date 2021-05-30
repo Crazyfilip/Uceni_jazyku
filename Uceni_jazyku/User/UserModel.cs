@@ -13,7 +13,7 @@ namespace Uceni_jazyku.User
         public string CourseId { get; init; }
         public string ModelId { get; init; }
 
-        public List<LessonDescription> CycleTemplate { get; protected set; }
+        public virtual List<LessonDescription> CycleTemplate { get; protected set; }
 
         public UserModel()
         {

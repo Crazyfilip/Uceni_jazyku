@@ -34,8 +34,8 @@ namespace Uceni_jazyku.User_database
         /// <param name="languageCourseService">instance of LanguageCourseService</param>
         public UserAccountService(IUserAccountRepository repository, CycleService cycleService, LanguageCourseService languageCourseService, IUserModelRepository userModelRepository)
         {
-            userAccountRepository = repository ?? new UserAccountRepository();
-            userModelRepository = userModelRepository ?? new UserModelRepository();
+            this.userAccountRepository = repository ?? new UserAccountRepository();
+            this.userModelRepository = userModelRepository ?? new UserModelRepository();
             this.cycleService = cycleService ?? CycleService.GetInstance();
             this.languageCourseService = languageCourseService ?? LanguageCourseService.GetInstance();
         }
