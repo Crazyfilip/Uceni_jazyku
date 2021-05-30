@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Uceni_jazyku.Cycles.Template;
 
 namespace Uceni_jazyku.User
@@ -17,7 +13,7 @@ namespace Uceni_jazyku.User
 
         public UserModel()
         {
-            CycleTemplate = new List<LessonDescription>() { new LessonDescription() { Source = LessonSource.ANY, RecomendedActivity = ActivityType.ANY }};
+            CycleTemplate = new List<LessonDescription>() { new LessonDescription() { Source = LessonSource.ANY, Activity = ActivityType.ANY }};
         }
 
         // TODO methods for information about user's knowledge

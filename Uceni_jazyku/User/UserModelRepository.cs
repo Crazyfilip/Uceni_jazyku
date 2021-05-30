@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace Uceni_jazyku.User
 {
+    /// <inheritdoc/>
     public class UserModelRepository : IUserModelRepository
     {
         List<UserModel> database = new List<UserModel>();
@@ -31,6 +29,7 @@ namespace Uceni_jazyku.User
             serializer.WriteObject(writer, database ?? new List<UserModel>());
         }
 
+        /// <inheritdoc/>
         public UserModel GetUserModel(string username, string courseId)
         {
             return database
@@ -38,6 +37,7 @@ namespace Uceni_jazyku.User
                 .FirstOrDefault();
         }
 
+        /// <inheritdoc/>
         public void InsertUserModel(UserModel userModel)
         {
             database.Add(userModel);

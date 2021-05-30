@@ -34,10 +34,10 @@ namespace Uceni_jazyku.Planner
         UserProgramItem GetNextLanguageLesson(string username, string topicId);
 
         /// <summary>
-        /// Set from what language course are lessons picked
-        /// Save current state of planner and reset planner for new course
+        /// Set up planner fom given language course and user
         /// </summary>
         /// <param name="languageCourse">LanguageCourse</param>
+        /// <param name="username">username</param>
         void SetPlanner(LanguageCourse languageCourse, string username);
     }
 }
