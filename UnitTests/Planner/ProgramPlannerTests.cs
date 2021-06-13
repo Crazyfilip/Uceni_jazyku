@@ -57,6 +57,7 @@ namespace UnitTests.Planner
             topic.Verify(x => x.PlanNextLesson(), Times.Once);
             topic.Verify(x => x.PlannedAll(), Times.Once);
             topic.Verify(x => x.TopicId, Times.Once);
+            topic.Verify(x => x.TopicPicked(), Times.Once);
             plannerMemory.Verify(x => x.AnyUnfinishedTopic(), Times.Once);
             plannerMemory.Verify(x => x.GetNextTopic(), Times.Never);
             plannerRepository.Verify(x => x.UpdateMemory(plannerMemory.Object), Times.Once);
@@ -149,6 +150,7 @@ namespace UnitTests.Planner
             {
                 plannerMemory.Verify(x => x.GetNextTopic(), Times.Never);
                 languageCourse.Verify(x => x.selectNextTopic(), Times.Once);
+                topic.Verify(x => x.TopicPicked(), Times.Once);
             }
 
             item.VerifyNoOtherCalls();
@@ -205,6 +207,7 @@ namespace UnitTests.Planner
             {
                 plannerMemory.Verify(x => x.GetNextTopic(), Times.Never);
                 languageCourse.Verify(x => x.selectNextTopic(), Times.Once);
+                topic.Verify(x => x.TopicPicked(), Times.Once);
             }
 
             item.VerifyNoOtherCalls();

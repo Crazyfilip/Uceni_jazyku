@@ -249,5 +249,25 @@ namespace UnitTests
             CollectionAssert.AreEqual(new List<UserProgramItem>() { item3, item1 }, cycleSwap.UserProgramItems);
             Assert.AreEqual(item2, result);
         }
+
+        [TestMethod]
+        public void TestAreAllFinishedPositive()
+        {
+            // Test
+            bool result = cycleActiveWithProgram.AreAllFinished();
+
+            // Verify
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void TestAreAllFinishedNegative()
+        {
+            // Test
+            bool result = cycleSwap.AreAllFinished();
+
+            // Verify
+            Assert.IsFalse(result);
+        }
     }
 }

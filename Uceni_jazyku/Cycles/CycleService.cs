@@ -211,6 +211,26 @@ namespace Uceni_jazyku.Cycles
                 log.Warn($"Cycle {cycle.CycleID} wasn't finished", e);
             }
         }
+
+        /// <summary>
+        /// Update cycle and switch to new cycle if all lesson are finished
+        /// </summary>
+        /// <param name="cycle">Cycle to update</param>
+        /// <returns>current cycle or new one</returns>
+        public UserCycle Update(UserCycle cycle)
+        {
+            cycle.Update();
+            if (cycle.AreAllFinished())
+            {
+                Finish(cycle);
+                return GetUserCycle(cycle.Username);
+            } 
+            else
+            {
+                CycleRepository.UpdateCycle(cycle);
+                return cycle;
+            }
+        }
         #endregion
 
         #region Others methods
