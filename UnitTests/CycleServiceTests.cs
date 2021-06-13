@@ -765,6 +765,29 @@ namespace UnitTests
             databaseMock.VerifyNoOtherCalls();
         }
 
+        [TestMethod]
+        public void TestUpdatePositiveUnfinished()
+        {
+            // Init
+            Mock<UserCycle> userCycle = new();
+            userCycle.Setup(x => x.AreAllFinished()).Returns(false);
+
+            // Test
+            UserCycle result = service.Update(userCycle.Object);
+
+            // Verify
+            Assert.AreSame(userCycle.Object, result);
+
+            userCycle.Verify(x => x.Update(), Times.Once);
+            userCycle.Verify(x => x.AreAllFinished(), Times.Once);
+            databaseMock.Verify(x => x.UpdateCycle(userCycle.Object), Times.Once);
+
+            userCycle.VerifyNoOtherCalls();
+            databaseMock.VerifyNoOtherCalls();
+        }
+
+        // TODO TestUpdatePositiveFinished
+
         [TestCleanup]
         public void TestCleanUp()
         {

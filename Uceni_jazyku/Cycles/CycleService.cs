@@ -212,6 +212,11 @@ namespace Uceni_jazyku.Cycles
             }
         }
 
+        /// <summary>
+        /// Update cycle and switch to new cycle if all lesson are finished
+        /// </summary>
+        /// <param name="cycle">Cycle to update</param>
+        /// <returns>current cycle or new one</returns>
         public UserCycle Update(UserCycle cycle)
         {
             cycle.Update();

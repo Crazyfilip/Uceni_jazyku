@@ -23,7 +23,6 @@ namespace User_interface
 
         private void buttonFinish_Click(object sender, EventArgs e)
         {
-            // TODO Cycle service update or something like that to avoid inconsistency
             userCycle = CycleService.GetInstance().Update(userCycle);
             new UserMenu(userCycle).Show();
             Hide();
