@@ -54,7 +54,8 @@ namespace User_interface
 
         private void lessonLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            // TODO open test window
+            new LessonWindow(userCycle).Show();
+            Hide();
         }
     }
 }

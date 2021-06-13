@@ -123,6 +123,7 @@
             this.lessonLink.TabIndex = 5;
             this.lessonLink.TabStop = true;
             this.lessonLink.Text = "<lesson>";
+            this.lessonLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lessonLink_LinkClicked);
             // 
             // label1
             // 

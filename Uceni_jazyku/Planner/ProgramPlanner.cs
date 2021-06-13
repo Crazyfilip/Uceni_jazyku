@@ -32,6 +32,8 @@ namespace Uceni_jazyku.Planner
             else
             {
                 topic = languageCourse.selectNextTopic();
+                // TODO persistent solution for setting picked
+                topic.TopicPicked();
             }
             LanguageProgramItem item = topic.PlanNextLesson();
             if (!topic.PlannedAll())

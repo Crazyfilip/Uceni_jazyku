@@ -23,7 +23,15 @@ namespace Uceni_jazyku.Language
         /// <returns>Next lesson</returns>
         public virtual LanguageProgramItem PlanNextLesson()
         {
-            return PlannedLessons < Lessons.Count ? Lessons[PlannedLessons++] : null;
+            if (PlannedLessons < Lessons.Count)
+            {
+                Lessons[PlannedLessons].Plan();
+                return Lessons[PlannedLessons++];
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /// <summary>

@@ -37,5 +37,11 @@ namespace User_interface
         {
             new PlanView(userCycle).Show();
         }
+
+        private void lessonLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            new LessonWindow(userCycle).Show();
+            Hide();
+        }
     }
 }

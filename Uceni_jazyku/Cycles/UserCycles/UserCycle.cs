@@ -155,6 +155,11 @@ namespace Uceni_jazyku.Cycles
             return item;
         }
 
+        public virtual bool AreAllFinished()
+        {
+            return UserProgramItems.TrueForAll(x => x.LessonRef.Finished);
+        }
+
         public override bool Equals(object obj)
         {
             if (Object.ReferenceEquals(obj, null)) return false;
