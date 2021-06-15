@@ -24,12 +24,6 @@ namespace Uceni_jazyku
             var serializer = new DataContractSerializer(typeof(LanguageCourse));
             using XmlWriter writer = XmlWriter.Create("./courses/default.xml");
             serializer.WriteObject(writer, template);
-            //LoadData load = new LoadData();
-            //load.LoadDataToDatabase("lekce1_němčina.txt");
-            //IGenerator gen = new Generator();
-            //StreamReader pom = gen.Generate(null, null, new GenDataWords());
-            //ITester test = new Tester();
-            //test.DoTest();
         }
     }
 }

@@ -6,8 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Uceni_jazyku.Cycles.Program;
+using Uceni_jazyku.Cycles.Template;
 using Uceni_jazyku.Language;
 using Uceni_jazyku.Planner;
+using Uceni_jazyku.User;
 
 namespace UnitTests.Planner
 {
@@ -17,7 +19,10 @@ namespace UnitTests.Planner
         private Mock<LanguageCourse> languageCourse;
         private Mock<IPlannerRepository> plannerRepository;
         private Mock<AbstractPlannerMemory> plannerMemory;
+        private Mock<IUserModelRepository> userModelRepository;
+        private Mock<UserModel> userModel;
         private ProgramPlanner programPlanner;
+        
 
         [TestInitialize]
         public void Init()
@@ -27,8 +32,12 @@ namespace UnitTests.Planner
             plannerMemory = new Mock<AbstractPlannerMemory>();
             plannerRepository = new Mock<IPlannerRepository>();
             plannerRepository.Setup(x => x.GetMemory("course_id")).Returns(plannerMemory.Object);
-            programPlanner = new ProgramPlanner(plannerRepository.Object);
-            programPlanner.SetCourse(languageCourse.Object);
+            userModel = new Mock<UserModel>();
+            userModel.SetupGet(x => x.CycleTemplate).Returns(new List<LessonDescription>() { new LessonDescription() });
+            userModelRepository = new Mock<IUserModelRepository>();
+            userModelRepository.Setup(x => x.GetUserModel("test", "course_id")).Returns(userModel.Object);
+            programPlanner = new ProgramPlanner(plannerRepository.Object, userModelRepository.Object);
+            programPlanner.SetPlanner(languageCourse.Object, "test");
 
             plannerRepository.Reset();
             languageCourse.Reset();

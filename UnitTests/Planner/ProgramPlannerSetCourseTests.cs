@@ -2,12 +2,14 @@
 using Moq;
 using Uceni_jazyku.Language;
 using Uceni_jazyku.Planner;
+using Uceni_jazyku.User;
 
 namespace UnitTests.Planner
 {
     [TestClass]
     public class ProgramPlannerSetCourseTests
     {
+        Mock<IUserModelRepository> userModelRepository;
         Mock<IPlannerRepository> plannerRepository;
         ProgramPlanner programPlanner;
 
@@ -15,11 +17,12 @@ namespace UnitTests.Planner
         public void Init()
         {
             plannerRepository = new Mock<IPlannerRepository>();
-            programPlanner = new ProgramPlanner(plannerRepository.Object);
+            userModelRepository = new Mock<IUserModelRepository>();
+            programPlanner = new ProgramPlanner(plannerRepository.Object, userModelRepository.Object);
         }
 
         [TestMethod]
-        public void TestSetCoursePositiveExistingMemory()
+        public void TestSetPlannerPositiveExistingMemory()
         {
             // Init
             Mock<LanguageCourse> languageCourse = new();
@@ -28,19 +31,21 @@ namespace UnitTests.Planner
             plannerRepository.Setup(x => x.GetMemory("course_id")).Returns(plannerMemory.Object);
 
             // Test
-            programPlanner.SetCourse(languageCourse.Object);
+            programPlanner.SetPlanner(languageCourse.Object, "test");
 
             // Verify
-            languageCourse.Verify(x => x.CourseId, Times.Once);
+            languageCourse.Verify(x => x.CourseId, Times.Exactly(2));
             plannerRepository.Verify(x => x.GetMemory("course_id"), Times.Once);
+            userModelRepository.Verify(x => x.GetUserModel("test", "course_id"), Times.Once);
 
             languageCourse.VerifyNoOtherCalls();
             plannerRepository.VerifyNoOtherCalls();
             plannerMemory.VerifyNoOtherCalls();
+            userModelRepository.VerifyNoOtherCalls();
         }
 
         [TestMethod]
-        public void TestSetCoursePositiveNewMemory()
+        public void TestSetPlannerPositiveNewMemory()
         {
             // Init
             Mock<LanguageCourse> languageCourse = new();
@@ -48,17 +53,19 @@ namespace UnitTests.Planner
             plannerRepository.Setup(x => x.GetMemory("course_id")).Returns((AbstractPlannerMemory)null);
 
             // Test
-            programPlanner.SetCourse(languageCourse.Object);
+            programPlanner.SetPlanner(languageCourse.Object, "test");
 
             // Verify
-            languageCourse.Verify(x => x.CourseId, Times.Exactly(2));
+            languageCourse.Verify(x => x.CourseId, Times.Exactly(3));
             plannerRepository.Verify(x => x.GetMemory("course_id"), Times.Once);
             plannerRepository.Verify(
                 x => x.InsertMemory(It.Is<AbstractPlannerMemory>(x => x.CourseId == "course_id" && x.MemoryId != null)), 
                 Times.Once);
+            userModelRepository.Verify(x => x.GetUserModel("test", "course_id"), Times.Once);
 
             languageCourse.VerifyNoOtherCalls();
             plannerRepository.VerifyNoOtherCalls();
+            userModelRepository.VerifyNoOtherCalls();
         }
     }
 }

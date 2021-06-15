@@ -2,23 +2,28 @@
 using System.Collections.Generic;
 using Uceni_jazyku.Cycles.Program;
 using Uceni_jazyku.Language;
+using Uceni_jazyku.User;
 
 namespace Uceni_jazyku.Planner
 {
     /// <inheritdoc/>
     public class ProgramPlanner : IProgramPlanner
     {
-        LanguageCourse languageCourse;
-        IPlannerRepository plannerRepository;
-        AbstractPlannerMemory plannerMemory;
+        private readonly IPlannerRepository plannerRepository;
+        private readonly IUserModelRepository userModelRepository;
+
+        private LanguageCourse languageCourse;
+        private AbstractPlannerMemory plannerMemory;
+        private UserModel userModel;
         // TODO add dependencies
-        // UserModel, Feedback
+        // Feedback
 
-        public ProgramPlanner() : this(null) { }
+        public ProgramPlanner() : this(null, null) { }
 
-        public ProgramPlanner(IPlannerRepository plannerRepository)
+        public ProgramPlanner(IPlannerRepository plannerRepository, IUserModelRepository userModelRepository)
         {
             this.plannerRepository = plannerRepository ?? new PlannerRepository();
+            this.userModelRepository = userModelRepository ?? new UserModelRepository();
         }
 
         public UserProgramItem GetNextLanguageLesson(string username)
@@ -52,18 +57,18 @@ namespace Uceni_jazyku.Planner
         public List<UserProgramItem> GetNextUserCycleProgram(string username)
         {
             List<UserProgramItem> result = new List<UserProgramItem>();
-            // TODO from UserModel get length of cycle
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < userModel.CycleTemplate.Count; i++)
             {
                 result.Add(GetNextLanguageLesson(username));
             }
             return result;
         }
 
-        public void SetCourse(LanguageCourse languageCourse)
+        public void SetPlanner(LanguageCourse languageCourse, string username)
         {
             this.languageCourse = languageCourse;
             plannerMemory = plannerRepository.GetMemory(languageCourse.CourseId) ?? InitMemory(languageCourse.CourseId);
+            userModel = userModelRepository.GetUserModel(username, languageCourse.CourseId);
         }
 
         private AbstractPlannerMemory InitMemory(string courseId)

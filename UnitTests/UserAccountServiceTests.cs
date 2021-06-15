@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using Uceni_jazyku.Cycles;
 using Uceni_jazyku.Language;
+using Uceni_jazyku.User;
 using Uceni_jazyku.User_database;
 
 namespace UnitTests
@@ -18,7 +19,8 @@ namespace UnitTests
         Mock<UserAccount> accountMock;
         Mock<CycleService> cycleServiceMock;
         Mock<LanguageCourseService> languageCourseServiceMock;
-        String saltMock;
+        Mock<IUserModelRepository> userModelRepositoryMock;
+        string saltMock;
 
         static readonly Mock<ILog> log4netMock = new Mock<ILog>();
 
@@ -36,7 +38,12 @@ namespace UnitTests
             repositoryMock = new Mock<IUserAccountRepository>();
             cycleServiceMock = new Mock<CycleService>();
             languageCourseServiceMock = new Mock<LanguageCourseService>();
-            accountService = new UserAccountService(repositoryMock.Object, cycleServiceMock.Object, languageCourseServiceMock.Object);
+            userModelRepositoryMock = new Mock<IUserModelRepository>();
+            accountService = new UserAccountService(
+                repositoryMock.Object, 
+                cycleServiceMock.Object, 
+                languageCourseServiceMock.Object, 
+                userModelRepositoryMock.Object);
 
             byte[] salt;
             new RNGCryptoServiceProvider().GetBytes(salt = new byte[16]);
@@ -50,6 +57,9 @@ namespace UnitTests
             // Init
             repositoryMock.Setup(x => x.GetUserAccount("test")).Returns((UserAccount)null);
             repositoryMock.Setup(x => x.AddUserAccount(It.IsAny<UserAccount>())).Verifiable();
+            Mock<LanguageCourse> languageCourse = new();
+            languageCourse.SetupGet(x => x.CourseId).Returns("course_id");
+            languageCourseServiceMock.Setup(x => x.GetLanguageCourseInstanceFromTemplate("template-default", "test")).Returns(languageCourse.Object);
 
             // Test
             bool result = accountService.CreateUser("test", "test");
