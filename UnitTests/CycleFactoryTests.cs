@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Uceni_jazyku.Cycles;
+using Uceni_jazyku.Cycles.Program;
 using Uceni_jazyku.Cycles.UserCycles;
 
 namespace UnitTests
@@ -21,16 +22,20 @@ namespace UnitTests
         [TestMethod]
         public void TestCreateCyclePositive()
         {
+            // Init
+            List<UserProgramItem> program = new List<UserProgramItem>();
+
             // Test
-            UserCycle result = CycleFactory.CreateCycle("test", "test_course");
+            UserCycle result = CycleFactory.CreateCycle("test", "test_course", program);
 
             // Verify
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.CycleID);
             Assert.IsNotNull(result.DateCreated);
-            Assert.AreEqual(UserCycleState.New, result.State);
+            Assert.AreEqual(UserCycleState.Active, result.State);
             Assert.AreEqual("test", result.Username);
             Assert.AreEqual("test_course", result.CourseID);
+            Assert.AreSame(program, result.UserProgramItems);
         }
 
         [TestMethod]

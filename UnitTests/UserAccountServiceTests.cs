@@ -111,7 +111,7 @@ namespace UnitTests
 
             languageCourseServiceMock.Setup(x => x.GetActiveLanguageCourse("test")).Returns(courseMock.Object);
 
-            cycleServiceMock.Setup(x => x.GetUserCycle("test")).Returns(cycleMock.Object);
+            cycleServiceMock.Setup(x => x.GetNextCycle("test")).Returns(cycleMock.Object);
             cycleServiceMock.Setup(x => x.SetActiveCourse("test", courseMock.Object, false)).Verifiable();
 
             // Test
@@ -123,7 +123,7 @@ namespace UnitTests
             repositoryMock.Verify(x => x.GetUserAccount("test"), Times.Once);
             accountMock.Verify(x => x.salt, Times.Once);
             accountMock.Verify(x => x.loginCredential, Times.Once);
-            cycleServiceMock.Verify(x => x.GetUserCycle("test"), Times.Once);
+            cycleServiceMock.Verify(x => x.GetNextCycle("test"), Times.Once);
             cycleServiceMock.Verify(x => x.SetActiveCourse("test", courseMock.Object, false), Times.Once);
             log4netMock.Verify(x => x.Info("Login attempt of user test"), Times.Once);
             log4netMock.Verify(x => x.Debug("Calculating hash for user test"), Times.Once);

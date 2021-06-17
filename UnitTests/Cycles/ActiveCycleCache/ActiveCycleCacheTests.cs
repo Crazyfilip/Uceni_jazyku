@@ -68,9 +68,9 @@ namespace UnitTests.Cycles
 
                 // Init variables
                 cache = new ActiveCycleCache();
-                cycleValid = new UserCycle() { CycleID = cycleID, Username = "test1" }.Activate();
-                cycleValid2 = new UserCycle() { CycleID = cycleID, Username = "test2" }.Activate();
-                cycleInvalid = new UserCycle() { CycleID = cycleID};
+                cycleValid = new UserCycle() { CycleID = cycleID, Username = "test1" };
+                cycleValid2 = new UserCycle() { CycleID = cycleID, Username = "test2" };
+                cycleInvalid = new UserCycle() { CycleID = cycleID }.Inactivate();
 
                 // Init cache
                 var serializer = new DataContractSerializer(typeof(UserCycle));
@@ -138,7 +138,7 @@ namespace UnitTests.Cycles
                 UserCycle result = Deserialize();
                 Assert.AreEqual(cycleValid, result);
 
-                log4netMock.Verify(x => x.Error($"Tried to insert cycle {cycleID} to cache with state New"), Times.Once);
+                log4netMock.Verify(x => x.Error($"Tried to insert cycle {cycleID} to cache with state Inactive"), Times.Once);
 
                 log4netMock.VerifyNoOtherCalls();
             }
@@ -180,8 +180,8 @@ namespace UnitTests.Cycles
 
                 // Init variables
                 cache = new ActiveCycleCache();
-                cycleValid = new UserCycle() { CycleID = cycleID, Username = "test" }.Activate();
-                cycleInvalid = new UserCycle() { CycleID = cycleID };
+                cycleValid = new UserCycle() { CycleID = cycleID, Username = "test" };
+                cycleInvalid = new UserCycle() { CycleID = cycleID }.Inactivate();
             }
 
             [TestMethod]
@@ -239,7 +239,7 @@ namespace UnitTests.Cycles
                 Assert.AreEqual("Cycle is in incorrect state to be saved in cache", exception.Message);
                 Assert.IsFalse(File.Exists(activeCycleCacheFile));
 
-                log4netMock.Verify(x => x.Error($"Tried to insert cycle {cycleID} to cache with state New"), Times.Once);
+                log4netMock.Verify(x => x.Error($"Tried to insert cycle {cycleID} to cache with state Inactive"), Times.Once);
 
                 log4netMock.VerifyNoOtherCalls();
             }

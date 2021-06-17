@@ -53,7 +53,7 @@ namespace Uceni_jazyku.User_database
             {
                 log.Debug("Login successful");
                 cycleService.SetActiveCourse(username, languageCourseService.GetActiveLanguageCourse(username), false);
-                return cycleService.GetUserCycle(username);
+                return cycleService.GetNextCycle(username);
             }
             else
             {

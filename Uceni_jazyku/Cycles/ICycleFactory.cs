@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using Uceni_jazyku.Cycles.Program;
 using Uceni_jazyku.Cycles.UserCycles;
 
 namespace Uceni_jazyku.Cycles
@@ -16,8 +15,9 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         /// <param name="username">username</param>
         /// <param name="courseId">language course id</param>
+        /// <param name="program">lessons for cycle</param>
         /// <returns>instance of user cycle</returns>
-        UserCycle CreateCycle(string username, string courseId);
+        UserCycle CreateCycle(string username, string courseId, List<UserProgramItem> program);
 
         /// <summary>
         /// Create incomplete user cycle with cycleId and DateCreated
