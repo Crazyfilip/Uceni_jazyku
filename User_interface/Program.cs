@@ -43,6 +43,7 @@ namespace User_interface
         private static void PrepareApp()
         {
             Directory.CreateDirectory("./users");
+            Directory.CreateDirectory("./user-models");
             Directory.CreateDirectory("./cycles/service");
             Directory.CreateDirectory("./courses/service");
             Directory.CreateDirectory("./planners");

@@ -36,9 +36,9 @@ namespace UnitTests
             cycle = new UserCycle() { CycleID = "test" };
             cyclePreUpdate = new UserCycle() { CycleID = "test_id" };
             cyclePostUpdate = new UserCycle() { CycleID = "test_id", Username = "testUpdate" };
-            cycleInactive1 = new UserCycle() { CourseID = "test_course", Username = "test", DateCreated = DateTime.Now }.Activate().Inactivate();
-            cycleInactive2 = new UserCycle() { CourseID = "test_course", Username = "test", DateCreated = DateTime.Now.AddMinutes(1) }.Activate().Inactivate();
-            cycleFinished = new UserCycle() { CourseID = "test_course", Username = "test", DateCreated = DateTime.Now.AddMinutes(-1) }.Activate().Finish();
+            cycleInactive1 = new UserCycle() { CourseID = "test_course", Username = "test", DateCreated = DateTime.Now }.Inactivate();
+            cycleInactive2 = new UserCycle() { CourseID = "test_course", Username = "test", DateCreated = DateTime.Now.AddMinutes(1) }.Inactivate();
+            cycleFinished = new UserCycle() { CourseID = "test_course", Username = "test", DateCreated = DateTime.Now.AddMinutes(-1) }.Finish();
             cycleIncomplete = new IncompleteUserCycle() { CourseID = "test_course", Username = "test", DateCreated = DateTime.Now.AddMinutes(2) };
 
             cycles = new List<UserCycle>() { cyclePreUpdate, cycleInactive1, cycleInactive2, cycleIncomplete, cycleFinished };

@@ -108,7 +108,7 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         /// <param name="username">username</param>
         /// <returns>active cycle for user</returns>
-        public virtual UserCycle GetUserCycle(string username)
+        public virtual UserCycle GetNextCycle(string username)
         {
             log.Info($"Getting cycle for user {username}");
             log.Debug($"Looking if there is existing inactive cycle for user {username}");
@@ -120,8 +120,8 @@ namespace Uceni_jazyku.Cycles
             }
             else
             {
-                log.Debug($"No cycle found, new must be created and activated");
-                return Activate(GetNewCycle(username));
+                log.Debug($"No cycle found, new must be created");
+                return GetNewCycle(username);
             }
         }
 
@@ -133,8 +133,10 @@ namespace Uceni_jazyku.Cycles
         public UserCycle GetNewCycle(string username)
         {
             log.Info($"Creating new cycle for user {username}");
-            UserCycle newCycle = CycleFactory.CreateCycle(username, ActiveCourse.CourseId);
+            List<UserProgramItem> program = ProgramPlanner.GetNextUserCycleProgram(username);
+            UserCycle newCycle = CycleFactory.CreateCycle(username, ActiveCourse.CourseId, program);
             CycleRepository.PutCycle(newCycle);
+            ActiveCycleCache.InsertToCache(newCycle);
             log.Debug($"New cycle created with id {newCycle.CycleID}");
             return newCycle;
         }
@@ -148,13 +150,6 @@ namespace Uceni_jazyku.Cycles
         public UserCycle Activate(UserCycle cycle)
         {
             log.Info($"Activating cycle {cycle.CycleID}");
-            if (cycle.State == UserCycleState.New)
-            {
-                log.Debug("Obtaining cycle program");
-                List<UserProgramItem> program = ProgramPlanner.GetNextUserCycleProgram(cycle.Username);
-                log.Info($"Assigning program to cycle {cycle.CycleID}");
-                cycle.AssignProgram(program);
-            }
             try
             {
                 cycle.Activate();
@@ -223,7 +218,7 @@ namespace Uceni_jazyku.Cycles
             if (cycle.AreAllFinished())
             {
                 Finish(cycle);
-                return GetUserCycle(cycle.Username);
+                return GetNextCycle(cycle.Username);
             } 
             else
             {
@@ -254,7 +249,7 @@ namespace Uceni_jazyku.Cycles
             if (activeCycleReset)
             {
                 // reset of cache done during GetUserCycle(string)
-                GetUserCycle(username);
+                GetNextCycle(username);
             }
         }
         

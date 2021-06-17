@@ -26,9 +26,9 @@ namespace UnitTests
 
             cycle = new UserCycle();
             cycleNew = new UserCycle() { Username = "test" };
-            cycleActive = new UserCycle() { Username = "test" }.Activate();
-            cycleInactive = new UserCycle() { Username = "test" }.Activate().Inactivate();
-            cycleActiveWithProgram = new UserCycle() { Username = "test" }.AssignProgram(new List<UserProgramItem>()).Activate();
+            cycleActive = new UserCycle() { Username = "test" };
+            cycleInactive = new UserCycle() { Username = "test" }.Inactivate();
+            cycleActiveWithProgram = new UserCycle() { Username = "test", UserProgramItems = new List<UserProgramItem>() };
 
             LanguageProgramItem languageItem1 = new LanguageProgramItem("lesson1");
             LanguageProgramItem languageItem2 = new LanguageProgramItem("lesson2");
@@ -40,7 +40,7 @@ namespace UnitTests
             item3 = new UserProgramItem(example.TopicId, example.PlanNextLesson());
 
             swappingList = new List<UserProgramItem>() { item1, item2 };
-            cycleSwap = new UserCycle().AssignProgram(swappingList);
+            cycleSwap = new UserCycle() { UserProgramItems = swappingList };
         }
 
         [TestMethod]
@@ -50,7 +50,7 @@ namespace UnitTests
             UserCycle cycle = new UserCycle();
 
             // Verify
-            Assert.AreEqual(UserCycleState.New, cycle.State);
+            Assert.AreEqual(UserCycleState.Active, cycle.State);
             Assert.IsNotNull(cycle.UserProgramItems);
             Assert.AreEqual(0, cycle.UserProgramItems.Count);
             Assert.AreEqual(0, cycle.FinishedEvents);
@@ -59,51 +59,7 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestAssignProgramPositive()
-        {
-            // Test
-            UserCycle result = cycle.AssignProgram(userProgramItems);
-
-            // Verify
-            Assert.AreSame(cycle, result);
-            CollectionAssert.AreEqual(userProgramItems, result.UserProgramItems);
-            Assert.IsTrue(result.IsProgramAssigned);
-        }
-
-        [TestMethod]
-        public void TestAssignProgramNegative()
-        {
-            // Init
-            Mock<UserCycle> cycleMock = new Mock<UserCycle>();
-            cycleMock.Setup(x => x.AssignProgram(userProgramItems)).CallBase();
-            cycleMock.SetupGet(x => x.IsProgramAssigned).Returns(true);
-
-            // Test & Verify
-            Exception exception = Assert.ThrowsException<Exception>(() => cycleMock.Object.AssignProgram(userProgramItems));
-            Assert.AreEqual("cycle program already assigned", exception.Message);
-
-            cycleMock.Verify(x => x.AssignProgram(userProgramItems), Times.Once);
-            cycleMock.Verify(x => x.IsProgramAssigned, Times.Once);
-
-            cycleMock.VerifyNoOtherCalls();
-        }
-
-        [TestMethod]
-        public void TestActivatePositiveNew()
-        {
-            // Preverify
-            Assert.AreEqual(UserCycleState.New, cycleNew.State);
-
-            // Test
-            UserCycle result = cycleNew.Activate();
-
-            // Verify
-            Assert.AreSame(cycleNew, result);
-            Assert.AreEqual(UserCycleState.Active, cycleNew.State);
-        }
-
-        [TestMethod]
-        public void TestActivatePositiveInactive()
+        public void TestActivatePositive()
         {
             // Preverify
             Assert.AreEqual(UserCycleState.Inactive, cycleInactive.State);
@@ -131,7 +87,7 @@ namespace UnitTests
             Assert.AreEqual("Cycle with state " + state + " cannot be activated", exception.Message);
 
             cycleMock.Verify(x => x.Activate(), Times.Once);
-            cycleMock.Verify(x => x.State, Times.Exactly(3));
+            cycleMock.Verify(x => x.State, Times.Exactly(2));
 
             cycleMock.VerifyNoOtherCalls();
         }
@@ -150,7 +106,6 @@ namespace UnitTests
             Assert.AreEqual(UserCycleState.Inactive, cycleActive.State);
         }
 
-        [DataRow(UserCycleState.New)]
         [DataRow(UserCycleState.Inactive)]
         [DataRow(UserCycleState.Finished)]
         [DataTestMethod]
@@ -184,7 +139,6 @@ namespace UnitTests
             Assert.AreEqual(UserCycleState.Finished, cycleActiveWithProgram.State);
         }
 
-        [DataRow(UserCycleState.New)]
         [DataRow(UserCycleState.Inactive)]
         [DataRow(UserCycleState.Finished)]
         [DataTestMethod]

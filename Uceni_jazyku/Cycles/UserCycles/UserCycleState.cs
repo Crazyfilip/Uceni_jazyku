@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Uceni_jazyku.Cycles.UserCycles
+﻿namespace Uceni_jazyku.Cycles.UserCycles
 {
     /// <summary>
-    /// enum of possible states for user cycle
+    /// Enum of possible states for user cycle
     /// </summary>
     public enum UserCycleState
     {
-        New,
+        /// <summary>Cycle from which are picked lessons</summary>
         Active,
+        /// <summary>Cycles for further planned lessons</summary>
         Inactive,
+        /// <summary>User cycle with all lessons finished</summary>
         Finished
     }
 }
