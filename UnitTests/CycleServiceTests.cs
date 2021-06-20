@@ -48,6 +48,28 @@ namespace UnitTests
         }
 
         [TestMethod]
+        public void TestGetActiveCyclePositive()
+        {
+            // Init
+            Mock<UserCycle> userCycle = new();
+            databaseMock.Setup(x => x.GetActiveCycle("test", "course_id")).Returns(userCycle.Object);
+
+            // Test
+            UserCycle result = service.GetActiveCycle("test");
+
+            // Verify
+
+            Assert.AreSame(userCycle.Object, result);
+
+            languageCourseMock.Verify(x => x.CourseId, Times.Once);
+            databaseMock.Verify(x => x.GetActiveCycle("test", "course_id"), Times.Once);
+
+            userCycle.VerifyNoOtherCalls();
+            databaseMock.VerifyNoOtherCalls();
+            languageCourseMock.VerifyNoOtherCalls();
+        }
+
+        [TestMethod]
         public void TestGetNextCyclePositiveCreateNew()
         {
             // Init
@@ -557,13 +579,13 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestSetActiveCoursePositiveNoCacheReset()
+        public void TestSetActiveCoursePositive()
         {
             // Init
             Mock<LanguageCourse> languageCourse = new();
 
             // Test
-            service.SetActiveCourse("test", languageCourse.Object, false);
+            service.SetActiveCourse("test", languageCourse.Object);
 
             // Verify
             Assert.AreEqual(languageCourse.Object, service.ActiveCourse);
@@ -571,33 +593,6 @@ namespace UnitTests
 
             languageCourse.VerifyNoOtherCalls();
             plannerMock.VerifyNoOtherCalls();
-        }
-
-        [TestMethod]
-        public void TestSetActiveCoursePositiveWithCacheReset()
-        {
-            // Init
-            Mock<UserCycle> cycleMock = new();
-            cycleMock.SetupGet(x => x.State).Returns(UserCycleState.Inactive);
-            Mock<LanguageCourse> languageCourse = new();
-            languageCourse.SetupGet(x => x.CourseId).Returns("course_id");
-            databaseMock.Setup(x => x.GetOldestUserInactiveCycle("test", "course_id")).Returns(cycleMock.Object);
-
-            // Test
-            service.SetActiveCourse("test", languageCourse.Object, true);
-
-            // Verify
-            Assert.AreEqual(languageCourse.Object, service.ActiveCourse);
-            plannerMock.Verify(x => x.SetPlanner(languageCourse.Object, "test"), Times.Once);
-            cycleMock.Verify(x => x.CycleID, Times.Exactly(2));
-            cycleMock.Verify(x => x.Activate(), Times.Once);
-            languageCourse.Verify(x => x.CourseId, Times.Once);
-            databaseMock.Verify(x => x.UpdateCycle(cycleMock.Object), Times.Once);
-
-            cycleMock.VerifyNoOtherCalls();
-            languageCourse.VerifyNoOtherCalls();
-            plannerMock.VerifyNoOtherCalls();
-            databaseMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]

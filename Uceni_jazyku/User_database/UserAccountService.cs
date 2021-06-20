@@ -45,18 +45,21 @@ namespace Uceni_jazyku.User_database
 
         /// <summary>
         /// Login user if user exists and return user's cycle in that case
+        /// 
+        /// Save in special file with username in it as flag who is logged.
         /// </summary>
         /// <param name="username">username</param>
         /// <param name="password">password</param>
         /// <returns>User's cycle or null</returns>
+        // TODO separete from cycle logic?
         public UserCycle Login(string username, string password)
         {
             log.Info($"Login attempt of user {username}");
             if (VerifyUser(username, password))
             {
                 log.Debug("Login successful");
-                File.WriteAllLines(path, new string[] { username });
-                cycleService.SetActiveCourse(username, languageCourseService.GetActiveLanguageCourse(username), false);
+                File.WriteAllText(path, username);
+                cycleService.SetActiveCourse(username, languageCourseService.GetActiveLanguageCourse(username));
                 return cycleService.GetNextCycle(username);
             }
             else
@@ -66,21 +69,27 @@ namespace Uceni_jazyku.User_database
             }
         }
 
+        /// <summary>
+        /// Check if anyone is logged in based on the present of file where is saved who is logged.
+        /// </summary>
+        /// <returns>True if someone is logged</returns>
         public bool IsAnyoneLogged()
         {
             return File.Exists(path);
         }
 
+        /// <summary>
+        /// Getter of loggged user's name.
+        /// </summary>
+        /// <returns>name of logged user</returns>
         public string GetLoggedUser()
         {
-            string result;
-            using (StreamReader reader = new StreamReader(path))
-            {
-                result = reader.ReadLine();
-            }
-            return result;
+            return File.ReadAllText(path);
         }
 
+        /// <summary>
+        /// Remove file with information who is logged.
+        /// </summary>
         public void Logout()
         {
             File.Delete(path);
@@ -141,7 +150,7 @@ namespace Uceni_jazyku.User_database
 
             // TODO will be in serapate method as in UI course is setup in second step
             LanguageCourse course = languageCourseService.GetLanguageCourseInstanceFromTemplate("template-default", username);
-            cycleService.SetActiveCourse(username, course, false);
+            cycleService.SetActiveCourse(username, course);
             CreateUserModel(username, course.CourseId);
             return true;
         }

@@ -35,7 +35,7 @@ namespace User_interface
                 string username = userAccountService.GetLoggedUser();
                 LanguageCourse languageCourse = LanguageCourseService.GetInstance().GetActiveLanguageCourse(username);
                 CycleService cycleService = CycleService.GetInstance();
-                cycleService.SetActiveCourse(username, languageCourse, false);
+                cycleService.SetActiveCourse(username, languageCourse);
                 UserCycle userCycle = cycleService.GetActiveCycle(username);
                 Application.Run(new WelcomePage(userCycle));
             }

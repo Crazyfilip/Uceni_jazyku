@@ -24,7 +24,6 @@ namespace User_interface
             log.Info("test");
             InitializeComponent();
             userCycle = cycle;
-            cycleService.SetActiveCourse(userCycle.Username, LanguageCourseService.GetInstance().GetActiveLanguageCourse(userCycle.Username), false);
             labelWelcome.Text = labelWelcome.Text.Replace("<username>", cycle.Username);
             lessonLink.Text = lessonLink.Text.Replace("<lesson>", ((UserProgramItem)cycle.GetNext()).LessonRef.Lesson);
         }

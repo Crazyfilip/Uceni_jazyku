@@ -22,6 +22,7 @@ namespace UnitTests
         Mock<LanguageCourseService> languageCourseServiceMock;
         Mock<IUserModelRepository> userModelRepositoryMock;
         string saltMock;
+        string path = "./users/loggedUser.txt";
 
         static readonly Mock<ILog> log4netMock = new Mock<ILog>();
 
@@ -115,19 +116,23 @@ namespace UnitTests
             languageCourseServiceMock.Setup(x => x.GetActiveLanguageCourse("test")).Returns(courseMock.Object);
 
             cycleServiceMock.Setup(x => x.GetNextCycle("test")).Returns(cycleMock.Object);
-            cycleServiceMock.Setup(x => x.SetActiveCourse("test", courseMock.Object, false)).Verifiable();
+            cycleServiceMock.Setup(x => x.SetActiveCourse("test", courseMock.Object)).Verifiable();
+
+            // Preverify
+            Assert.IsFalse(File.Exists(path));
 
             // Test
             UserCycle result = accountService.Login("test", "test");
 
             // Verify
             Assert.AreEqual(cycleMock.Object, result);
+            Assert.IsTrue(File.Exists(path));
 
             repositoryMock.Verify(x => x.GetUserAccount("test"), Times.Once);
             accountMock.Verify(x => x.salt, Times.Once);
             accountMock.Verify(x => x.loginCredential, Times.Once);
             cycleServiceMock.Verify(x => x.GetNextCycle("test"), Times.Once);
-            cycleServiceMock.Verify(x => x.SetActiveCourse("test", courseMock.Object, false), Times.Once);
+            cycleServiceMock.Verify(x => x.SetActiveCourse("test", courseMock.Object), Times.Once);
             log4netMock.Verify(x => x.Info("Login attempt of user test"), Times.Once);
             log4netMock.Verify(x => x.Debug("Calculating hash for user test"), Times.Once);
             log4netMock.Verify(x => x.Debug("Verifying if hash is correct"), Times.Once);
@@ -188,6 +193,71 @@ namespace UnitTests
             accountMock.VerifyNoOtherCalls();
             cycleServiceMock.VerifyNoOtherCalls();
             log4netMock.VerifyNoOtherCalls();
+        }
+
+        [TestMethod]
+        public void TestIsAnyoneLoggedPositive()
+        {
+            // Init
+            File.WriteAllText(path, "test");
+
+            // Test
+            bool result = accountService.IsAnyoneLogged();
+
+            // Verify
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void TestIsAnyoneLoggedNegative()
+        {
+            // Test
+            bool result = accountService.IsAnyoneLogged();
+
+            // Verify
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void TestGetLoggedUserPositive()
+        {
+            // Init
+            File.WriteAllText(path, "test");
+
+            // Test
+            string result = accountService.GetLoggedUser();
+
+            // Verify
+            Assert.AreEqual("test", result);
+        }
+
+        [TestMethod]
+        public void TestGetLoggedUserNegative()
+        {
+            // Test & Verify
+            Assert.ThrowsException<FileNotFoundException>(() => accountService.GetLoggedUser());
+        }
+
+        [DataTestMethod]
+        [DataRow(false)]
+        [DataRow(true)]
+        public void TestLogoutPositive(bool filePresent)
+        {
+            // init
+            if (filePresent)
+                File.WriteAllText(path, "test");
+
+            // Preverify
+            if (filePresent)
+                Assert.IsTrue(File.Exists(path));
+            else
+                Assert.IsFalse(File.Exists(path));
+
+            // Test
+            accountService.Logout();
+
+            // Verify
+            Assert.IsFalse(File.Exists(path));
         }
 
         [TestCleanup]

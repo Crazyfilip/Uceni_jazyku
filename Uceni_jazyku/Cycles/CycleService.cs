@@ -36,11 +36,6 @@ namespace Uceni_jazyku.Cycles
             ProgramPlanner = planner ?? new ProgramPlanner();
         }
 
-        public UserCycle GetActiveCycle(string username)
-        {
-            return CycleRepository.GetActiveCycle(username, ActiveCourse.CourseId);
-        }
-
         /// <summary>
         /// Get instance of service. 
         /// For database instance will be used the default one if service instance wasn't initialized yet.
@@ -78,6 +73,17 @@ namespace Uceni_jazyku.Cycles
         #endregion
 
         #region Creating and updating user cycles
+
+        /// <summary>
+        /// Getter for user's active cycle in active language course
+        /// </summary>
+        /// <param name="username">username</param>
+        /// <returns>user's active cycle</returns>
+        public UserCycle GetActiveCycle(string username)
+        {
+            return CycleRepository.GetActiveCycle(username, ActiveCourse.CourseId);
+        }
+
         /// <summary>
         /// Get active cycle for given user
         /// when login or when active cycle was finished
@@ -213,16 +219,10 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         /// <param name="username">username</param>
         /// <param name="languageCourse">LanguageCourse</param>
-        /// <param name="activeCycleReset">flag if active cycle reset is needed</param> // TODO rename or remove
-        public virtual void SetActiveCourse(string username, LanguageCourse languageCourse, bool activeCycleReset)
+        public virtual void SetActiveCourse(string username, LanguageCourse languageCourse)
         {
             ActiveCourse = languageCourse;
             ProgramPlanner.SetPlanner(languageCourse, username);
-            if (activeCycleReset)
-            {
-                // reset of cache done during GetUserCycle(string)
-                GetNextCycle(username);
-            }
         }
         
         /// <summary>

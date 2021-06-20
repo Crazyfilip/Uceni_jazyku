@@ -23,6 +23,12 @@ namespace Uceni_jazyku.Cycles
         /// <param name="updatedCycle">cycle to update</param>
         void UpdateCycle(UserCycle updatedCycle);
 
+        /// <summary>
+        /// Getter for active cycle
+        /// </summary>
+        /// <param name="username">user's name</param>
+        /// <param name="courseID">language course id</param>
+        /// <returns>User's active cycle</returns>
         UserCycle GetActiveCycle(string username, string courseID);
 
         /// <summary>
