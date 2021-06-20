@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using Uceni_jazyku.Cycles.Program;
 using System.Runtime.Serialization;
 using System.Xml;
+using Uceni_jazyku.User_database;
 
 namespace User_interface
 {
@@ -28,9 +29,14 @@ namespace User_interface
             PrepareApp();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            UserCycle userCycle = CycleService.GetInstance().GetActiveCycle();
-            if (userCycle != null)
+            UserAccountService userAccountService = new UserAccountService();
+            if (userAccountService.IsAnyoneLogged())
             {
+                string username = userAccountService.GetLoggedUser();
+                LanguageCourse languageCourse = LanguageCourseService.GetInstance().GetActiveLanguageCourse(username);
+                CycleService cycleService = CycleService.GetInstance();
+                cycleService.SetActiveCourse(username, languageCourse, false);
+                UserCycle userCycle = cycleService.GetActiveCycle(username);
                 Application.Run(new WelcomePage(userCycle));
             }
             else

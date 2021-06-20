@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using log4net;
 using Uceni_jazyku.Language;
 using Uceni_jazyku.User;
+using System.IO;
 
 namespace Uceni_jazyku.User_database
 {
@@ -19,6 +20,8 @@ namespace Uceni_jazyku.User_database
         private readonly IUserModelRepository userModelRepository;
         private readonly CycleService cycleService;
         private readonly LanguageCourseService languageCourseService;
+
+        private readonly string path = "./users/loggedUser.txt";
 
         /// <summary>
         /// This constructor calls UserAccountService(IUserAccountRepository, CycleService) with null values
@@ -52,6 +55,7 @@ namespace Uceni_jazyku.User_database
             if (VerifyUser(username, password))
             {
                 log.Debug("Login successful");
+                File.WriteAllLines(path, new string[] { username });
                 cycleService.SetActiveCourse(username, languageCourseService.GetActiveLanguageCourse(username), false);
                 return cycleService.GetNextCycle(username);
             }
@@ -60,6 +64,26 @@ namespace Uceni_jazyku.User_database
                 log.Debug("Login failed");
                 return null;
             }
+        }
+
+        public bool IsAnyoneLogged()
+        {
+            return File.Exists(path);
+        }
+
+        public string GetLoggedUser()
+        {
+            string result;
+            using (StreamReader reader = new StreamReader(path))
+            {
+                result = reader.ReadLine();
+            }
+            return result;
+        }
+
+        public void Logout()
+        {
+            File.Delete(path);
         }
 
         /// <summary>

@@ -24,7 +24,7 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         private List<UserCycle> database = new List<UserCycle>();
 
-        private static ILog log = LogManager.GetLogger(typeof(ActiveCycleCache));
+        private static ILog log = LogManager.GetLogger(typeof(CycleRepository));
 
         public CycleRepository()
         {
@@ -75,6 +75,14 @@ namespace Uceni_jazyku.Cycles
                 log.Debug($"Cycle {updatedCycle.CycleID} added");
             }
             Save();
+        }
+
+        public UserCycle GetActiveCycle(string username, string courseID)
+        {
+            log.Info($"Getting active cycle for user {username}");
+            return database
+                .Where(x => x.State == UserCycleState.Active && x.Username == username && x.CourseID == courseID)
+                .FirstOrDefault();
         }
 
         public UserCycle GetOldestUserInactiveCycle(string username, string courseId)

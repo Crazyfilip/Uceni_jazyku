@@ -23,6 +23,8 @@ namespace Uceni_jazyku.Cycles
         /// <param name="updatedCycle">cycle to update</param>
         void UpdateCycle(UserCycle updatedCycle);
 
+        UserCycle GetActiveCycle(string username, string courseID);
+
         /// <summary>
         /// Search for user's oldest inactive cycle
         /// </summary>

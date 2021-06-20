@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
+using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
 using Uceni_jazyku.Cycles;
@@ -49,6 +50,8 @@ namespace UnitTests
             new RNGCryptoServiceProvider().GetBytes(salt = new byte[16]);
             saltMock = Convert.ToBase64String(salt);
             log4netMock.Reset();
+
+            Directory.CreateDirectory("./users");
         }
 
         [TestMethod]
@@ -185,6 +188,12 @@ namespace UnitTests
             accountMock.VerifyNoOtherCalls();
             cycleServiceMock.VerifyNoOtherCalls();
             log4netMock.VerifyNoOtherCalls();
+        }
+
+        [TestCleanup]
+        public void CleanUp()
+        {
+            Directory.Delete("./users", true);
         }
     }
 }

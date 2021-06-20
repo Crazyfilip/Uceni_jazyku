@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using Uceni_jazyku.Cycles;
 using Uceni_jazyku.Cycles.Program;
 using Uceni_jazyku.Language;
+using Uceni_jazyku.User_database;
 
 namespace User_interface
 {
@@ -41,7 +42,9 @@ namespace User_interface
 
         private void linkDifferentUser_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            cycleService.Inactivate(userCycle);
+            UserAccountService userAccountService = new UserAccountService();
+            userAccountService.Logout();
+            // TODO remove cycle argument for login page
             UserCycle unknownUserCycle = new UserCycle();
             new LoginPage(unknownUserCycle).Show();
             Hide();

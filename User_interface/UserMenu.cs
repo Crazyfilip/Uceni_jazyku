@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using Uceni_jazyku.Cycles;
 using Uceni_jazyku.Cycles.Program;
+using Uceni_jazyku.User_database;
 
 namespace User_interface
 {
@@ -19,9 +20,9 @@ namespace User_interface
 
         private void buttonLogout_Click(object sender, EventArgs e)
         {
-            CycleService cycleService = CycleService.GetInstance();
-            cycleService.Inactivate(userCycle);
-            // TODO get cycle in UnknownUser state from service
+            UserAccountService userAccountService = new UserAccountService();
+            userAccountService.Logout();
+            // TODO remove cycle argument for login page
             UserCycle uknownUser = new UserCycle();
             new LoginPage(uknownUser).Show();
             Close();
