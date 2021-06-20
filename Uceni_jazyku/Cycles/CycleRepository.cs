@@ -24,7 +24,7 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         private List<UserCycle> database = new List<UserCycle>();
 
-        private static ILog log = LogManager.GetLogger(typeof(ActiveCycleCache));
+        private static ILog log = LogManager.GetLogger(typeof(CycleRepository));
 
         public CycleRepository()
         {
@@ -53,6 +53,7 @@ namespace Uceni_jazyku.Cycles
             serializer.WriteObject(writer, database ?? new List<UserCycle>());
         }
 
+        /// <inheritdoc/>
         public void PutCycle(UserCycle cycle)
         {
             log.Info($"Adding cycle {cycle.CycleID} to repository");
@@ -60,6 +61,7 @@ namespace Uceni_jazyku.Cycles
             Save();
         }
 
+        /// <inheritdoc/>
         public void UpdateCycle(UserCycle updatedCycle)
         {
             log.Info($"Updating cycle {updatedCycle.CycleID}");
@@ -77,6 +79,16 @@ namespace Uceni_jazyku.Cycles
             Save();
         }
 
+        /// <inheritdoc/>
+        public UserCycle GetActiveCycle(string username, string courseID)
+        {
+            log.Info($"Getting active cycle for user {username}");
+            return database
+                .Where(x => x.State == UserCycleState.Active && x.Username == username && x.CourseID == courseID)
+                .FirstOrDefault();
+        }
+
+        /// <inheritdoc/>
         public UserCycle GetOldestUserInactiveCycle(string username, string courseId)
         {
             log.Info($"Getting oldest inactive cycle for user {username}");
@@ -87,6 +99,7 @@ namespace Uceni_jazyku.Cycles
             return queryResult.FirstOrDefault();
         }
 
+        /// <inheritdoc/>
         public IncompleteUserCycle GetUserIncompleteCycle(string username, string courseId)
         {
             log.Info($"Getting incomplete cycle for user {username}");
@@ -96,6 +109,7 @@ namespace Uceni_jazyku.Cycles
                 .FirstOrDefault();
         }
 
+        /// <inheritdoc/>
         public List<UserCycle> GetNotFinishedCycles(string username, string courseId)
         {
             log.Info($"Getting cycles which are not in finished state for user {username}");

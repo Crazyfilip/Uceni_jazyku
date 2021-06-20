@@ -23,20 +23,16 @@ namespace Uceni_jazyku.Cycles
 
         private readonly ICycleRepository CycleRepository;
 
-        private readonly IActiveCycleCache ActiveCycleCache;
-
         private readonly IProgramPlanner ProgramPlanner;
 
         private readonly ICycleFactory CycleFactory;
 
         #region Initialization
-        public CycleService() : this(null, null, null, null){}
+        public CycleService() : this(null, null, null){}
 
-        private CycleService(ICycleRepository database, IActiveCycleCache cache, IProgramPlanner planner, ICycleFactory cycleFactory) {
+        private CycleService(ICycleRepository database, IProgramPlanner planner, ICycleFactory cycleFactory) {
             CycleRepository = database ?? new CycleRepository();
-            ActiveCycleCache = cache ?? new ActiveCycleCache();
             CycleFactory = cycleFactory ?? new CycleFactory();
-            // TODO replace mock planner by real implementation
             ProgramPlanner = planner ?? new ProgramPlanner();
         }
 
@@ -48,7 +44,7 @@ namespace Uceni_jazyku.Cycles
         public static CycleService GetInstance()
         {
             if (instance == null)
-                instance = new CycleService(null, null, null, null);
+                instance = new CycleService(null, null, null);
             return instance;
         }
 
@@ -56,14 +52,13 @@ namespace Uceni_jazyku.Cycles
         /// Get instance of service. For database instance will be used the provided one if service instance wasn't initialized yet.
         /// </summary>
         /// <param name="database">database</param>
-        /// <param name="cache">cache</param>
         /// <param name="planner">planner</param>
         /// <param name="cycleFactory">cycle factory</param>
         /// <returns>instance <c>CycleService</c></returns>
-        public static CycleService GetInstance(ICycleRepository database, IActiveCycleCache cache, IProgramPlanner planner, ICycleFactory cycleFactory)
+        public static CycleService GetInstance(ICycleRepository database, IProgramPlanner planner, ICycleFactory cycleFactory)
         {
             if (instance == null)
-                instance = new CycleService(database, cache, planner, cycleFactory);
+                instance = new CycleService(database, planner, cycleFactory);
             return instance;
         }
 
@@ -77,31 +72,18 @@ namespace Uceni_jazyku.Cycles
 
         #endregion
 
-        #region ActiveCycleCache methods
-
-        /// <summary>
-        /// test presence of cached active cycle
-        /// </summary>
-        /// <returns>true if there is cached active cycle</returns>
-        public bool UserActiveCycleExists()
-        {
-            log.Info("Looking into cache if there is user active cycle present");
-            return ActiveCycleCache.IsCacheFilled();
-        }
-
-        /// <summary>
-        /// Get active cycle when application starts
-        /// </summary>
-        /// <returns>active cycle</returns>
-        public UserCycle GetActiveCycle()
-        {
-            log.Info("Retriving user active cycle from cache");
-            return ActiveCycleCache.GetFromCache();
-        }
-
-        #endregion
-
         #region Creating and updating user cycles
+
+        /// <summary>
+        /// Getter for user's active cycle in active language course
+        /// </summary>
+        /// <param name="username">username</param>
+        /// <returns>user's active cycle</returns>
+        public UserCycle GetActiveCycle(string username)
+        {
+            return CycleRepository.GetActiveCycle(username, ActiveCourse.CourseId);
+        }
+
         /// <summary>
         /// Get active cycle for given user
         /// when login or when active cycle was finished
@@ -136,7 +118,6 @@ namespace Uceni_jazyku.Cycles
             List<UserProgramItem> program = ProgramPlanner.GetNextUserCycleProgram(username);
             UserCycle newCycle = CycleFactory.CreateCycle(username, ActiveCourse.CourseId, program);
             CycleRepository.PutCycle(newCycle);
-            ActiveCycleCache.InsertToCache(newCycle);
             log.Debug($"New cycle created with id {newCycle.CycleID}");
             return newCycle;
         }
@@ -154,7 +135,6 @@ namespace Uceni_jazyku.Cycles
             {
                 cycle.Activate();
                 CycleRepository.UpdateCycle(cycle);
-                ActiveCycleCache.InsertToCache(cycle);
             }
             catch (IncorrectCycleStateException e)
             {
@@ -175,7 +155,6 @@ namespace Uceni_jazyku.Cycles
             {
                 cycle.Inactivate();
                 CycleRepository.UpdateCycle(cycle);
-                ActiveCycleCache.DropCache();
             } 
             catch (IncorrectCycleStateException e)
             {
@@ -195,7 +174,6 @@ namespace Uceni_jazyku.Cycles
             {
                 cycle.Finish();
                 CycleRepository.UpdateCycle(cycle);
-                ActiveCycleCache.DropCache();
             }
             catch (IncorrectCycleStateException e)
             {
@@ -241,16 +219,10 @@ namespace Uceni_jazyku.Cycles
         /// </summary>
         /// <param name="username">username</param>
         /// <param name="languageCourse">LanguageCourse</param>
-        /// <param name="activeCycleReset">flag if active cycle reset is needed</param>
-        public virtual void SetActiveCourse(string username, LanguageCourse languageCourse, bool activeCycleReset)
+        public virtual void SetActiveCourse(string username, LanguageCourse languageCourse)
         {
             ActiveCourse = languageCourse;
             ProgramPlanner.SetPlanner(languageCourse, username);
-            if (activeCycleReset)
-            {
-                // reset of cache done during GetUserCycle(string)
-                GetNextCycle(username);
-            }
         }
         
         /// <summary>
@@ -263,10 +235,6 @@ namespace Uceni_jazyku.Cycles
             log.Info($"Swapping lesson {item.LessonRef.Lesson} to cycle {cycle.CycleID}"); // TODO UserProgramItem should have also some id
             UserProgramItem swappedItem = cycle.SwapLesson(item);
             CycleRepository.UpdateCycle(cycle);
-            if (cycle.State == UserCycleState.Active)
-            {
-                ActiveCycleCache.InsertToCache(cycle);
-            }
             IncompleteUserCycle incompleteCycle = GetIncompleteUserCycle(cycle.Username);
             log.Info($"Placing swapped lesson {swappedItem.LessonRef.Lesson} to incomplete cycle {incompleteCycle.CycleID}");
             incompleteCycle.AddLesson(swappedItem);
