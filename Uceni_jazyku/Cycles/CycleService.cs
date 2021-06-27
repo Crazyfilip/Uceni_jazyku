@@ -117,7 +117,7 @@ namespace Uceni_jazyku.Cycles
             log.Info($"Creating new cycle for user {username}");
             List<UserProgramItem> program = ProgramPlanner.GetNextUserCycleProgram(username);
             UserCycle newCycle = CycleFactory.CreateCycle(username, ActiveCourse.CourseId, program);
-            CycleRepository.PutCycle(newCycle);
+            CycleRepository.Create(newCycle);
             log.Debug($"New cycle created with id {newCycle.CycleID}");
             return newCycle;
         }
@@ -134,7 +134,7 @@ namespace Uceni_jazyku.Cycles
             try
             {
                 cycle.Activate();
-                CycleRepository.UpdateCycle(cycle);
+                CycleRepository.Update(cycle);
             }
             catch (IncorrectCycleStateException e)
             {
@@ -154,7 +154,7 @@ namespace Uceni_jazyku.Cycles
             try
             {
                 cycle.Inactivate();
-                CycleRepository.UpdateCycle(cycle);
+                CycleRepository.Update(cycle);
             } 
             catch (IncorrectCycleStateException e)
             {
@@ -173,7 +173,7 @@ namespace Uceni_jazyku.Cycles
             try
             {
                 cycle.Finish();
-                CycleRepository.UpdateCycle(cycle);
+                CycleRepository.Update(cycle);
             }
             catch (IncorrectCycleStateException e)
             {
@@ -200,7 +200,7 @@ namespace Uceni_jazyku.Cycles
             } 
             else
             {
-                CycleRepository.UpdateCycle(cycle);
+                CycleRepository.Update(cycle);
                 return cycle;
             }
         }
@@ -234,11 +234,11 @@ namespace Uceni_jazyku.Cycles
         {
             log.Info($"Swapping lesson {item.LessonRef.Lesson} to cycle {cycle.CycleID}"); // TODO UserProgramItem should have also some id
             UserProgramItem swappedItem = cycle.SwapLesson(item);
-            CycleRepository.UpdateCycle(cycle);
+            CycleRepository.Update(cycle);
             IncompleteUserCycle incompleteCycle = GetIncompleteUserCycle(cycle.Username);
             log.Info($"Placing swapped lesson {swappedItem.LessonRef.Lesson} to incomplete cycle {incompleteCycle.CycleID}");
             incompleteCycle.AddLesson(swappedItem);
-            CycleRepository.UpdateCycle(incompleteCycle);
+            CycleRepository.Update(incompleteCycle);
         }
 
         /// <summary>
@@ -254,7 +254,7 @@ namespace Uceni_jazyku.Cycles
             IncompleteUserCycle incompleteCycle = GetIncompleteUserCycle(username);
             log.Debug($"Placing lesson {item.LessonRef.Lesson} to cycle {incompleteCycle.CycleID}");
             incompleteCycle.AddLesson(item);
-            CycleRepository.UpdateCycle(incompleteCycle);
+            CycleRepository.Update(incompleteCycle);
             return item.LessonRef.Lesson;
         }
 
@@ -281,7 +281,7 @@ namespace Uceni_jazyku.Cycles
             {
                 log.Debug("No incomplete user cycle found creating new");
                 incompleteCycle = CycleFactory.CreateIncompleteCycle(username, ActiveCourse.CourseId, 0); // TODO set limit properly
-                CycleRepository.PutCycle(incompleteCycle);
+                CycleRepository.Create(incompleteCycle);
             }
             return incompleteCycle;
         }

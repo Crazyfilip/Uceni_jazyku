@@ -16,7 +16,7 @@ namespace Uceni_jazyku.Language
         /// Path to file where is stored collection of cycles
         /// </summary>
         private readonly string path = "./courses/service/database.xml";
-        private readonly ICollection<LanguageCourse> languageCourses = new List<LanguageCourse>();
+        private readonly List<LanguageCourse> languageCourses = new List<LanguageCourse>();
 
 
         public LanguageCourseRepository()
@@ -36,7 +36,7 @@ namespace Uceni_jazyku.Language
             serializer.WriteObject(writer, languageCourses ?? new List<LanguageCourse>());
         }
 
-        public LanguageCourseRepository(ICollection<LanguageCourse> languageCourses)
+        public LanguageCourseRepository(List<LanguageCourse> languageCourses)
         {
             this.languageCourses = languageCourses;
         }
@@ -63,9 +63,28 @@ namespace Uceni_jazyku.Language
                 .FirstOrDefault();
         }
 
-        public void InsertCourse(LanguageCourse languageCourse)
+        public void Create(LanguageCourse languageCourse)
         {
             languageCourses.Add(languageCourse);
+            Save();
+        }
+
+        public LanguageCourse Get(string courseId)
+        {
+            return languageCourses.Find(x => x.CourseId == courseId);
+        }
+
+        public void Update(LanguageCourse languageCourse)
+        {
+            int index = languageCourses.FindIndex(x => x.CourseId == languageCourse.CourseId);
+            if (index != -1)
+                languageCourses[index] = languageCourse;
+            Save();
+        }
+
+        public void Delete(LanguageCourse languageCourse)
+        {
+            languageCourses.Remove(languageCourse);
             Save();
         }
     }

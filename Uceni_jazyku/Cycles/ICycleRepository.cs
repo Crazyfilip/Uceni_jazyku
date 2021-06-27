@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Uceni_jazyku.Common;
 using Uceni_jazyku.Cycles.UserCycles;
 
 namespace Uceni_jazyku.Cycles
@@ -8,21 +9,8 @@ namespace Uceni_jazyku.Cycles
     /// <summary>
     /// Interface of operations with repository of cycles
     /// </summary>
-    public interface ICycleRepository
+    public interface ICycleRepository : IRepository<string, UserCycle>
     {
-
-        /// <summary>
-        /// Insert cycle to the repository
-        /// </summary>
-        /// <param name="cycle">inserted cycle</param>
-        void PutCycle(UserCycle cycle);
-
-        /// <summary>
-        /// Update information about a cycle stored in the repository.
-        /// </summary>
-        /// <param name="updatedCycle">cycle to update</param>
-        void UpdateCycle(UserCycle updatedCycle);
-
         /// <summary>
         /// Getter for active cycle
         /// </summary>

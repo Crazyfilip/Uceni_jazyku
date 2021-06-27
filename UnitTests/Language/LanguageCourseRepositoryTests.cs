@@ -112,7 +112,7 @@ namespace UnitTests.Language
             Assert.IsFalse(languageCourses.Contains(testLanguageCourse));
 
             // Test
-            languageCourseRepository.InsertCourse(testLanguageCourse);
+            languageCourseRepository.Create(testLanguageCourse);
 
             // Verify
             Assert.IsTrue(languageCourses.Contains(testLanguageCourse));

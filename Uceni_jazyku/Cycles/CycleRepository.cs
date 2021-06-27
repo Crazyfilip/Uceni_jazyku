@@ -53,31 +53,50 @@ namespace Uceni_jazyku.Cycles
             serializer.WriteObject(writer, database ?? new List<UserCycle>());
         }
 
+        #region CRUD operations
         /// <inheritdoc/>
-        public void PutCycle(UserCycle cycle)
+        public void Create(UserCycle cycle)
         {
-            log.Info($"Adding cycle {cycle.CycleID} to repository");
+            log.Info($"Adding cycle with ID {cycle.CycleID}");
             database.Add(cycle);
             Save();
         }
 
         /// <inheritdoc/>
-        public void UpdateCycle(UserCycle updatedCycle)
+        public UserCycle Get(string key)
         {
-            log.Info($"Updating cycle {updatedCycle.CycleID}");
-            int index = database.FindIndex(x => x.CycleID == updatedCycle.CycleID);
+            log.Info($"Getting cycle with id {key}");
+            return database
+                .Where(x => x.CycleID == key)
+                .FirstOrDefault();
+        }
+
+        /// <inheritdoc/>
+        public void Delete(UserCycle value)
+        {
+            log.Info($"Removing cycle with id {value.CycleID}");
+            database.Remove(value);
+            Save();
+        }
+
+        /// <inheritdoc/>
+        public void Update(UserCycle value)
+        {
+            log.Info($"Updating cycle {value.CycleID}");
+            int index = database.FindIndex(x => x.CycleID == value.CycleID);
             if (index != -1)
             {
-                database[index] = updatedCycle;
-                log.Debug($"Cycle {updatedCycle.CycleID} updated");
+                database[index] = value;
+                log.Debug($"Cycle {value.CycleID} updated");
             }
             else
             {
-                database.Add(updatedCycle);
-                log.Debug($"Cycle {updatedCycle.CycleID} added");
+                database.Add(value);
+                log.Debug($"Cycle {value.CycleID} added");
             }
             Save();
         }
+        #endregion
 
         /// <inheritdoc/>
         public UserCycle GetActiveCycle(string username, string courseID)

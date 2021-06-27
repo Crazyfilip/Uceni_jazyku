@@ -1,9 +1,7 @@
 ﻿using log4net;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Xml;
 
 namespace Uceni_jazyku.User_database
@@ -48,17 +46,31 @@ namespace Uceni_jazyku.User_database
             SaveDatabase();
         }
 
-        public void AddUserAccount(UserAccount userAccount)
+        public void Create(UserAccount userAccount)
         {
             log.Info("Adding user account to repository");
             userDatabase.Add(userAccount);
             SaveDatabase();
         }
 
-        public UserAccount GetUserAccount(string username)
+        public void Delete(UserAccount value)
+        {
+            userDatabase.Remove(value);
+            SaveDatabase();
+        }
+
+        public UserAccount Get(string username)
         {
             log.Info($"Looking for account with username: {username}");
             return userDatabase.Find(x => x.username == username);
+        }
+
+        public void Update(UserAccount user)
+        {
+            int index = userDatabase.FindIndex(x => x.username == user.username);
+            if (index != -1)
+                userDatabase[index] = user;
+            SaveDatabase();
         }
 
         private void SaveDatabase()

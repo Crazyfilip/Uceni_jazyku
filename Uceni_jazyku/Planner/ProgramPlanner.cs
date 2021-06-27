@@ -45,7 +45,7 @@ namespace Uceni_jazyku.Planner
             {
                 plannerMemory.InsertTopic(topic);
             }
-            plannerRepository.UpdateMemory(plannerMemory);
+            plannerRepository.Update(plannerMemory);
             return new UserProgramItem(topic.TopicId, item);
         }
 
@@ -67,14 +67,14 @@ namespace Uceni_jazyku.Planner
         public void SetPlanner(LanguageCourse languageCourse, string username)
         {
             this.languageCourse = languageCourse;
-            plannerMemory = plannerRepository.GetMemory(languageCourse.CourseId) ?? InitMemory(languageCourse.CourseId);
-            userModel = userModelRepository.GetUserModel(username, languageCourse.CourseId);
+            plannerMemory = plannerRepository.Get(languageCourse.CourseId) ?? InitMemory(languageCourse.CourseId);
+            userModel = userModelRepository.Get(languageCourse.CourseId);
         }
 
         private AbstractPlannerMemory InitMemory(string courseId)
         {
             AbstractPlannerMemory result = new PlannerMemory() { CourseId = courseId, MemoryId = Guid.NewGuid().ToString() };
-            plannerRepository.InsertMemory(result);
+            plannerRepository.Create(result);
             return result;
         }
     }

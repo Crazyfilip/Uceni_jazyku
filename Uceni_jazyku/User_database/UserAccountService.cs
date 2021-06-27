@@ -103,7 +103,7 @@ namespace Uceni_jazyku.User_database
         /// <returns>true when user exists</returns>
         private bool VerifyUser(string username, string password)
         {
-            UserAccount userAccount = userAccountRepository.GetUserAccount(username);
+            UserAccount userAccount = userAccountRepository.Get(username);
             if (userAccount == null)
             {
                 log.Debug($"No account with username: {username}");
@@ -125,7 +125,7 @@ namespace Uceni_jazyku.User_database
         public bool CreateUser(string username, string password)
         {
             log.Info($"Verifying if there isn't already account with username {username}");
-            UserAccount userAccount = userAccountRepository.GetUserAccount(username);
+            UserAccount userAccount = userAccountRepository.Get(username);
             if (userAccount != null)
             {
                 log.Debug($"Account with username {username} already exists");
@@ -146,7 +146,7 @@ namespace Uceni_jazyku.User_database
             var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 1000);
             userAccount.loginCredential = Convert.ToBase64String(pbkdf2.GetBytes(20));
             log.Debug("Registering user to repository");
-            userAccountRepository.AddUserAccount(userAccount);
+            userAccountRepository.Create(userAccount);
 
             // TODO will be in serapate method as in UI course is setup in second step
             LanguageCourse course = languageCourseService.GetLanguageCourseInstanceFromTemplate("template-default", username);
@@ -158,7 +158,7 @@ namespace Uceni_jazyku.User_database
         private void CreateUserModel(string username, string coursesId)
         {
             UserModel userModel = new UserModel() { Username = username, CourseId = coursesId, ModelId = Guid.NewGuid().ToString() };
-            userModelRepository.InsertUserModel(userModel);
+            userModelRepository.Create(userModel);
         }
     }
 }

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using Uceni_jazyku.Common;
 using Uceni_jazyku.Language.Impl;
 
 namespace Uceni_jazyku.Language
@@ -10,7 +7,7 @@ namespace Uceni_jazyku.Language
     /// <summary>
     /// Repository for language courses
     /// </summary>
-    public interface ILanguageCourseRepository
+    public interface ILanguageCourseRepository : IRepository<string, LanguageCourse>
     {
         /// <summary>
         /// Get user's active language course
@@ -32,11 +29,5 @@ namespace Uceni_jazyku.Language
         /// <param name="templateId">id of template</param>
         /// <returns>template course</returns>
         TemplateLanguageCourse GetTemplate(string templateId);
-
-        /// <summary>
-        /// Inserting course to database
-        /// </summary>
-        /// <param name="languageCourse">LanguageCourse</param>
-        void InsertCourse(LanguageCourse languageCourse);
     }
 }
