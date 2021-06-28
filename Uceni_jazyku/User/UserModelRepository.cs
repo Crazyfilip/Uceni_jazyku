@@ -30,17 +30,33 @@ namespace Uceni_jazyku.User
         }
 
         /// <inheritdoc/>
-        public UserModel GetUserModel(string username, string courseId)
+        public UserModel Get(string courseId)
         {
             return database
-                .Where(x => x.Username == username && x.CourseId == courseId)
+                .Where(x => x.CourseId == courseId)
                 .FirstOrDefault();
         }
 
         /// <inheritdoc/>
-        public void InsertUserModel(UserModel userModel)
+        public void Create(UserModel userModel)
         {
             database.Add(userModel);
+            Save();
+        }
+
+        /// <inheritdoc/>
+        public void Update(UserModel userModel)
+        {
+            int index = database.FindIndex(x => x.ModelId == userModel.ModelId);
+            if (index != -1)
+                database[index] = userModel;
+            Save();
+        }
+
+        /// <inheritdoc/>
+        public void Delete(UserModel userModel)
+        {
+            database.Remove(userModel);
             Save();
         }
     }

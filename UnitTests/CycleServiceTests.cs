@@ -90,7 +90,7 @@ namespace UnitTests
             cycleMock.Verify(x => x.CycleID, Times.Once);
 
             databaseMock.Verify(x => x.GetOldestUserInactiveCycle("test", "course_id"), Times.Once);
-            databaseMock.Verify(x => x.PutCycle(cycleMock.Object), Times.Once);
+            databaseMock.Verify(x => x.Create(cycleMock.Object), Times.Once);
             plannerMock.Verify(x => x.GetNextUserCycleProgram("test"), Times.Once);
 
             log4netMock.Verify(x => x.Info("Getting cycle for user test"), Times.Once);
@@ -115,7 +115,7 @@ namespace UnitTests
             cycleMock.SetupGet(x => x.CycleID).Returns("testId");
             cycleMock.Setup(x => x.Activate()).Returns(cycleMock.Object);
             databaseMock.Setup(x => x.GetOldestUserInactiveCycle("test", "course_id")).Returns(cycleMock.Object);
-            databaseMock.Setup(x => x.UpdateCycle(cycleMock.Object)).Verifiable();
+            databaseMock.Setup(x => x.Update(cycleMock.Object)).Verifiable();
 
             // Test
             UserCycle result = service.GetNextCycle("test");
@@ -126,7 +126,7 @@ namespace UnitTests
             databaseMock.Verify(x => x.GetOldestUserInactiveCycle("test", "course_id"), Times.Once);
             cycleMock.Verify(x => x.CycleID, Times.Exactly(2));
             cycleMock.Verify(x => x.Activate(), Times.Once);
-            databaseMock.Verify(x => x.UpdateCycle(cycleMock.Object), Times.Once);
+            databaseMock.Verify(x => x.Update(cycleMock.Object), Times.Once);
             log4netMock.Verify(x => x.Info("Getting cycle for user test"), Times.Once);
             log4netMock.Verify(x => x.Debug("Looking if there is existing inactive cycle for user test"), Times.Once);
             log4netMock.Verify(x => x.Debug("Obtained testId"), Times.Once);
@@ -146,7 +146,7 @@ namespace UnitTests
             Mock<List<UserProgramItem>> programMock = new Mock<List<UserProgramItem>>();
             plannerMock.Setup(x => x.GetNextUserCycleProgram("test")).Returns(programMock.Object);
             cycleFactoryMock.Setup(x => x.CreateCycle("test", "course_id", programMock.Object)).Returns(cycleMock.Object);
-            databaseMock.Setup(x => x.PutCycle(cycleMock.Object)).Verifiable();
+            databaseMock.Setup(x => x.Create(cycleMock.Object)).Verifiable();
 
             // Test
             UserCycle result = service.GetNewCycle("test");
@@ -155,7 +155,7 @@ namespace UnitTests
             Assert.AreSame(cycleMock.Object, result);
             cycleMock.Verify(x => x.CycleID, Times.Once);
             cycleFactoryMock.Verify(x => x.CreateCycle("test", "course_id", programMock.Object), Times.Once);
-            databaseMock.Verify(x => x.PutCycle(cycleMock.Object), Times.Once);
+            databaseMock.Verify(x => x.Create(cycleMock.Object), Times.Once);
             log4netMock.Verify(x => x.Info("Creating new cycle for user test"), Times.Once);
             log4netMock.Verify(x => x.Debug("New cycle created with id test_id"), Times.Once);
 
@@ -175,7 +175,7 @@ namespace UnitTests
             cycleMock.SetupGet(x => x.State).Returns(UserCycleState.Inactive);
             cycleMock.SetupGet(x => x.CycleID).Returns(cycleId);
             cycleMock.Setup(x => x.Activate()).Returns(cycleMock.Object);
-            databaseMock.Setup(x => x.UpdateCycle(cycleMock.Object)).Verifiable();
+            databaseMock.Setup(x => x.Update(cycleMock.Object)).Verifiable();
 
             // Test
             UserCycle result = service.Activate(cycleMock.Object);
@@ -185,7 +185,7 @@ namespace UnitTests
 
             cycleMock.Verify(x => x.CycleID, Times.Once);
             cycleMock.Verify(x => x.Activate(), Times.Once);
-            databaseMock.Verify(x => x.UpdateCycle(cycleMock.Object), Times.Once);
+            databaseMock.Verify(x => x.Update(cycleMock.Object), Times.Once);
             log4netMock.Verify(x => x.Info($"Activating cycle {cycleId}"), Times.Once);
 
             cycleMock.VerifyNoOtherCalls();
@@ -228,7 +228,7 @@ namespace UnitTests
             Mock<UserCycle> cycleMock = new Mock<UserCycle>();
             cycleMock.Setup(x => x.Inactivate()).Returns(cycleMock.Object);
             cycleMock.SetupGet(x => x.CycleID).Returns(cycleId);
-            databaseMock.Setup(x => x.UpdateCycle(cycleMock.Object)).Verifiable();
+            databaseMock.Setup(x => x.Update(cycleMock.Object)).Verifiable();
 
             // Test
             UserCycle result = service.Inactivate(cycleMock.Object);
@@ -238,7 +238,7 @@ namespace UnitTests
 
             cycleMock.Verify(x => x.Inactivate(), Times.Once);
             cycleMock.Verify(x => x.CycleID, Times.Once);
-            databaseMock.Verify(x => x.UpdateCycle(cycleMock.Object), Times.Once);
+            databaseMock.Verify(x => x.Update(cycleMock.Object), Times.Once);
             log4netMock.Verify(x => x.Info("Inactivating cycle test"), Times.Once);
 
             cycleMock.VerifyNoOtherCalls();
@@ -279,7 +279,7 @@ namespace UnitTests
             Mock<UserCycle> cycleMock = new Mock<UserCycle>();
             cycleMock.Setup(x => x.Finish()).Verifiable();
             cycleMock.SetupGet(x => x.CycleID).Returns(cycleId);
-            databaseMock.Setup(x => x.UpdateCycle(cycleMock.Object)).Verifiable();
+            databaseMock.Setup(x => x.Update(cycleMock.Object)).Verifiable();
 
             // Test
             service.Finish(cycleMock.Object);
@@ -287,7 +287,7 @@ namespace UnitTests
             // Verify
             cycleMock.Verify(x => x.Finish(), Times.Once);
             cycleMock.Verify(x => x.CycleID, Times.Once);
-            databaseMock.Verify(x => x.UpdateCycle(cycleMock.Object), Times.Once);
+            databaseMock.Verify(x => x.Update(cycleMock.Object), Times.Once);
             log4netMock.Verify(x => x.Info("Finishing cycle test"), Times.Once);
 
             cycleMock.VerifyNoOtherCalls();
@@ -368,9 +368,9 @@ namespace UnitTests
             cycleFactoryMock.VerifyNoOtherCalls();
             
             databaseMock.Verify(x => x.GetUserIncompleteCycle("test", "course_id"), Times.Once);
-            databaseMock.Verify(x => x.PutCycle(incompleteCycleMock.Object), Times.Once);
-            databaseMock.Verify(x => x.UpdateCycle(cycleMock.Object), Times.Once);
-            databaseMock.Verify(x => x.UpdateCycle(incompleteCycleMock.Object), Times.Once);
+            databaseMock.Verify(x => x.Create(incompleteCycleMock.Object), Times.Once);
+            databaseMock.Verify(x => x.Update(cycleMock.Object), Times.Once);
+            databaseMock.Verify(x => x.Update(incompleteCycleMock.Object), Times.Once);
             log4netMock.Verify(x => x.Info("Swapping lesson l2 to cycle test_id"), Times.Once);
             log4netMock.Verify(x => x.Debug("Looking if there is incomplete user cycle for user test"), Times.Once);
             log4netMock.Verify(x => x.Debug("No incomplete user cycle found creating new"), Times.Once);
@@ -423,9 +423,9 @@ namespace UnitTests
             incompleteCycleMock.Verify(x => x.AddLesson(userItemMock1.Object), Times.Once);
             incompleteCycleMock.VerifyNoOtherCalls();
 
-            databaseMock.Verify(x => x.UpdateCycle(cycleMock.Object), Times.Once);
+            databaseMock.Verify(x => x.Update(cycleMock.Object), Times.Once);
             databaseMock.Verify(x => x.GetUserIncompleteCycle("test", "course_id"), Times.Once);
-            databaseMock.Verify(x => x.UpdateCycle(incompleteCycleMock.Object), Times.Once);
+            databaseMock.Verify(x => x.Update(incompleteCycleMock.Object), Times.Once);
             log4netMock.Verify(x => x.Info("Swapping lesson l2 to cycle test_id"), Times.Once);
             log4netMock.Verify(x => x.Debug("Looking if there is incomplete user cycle for user test"), Times.Once);
             log4netMock.Verify(x => x.Info("Placing swapped lesson l1 to incomplete cycle test_id_2"), Times.Once);
@@ -447,7 +447,6 @@ namespace UnitTests
             Mock<IncompleteUserCycle> cycleMock = new Mock<IncompleteUserCycle>();
             cycleMock.SetupGet(x => x.CycleID).Returns("test_id");
             cycleFactoryMock.Setup(x => x.CreateIncompleteCycle("test", "course_id", 0)).Returns(cycleMock.Object);
-
             plannerMock.Setup(x => x.GetNextLanguageLesson("test")).Returns(userItemMock.Object);
             databaseMock.Setup(x => x.GetUserIncompleteCycle("test", "course_id")).Returns((IncompleteUserCycle)null);
 
@@ -461,8 +460,8 @@ namespace UnitTests
             cycleMock.Verify(x => x.CycleID, Times.Once);
             cycleMock.Verify(x => x.AddLesson(userItemMock.Object), Times.Once);
             databaseMock.Verify(x => x.GetUserIncompleteCycle("test", "course_id"), Times.Once);
-            databaseMock.Verify(x => x.PutCycle(cycleMock.Object), Times.Once);
-            databaseMock.Verify(x => x.UpdateCycle(cycleMock.Object), Times.Once);
+            databaseMock.Verify(x => x.Create(cycleMock.Object), Times.Once);
+            databaseMock.Verify(x => x.Update(cycleMock.Object), Times.Once);
             log4netMock.Verify(x => x.Info("Getting next planned lesson"), Times.Once);
             log4netMock.Verify(x => x.Debug("Looking if there is incomplete user cycle for user test"), Times.Once);
             log4netMock.Verify(x => x.Debug("No incomplete user cycle found creating new"), Times.Once);
@@ -501,7 +500,7 @@ namespace UnitTests
 
             languageItemMock.Verify(x => x.Lesson, Times.Exactly(2));
             databaseMock.Verify(x => x.GetUserIncompleteCycle("test", "course_id"), Times.Once);
-            databaseMock.Verify(x => x.UpdateCycle(cycleMock.Object), Times.Once);
+            databaseMock.Verify(x => x.Update(cycleMock.Object), Times.Once);
             log4netMock.Verify(x => x.Info("Getting next planned lesson"), Times.Once);
             log4netMock.Verify(x => x.Debug("Looking if there is incomplete user cycle for user test"), Times.Once);
             log4netMock.Verify(x => x.Debug("Placing lesson testLesson to cycle cycle0"), Times.Once);
@@ -610,7 +609,7 @@ namespace UnitTests
 
             userCycle.Verify(x => x.Update(), Times.Once);
             userCycle.Verify(x => x.AreAllFinished(), Times.Once);
-            databaseMock.Verify(x => x.UpdateCycle(userCycle.Object), Times.Once);
+            databaseMock.Verify(x => x.Update(userCycle.Object), Times.Once);
 
             userCycle.VerifyNoOtherCalls();
             databaseMock.VerifyNoOtherCalls();

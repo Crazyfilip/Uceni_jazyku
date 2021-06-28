@@ -63,7 +63,7 @@ namespace Uceni_jazyku.Language
         {
             TemplateLanguageCourse template = languageCourseRepository.GetTemplate(templateId);
             LanguageCourse course = languageCourseFactory.GetLanguageCourse(template, username);
-            languageCourseRepository.InsertCourse(course);
+            languageCourseRepository.Create(course);
             return course;
         }
     }

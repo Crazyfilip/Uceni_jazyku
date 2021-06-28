@@ -59,7 +59,7 @@ namespace UnitTests.Language
             Assert.AreEqual(languageCourseMock.Object, result);
 
             languageCourseRepositoryMock.Verify(x => x.GetTemplate("template_id"), Times.Once);
-            languageCourseRepositoryMock.Verify(x => x.InsertCourse(languageCourseMock.Object), Times.Once);
+            languageCourseRepositoryMock.Verify(x => x.Create(languageCourseMock.Object), Times.Once);
             languageCourseFactoryMock.Verify(x => x.GetLanguageCourse(templateMock.Object, "test"), Times.Once);
 
             templateMock.VerifyNoOtherCalls();

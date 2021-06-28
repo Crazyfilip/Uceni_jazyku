@@ -30,7 +30,7 @@ namespace UnitTests.Planner
         public void TestGetMemoryPositive()
         {
             // Test
-            AbstractPlannerMemory result = plannerRepository.GetMemory("course_id");
+            AbstractPlannerMemory result = plannerRepository.Get("course_id");
 
             // Verify
             Assert.IsNotNull(result);
@@ -40,7 +40,7 @@ namespace UnitTests.Planner
         public void TestGetMemoryNegative()
         {
             // Test
-            AbstractPlannerMemory result = plannerRepository.GetMemory("invalid");
+            AbstractPlannerMemory result = plannerRepository.Get("invalid");
 
             // Verify
             Assert.IsNull(result);
@@ -57,7 +57,7 @@ namespace UnitTests.Planner
             Assert.IsFalse(plannerMemories.Contains(memoryAdd));
 
             // Test
-            plannerRepository.InsertMemory(memoryAdd);
+            plannerRepository.Create(memoryAdd);
 
             // Verify
             Assert.AreEqual(2, plannerMemories.Count);
@@ -65,7 +65,7 @@ namespace UnitTests.Planner
         }
 
         [TestMethod]
-        public void TestUpdateMemory()
+        public void TestUpdateMemoryPositive()
         {
             // Init
             AbstractPlannerMemory memoryUpdate = new PlannerMemory() { MemoryId = "memory_id" };
@@ -76,7 +76,7 @@ namespace UnitTests.Planner
             Assert.IsFalse(plannerMemories.Contains(memoryUpdate));
 
             // Test
-            plannerRepository.UpdateMemory(memoryUpdate);
+            plannerRepository.Update(memoryUpdate);
 
             // Verify
             Assert.AreEqual(1, plannerMemories.Count);

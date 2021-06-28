@@ -16,7 +16,7 @@ namespace Uceni_jazyku.Language
         /// Path to file where is stored collection of cycles
         /// </summary>
         private readonly string path = "./courses/service/database.xml";
-        private readonly ICollection<LanguageCourse> languageCourses = new List<LanguageCourse>();
+        private readonly List<LanguageCourse> languageCourses = new List<LanguageCourse>();
 
 
         public LanguageCourseRepository()
@@ -36,11 +36,12 @@ namespace Uceni_jazyku.Language
             serializer.WriteObject(writer, languageCourses ?? new List<LanguageCourse>());
         }
 
-        public LanguageCourseRepository(ICollection<LanguageCourse> languageCourses)
+        public LanguageCourseRepository(List<LanguageCourse> languageCourses)
         {
             this.languageCourses = languageCourses;
         }
 
+        /// <inheritdoc/>
         public LanguageCourse GetActiveCourse(string username)
         {
             return languageCourses
@@ -48,6 +49,7 @@ namespace Uceni_jazyku.Language
                 .SingleOrDefault();
         }
 
+        /// <inheritdoc/>
         public List<LanguageCourse> GetInactiveLanguageCourses(string username)
         {
             return languageCourses
@@ -55,6 +57,7 @@ namespace Uceni_jazyku.Language
                 .ToList();
         }
 
+        /// <inheritdoc/>
         public TemplateLanguageCourse GetTemplate(string templateId)
         {
             return languageCourses
@@ -63,9 +66,32 @@ namespace Uceni_jazyku.Language
                 .FirstOrDefault();
         }
 
-        public void InsertCourse(LanguageCourse languageCourse)
+        /// <inheritdoc/>
+        public void Create(LanguageCourse languageCourse)
         {
             languageCourses.Add(languageCourse);
+            Save();
+        }
+
+        /// <inheritdoc/>
+        public LanguageCourse Get(string courseId)
+        {
+            return languageCourses.Find(x => x.CourseId == courseId);
+        }
+
+        /// <inheritdoc/>
+        public void Update(LanguageCourse languageCourse)
+        {
+            int index = languageCourses.FindIndex(x => x.CourseId == languageCourse.CourseId);
+            if (index != -1)
+                languageCourses[index] = languageCourse;
+            Save();
+        }
+
+        /// <inheritdoc/>
+        public void Delete(LanguageCourse languageCourse)
+        {
+            languageCourses.Remove(languageCourse);
             Save();
         }
     }

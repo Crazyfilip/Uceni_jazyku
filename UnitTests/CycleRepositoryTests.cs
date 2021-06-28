@@ -57,12 +57,12 @@ namespace UnitTests
             Assert.IsFalse(cycles.Contains(cycle));
 
             // Test
-            repository.PutCycle(cycle);
+            repository.Create(cycle);
 
             // Verify
             Assert.IsTrue(cycles.Contains(cycle));
 
-            log4netMock.Verify(x => x.Info("Adding cycle test to repository"), Times.Once);
+            log4netMock.Verify(x => x.Info("Adding cycle with ID test"), Times.Once);
             log4netMock.Verify(x => x.Debug("Saving repository to file"), Times.Once);
 
             log4netMock.VerifyNoOtherCalls();
@@ -79,7 +79,7 @@ namespace UnitTests
             Assert.IsFalse(cycles.Contains(cyclePostUpdate));
 
             // Test
-            repository.UpdateCycle(cyclePostUpdate);
+            repository.Update(cyclePostUpdate);
 
             // Verify
             Assert.IsFalse(cycles.Contains(cyclePreUpdate));
@@ -103,7 +103,7 @@ namespace UnitTests
             Assert.IsFalse(cycles.Contains(cycle));
 
             // Test
-            repository.UpdateCycle(cycle);
+            repository.Update(cycle);
 
             // Verify
             Assert.IsTrue(cycles.Contains(cycle));

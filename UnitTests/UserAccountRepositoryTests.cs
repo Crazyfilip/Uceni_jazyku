@@ -42,7 +42,7 @@ namespace UnitTests
         public void TestAddUserAccountPostive()
         {
             // Test
-            userAccountRepository.AddUserAccount(userAccount1);
+            userAccountRepository.Create(userAccount1);
 
             // Verify
             Assert.IsTrue(accounts.Contains(userAccount1));
@@ -57,7 +57,7 @@ namespace UnitTests
         public void TestGetUserAccountPositive()
         {
             // Test
-            UserAccount result = userAccountRepository.GetUserAccount("test2");
+            UserAccount result = userAccountRepository.Get("test2");
 
             // Verify
             Assert.AreEqual(userAccount2, result);
@@ -71,7 +71,7 @@ namespace UnitTests
         public void TestGetUserAccountNegative()
         {
             // Test
-            UserAccount result = userAccountRepository.GetUserAccount("non_existent");
+            UserAccount result = userAccountRepository.Get("non_existent");
 
             // Verify
             Assert.IsNull(result);

@@ -40,7 +40,7 @@ namespace Uceni_jazyku.Planner
         }
 
         /// <inheritdoc/>
-        public AbstractPlannerMemory GetMemory(string course_id)
+        public AbstractPlannerMemory Get(string course_id)
         {
             return plannerMemories
                 .Where(x => x.CourseId == course_id)
@@ -48,20 +48,27 @@ namespace Uceni_jazyku.Planner
         }
 
         /// <inheritdoc/>
-        public void InsertMemory(AbstractPlannerMemory plannerMemory)
+        public void Create(AbstractPlannerMemory plannerMemory)
         {
             plannerMemories.Add(plannerMemory);
             Save();
         }
 
         /// <inheritdoc/>
-        public void UpdateMemory(AbstractPlannerMemory plannerMemory)
+        public void Update(AbstractPlannerMemory plannerMemory)
         {
             int index = plannerMemories.FindIndex(x => x.MemoryId == plannerMemory.MemoryId);
             if (index != -1)
             {
                 plannerMemories[index] = plannerMemory;
             }
+            Save();
+        }
+
+        /// <inheritdoc/>
+        public void Delete(AbstractPlannerMemory plannerMemory)
+        {
+            plannerMemories.Remove(plannerMemory);
             Save();
         }
     } 
