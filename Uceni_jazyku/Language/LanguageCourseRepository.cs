@@ -41,6 +41,7 @@ namespace Uceni_jazyku.Language
             this.languageCourses = languageCourses;
         }
 
+        /// <inheritdoc/>
         public LanguageCourse GetActiveCourse(string username)
         {
             return languageCourses
@@ -48,6 +49,7 @@ namespace Uceni_jazyku.Language
                 .SingleOrDefault();
         }
 
+        /// <inheritdoc/>
         public List<LanguageCourse> GetInactiveLanguageCourses(string username)
         {
             return languageCourses
@@ -55,6 +57,7 @@ namespace Uceni_jazyku.Language
                 .ToList();
         }
 
+        /// <inheritdoc/>
         public TemplateLanguageCourse GetTemplate(string templateId)
         {
             return languageCourses
@@ -63,17 +66,20 @@ namespace Uceni_jazyku.Language
                 .FirstOrDefault();
         }
 
+        /// <inheritdoc/>
         public void Create(LanguageCourse languageCourse)
         {
             languageCourses.Add(languageCourse);
             Save();
         }
 
+        /// <inheritdoc/>
         public LanguageCourse Get(string courseId)
         {
             return languageCourses.Find(x => x.CourseId == courseId);
         }
 
+        /// <inheritdoc/>
         public void Update(LanguageCourse languageCourse)
         {
             int index = languageCourses.FindIndex(x => x.CourseId == languageCourse.CourseId);
@@ -82,6 +88,7 @@ namespace Uceni_jazyku.Language
             Save();
         }
 
+        /// <inheritdoc/>
         public void Delete(LanguageCourse languageCourse)
         {
             languageCourses.Remove(languageCourse);

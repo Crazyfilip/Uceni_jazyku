@@ -65,6 +65,7 @@ namespace Uceni_jazyku.Planner
             Save();
         }
 
+        /// <inheritdoc/>
         public void Delete(AbstractPlannerMemory plannerMemory)
         {
             plannerMemories.Remove(plannerMemory);

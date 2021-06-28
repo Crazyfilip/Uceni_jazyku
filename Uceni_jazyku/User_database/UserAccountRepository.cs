@@ -46,6 +46,7 @@ namespace Uceni_jazyku.User_database
             SaveDatabase();
         }
 
+        /// <inheritdoc/>
         public void Create(UserAccount userAccount)
         {
             log.Info("Adding user account to repository");
@@ -53,18 +54,21 @@ namespace Uceni_jazyku.User_database
             SaveDatabase();
         }
 
+        /// <inheritdoc/>
         public void Delete(UserAccount value)
         {
             userDatabase.Remove(value);
             SaveDatabase();
         }
 
+        /// <inheritdoc/>
         public UserAccount Get(string username)
         {
             log.Info($"Looking for account with username: {username}");
             return userDatabase.Find(x => x.username == username);
         }
 
+        /// <inheritdoc/>
         public void Update(UserAccount user)
         {
             int index = userDatabase.FindIndex(x => x.username == user.username);

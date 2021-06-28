@@ -44,6 +44,7 @@ namespace Uceni_jazyku.User
             Save();
         }
 
+        /// <inheritdoc/>
         public void Update(UserModel userModel)
         {
             int index = database.FindIndex(x => x.ModelId == userModel.ModelId);
@@ -52,6 +53,7 @@ namespace Uceni_jazyku.User
             Save();
         }
 
+        /// <inheritdoc/>
         public void Delete(UserModel userModel)
         {
             database.Remove(userModel);
