@@ -30,7 +30,7 @@ jobs:
           name: "publish and create artifact"
           command: |
             dotnet publish -c Release -r win10-x64
-            Compress-Archive C:\Users\circleci\project\User_interface\bin\Release\net5.0-windows\win10-x64\publish Uceni_Jazyku.zip
+            Compress-Archive C:\Users\circleci\project\User_interface\bin\Release\net5.0\win10-x64\publish Uceni_Jazyku.zip
       - store_artifacts:
           path: Uceni_Jazyku.zip
 
