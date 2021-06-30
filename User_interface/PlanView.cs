@@ -11,15 +11,14 @@ namespace User_interface
 {
     public partial class PlanView : Form
     {
-        readonly CycleService cycleService;
-        UserCycle userCycle;
+        private readonly CycleService cycleService = CycleService.GetInstance();
+        private string username;
 
-        public PlanView(UserCycle userCycle)
+        public PlanView(string username)
         {
             InitializeComponent();
-            this.userCycle = userCycle;
-            cycleService = CycleService.GetInstance();
-            cycleService.GetPlannedUnfinishedLessons(userCycle.Username).ForEach(x => listBoxPlannedLessons.Items.Add(x.LessonRef.Lesson));
+            this.username = username;
+            cycleService.GetPlannedUnfinishedLessons(username).ForEach(x => listBoxPlannedLessons.Items.Add(x.LessonRef.Lesson));
         }
 
         private void listBoxPlannedLessons_SelectedValueChanged(object sender, EventArgs e)
@@ -30,7 +29,7 @@ namespace User_interface
 
         private void buttonPlanNext_Click(object sender, EventArgs e)
         {
-            string newLesson = cycleService.GetNextLesson(userCycle.Username);
+            string newLesson = cycleService.GetNextLesson(username);
             listBoxPlannedLessons.Items.Add(newLesson);
         }
     }

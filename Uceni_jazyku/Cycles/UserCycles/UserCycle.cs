@@ -56,7 +56,7 @@ namespace Uceni_jazyku.Cycles
         /// Get first unfinished lesson
         /// </summary>
         /// <returns>Lesson</returns>
-        public virtual ProgramItem GetNext()
+        public virtual UserProgramItem GetNext()
         {
             return UserProgramItems[FinishedEvents];
         }

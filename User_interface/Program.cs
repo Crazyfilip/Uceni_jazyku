@@ -36,12 +36,11 @@ namespace User_interface
                 LanguageCourse languageCourse = LanguageCourseService.GetInstance().GetActiveLanguageCourse(username);
                 CycleService cycleService = CycleService.GetInstance();
                 cycleService.SetActiveCourse(username, languageCourse);
-                UserCycle userCycle = cycleService.GetActiveCycle(username);
-                Application.Run(new WelcomePage(userCycle));
+                Application.Run(new WelcomePage(username));
             }
             else
             {
-                Application.Run(new LoginPage(new UserCycle()));
+                Application.Run(new LoginPage());
             }
         }
 
