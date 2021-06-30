@@ -7,13 +7,11 @@ namespace User_interface
 {
     public partial class LoginPage : Form
     {
-        UserCycle userCycle;
         UserAccountService userAccountService;
 
-        public LoginPage(UserCycle userCycle)
+        public LoginPage()
         {
             InitializeComponent();
-            this.userCycle = userCycle;
             userAccountService = new UserAccountService();
         }
 
@@ -35,7 +33,7 @@ namespace User_interface
             if (userActiveCycle != null)
             {
                 MessageBox.Show("Uživatel přihlášen.");
-                new UserMenu(userActiveCycle).Show();
+                new UserMenu(username).Show();
                 Hide();
             }
             else
@@ -44,7 +42,7 @@ namespace User_interface
 
         private void LinkNewAccount_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            new NewAccount1(userCycle, userAccountService).Show();
+            new NewAccount1(userAccountService).Show();
             Hide();
         }
     }

@@ -1,30 +1,30 @@
 ﻿using System;
 using System.Windows.Forms;
 using Uceni_jazyku.Cycles;
-using Uceni_jazyku.Cycles.Program;
 using Uceni_jazyku.User_database;
 
 namespace User_interface
 {
     public partial class UserMenu : Form
     {
+        private readonly CycleService cycleService = CycleService.GetInstance();
         private UserCycle userCycle;
+        private string username;
 
-        public UserMenu(UserCycle userCycle)
+        public UserMenu(string username)
         {
             InitializeComponent();
-            this.userCycle = userCycle;
+            this.username = username;
+            this.userCycle = cycleService.GetNextCycle(username);
             labelUser.Text = labelUser.Text.Replace("<username>", userCycle.Username);
-            lessonLink.Text = lessonLink.Text.Replace("<lesson>", ((UserProgramItem)userCycle.GetNext()).LessonRef.Lesson);
+            lessonLink.Text = lessonLink.Text.Replace("<lesson>", userCycle.GetNext().LessonRef.Lesson);
         }
 
         private void buttonLogout_Click(object sender, EventArgs e)
         {
             UserAccountService userAccountService = new UserAccountService();
             userAccountService.Logout();
-            // TODO remove cycle argument for login page
-            UserCycle uknownUser = new UserCycle();
-            new LoginPage(uknownUser).Show();
+            new LoginPage().Show();
             Close();
         }
         // event for session update
@@ -36,7 +36,7 @@ namespace User_interface
 
         private void buttonShowPlan_Click(object sender, EventArgs e)
         {
-            new PlanView(userCycle).Show();
+            new PlanView(username).Show();
         }
 
         private void lessonLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

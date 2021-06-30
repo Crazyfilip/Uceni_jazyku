@@ -75,16 +75,6 @@ namespace Uceni_jazyku.Cycles
         #region Creating and updating user cycles
 
         /// <summary>
-        /// Getter for user's active cycle in active language course
-        /// </summary>
-        /// <param name="username">username</param>
-        /// <returns>user's active cycle</returns>
-        public UserCycle GetActiveCycle(string username)
-        {
-            return CycleRepository.GetActiveCycle(username, ActiveCourse.CourseId);
-        }
-
-        /// <summary>
         /// Get active cycle for given user
         /// when login or when active cycle was finished
         /// </summary>
@@ -93,8 +83,11 @@ namespace Uceni_jazyku.Cycles
         public virtual UserCycle GetNextCycle(string username)
         {
             log.Info($"Getting cycle for user {username}");
+            UserCycle result = CycleRepository.GetActiveCycle(username, ActiveCourse.CourseId);
+            if (result != null) return result;
+
             log.Debug($"Looking if there is existing inactive cycle for user {username}");
-            UserCycle result = CycleRepository.GetOldestUserInactiveCycle(username, ActiveCourse.CourseId);
+            result = CycleRepository.GetOldestUserInactiveCycle(username, ActiveCourse.CourseId);
             if (result != null)
             {
                 log.Debug($"Obtained {result.CycleID}");

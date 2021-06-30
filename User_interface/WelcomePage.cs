@@ -2,8 +2,6 @@
 using System;
 using System.Windows.Forms;
 using Uceni_jazyku.Cycles;
-using Uceni_jazyku.Cycles.Program;
-using Uceni_jazyku.Language;
 using Uceni_jazyku.User_database;
 
 namespace User_interface
@@ -11,21 +9,22 @@ namespace User_interface
     public partial class WelcomePage : Form
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(WelcomePage));
+        private string username;
         private UserCycle userCycle;
-        private CycleService cycleService = CycleService.GetInstance();
+        private readonly CycleService cycleService = CycleService.GetInstance();
         
         public WelcomePage()
         {
             InitializeComponent();
         }
 
-        public WelcomePage(UserCycle cycle)
+        public WelcomePage(string username)
         {
-            log.Info("test");
             InitializeComponent();
-            userCycle = cycle;
-            labelWelcome.Text = labelWelcome.Text.Replace("<username>", cycle.Username);
-            lessonLink.Text = lessonLink.Text.Replace("<lesson>", ((UserProgramItem)cycle.GetNext()).LessonRef.Lesson);
+            this.username = username;
+            userCycle = cycleService.GetNextCycle(username);
+            labelWelcome.Text = labelWelcome.Text.Replace("<username>", username);
+            lessonLink.Text = lessonLink.Text.Replace("<lesson>", userCycle.GetNext().LessonRef.Lesson);
         }
 
         private void buttonExit_Click(object sender, EventArgs e)
@@ -35,7 +34,7 @@ namespace User_interface
 
         private void linkContinue_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            new UserMenu(userCycle).Show();
+            new UserMenu(username).Show();
             Hide();
         }
 
@@ -43,9 +42,7 @@ namespace User_interface
         {
             UserAccountService userAccountService = new UserAccountService();
             userAccountService.Logout();
-            // TODO remove cycle argument for login page
-            UserCycle unknownUserCycle = new UserCycle();
-            new LoginPage(unknownUserCycle).Show();
+            new LoginPage().Show();
             Hide();
         }
 
