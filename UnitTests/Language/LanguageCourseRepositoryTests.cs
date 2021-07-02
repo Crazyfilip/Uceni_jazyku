@@ -140,8 +140,6 @@ namespace UnitTests.Language
             CollectionAssert.AreEqual(new List<LanguageCourse>(), result);
         }
 
-
-
         [TestCleanup]
         public void Finish()
         {
