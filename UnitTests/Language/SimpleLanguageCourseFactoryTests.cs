@@ -24,7 +24,7 @@ namespace UnitTests.Language
             topic2 = new LanguageTopic() { TopicId = "topic2" };
             topic3 = new LanguageTopic() { TopicId = "topic3" };
             topics = new List<LanguageTopic>() { topic1, topic2, topic3 };
-            templateLanguageCourse = new TemplateLanguageCourse(topics) { CourseId = "template" };
+            templateLanguageCourse = new TemplateLanguageCourse(topics) { Id = "template" };
             simpleLanguageCourseFactory = new SimpleLanguageCourseFactory();
         }
 
@@ -38,8 +38,8 @@ namespace UnitTests.Language
             Assert.IsTrue(result is SimpleLanguageCourse);
             Assert.AreEqual(topics, result.topics);
             Assert.AreEqual("test", result.Username);
-            Assert.IsNotNull(result.CourseId);
-            Assert.AreNotEqual("template", result.CourseId);
+            Assert.IsNotNull(result.Id);
+            Assert.AreNotEqual("template", result.Id);
         }
 
         [TestMethod]
@@ -56,8 +56,8 @@ namespace UnitTests.Language
             Assert.AreNotEqual(topics, result.topics);
             Assert.IsTrue(expectedTopics.SequenceEqual(result.topics));
             Assert.AreEqual("test", result.Username);
-            Assert.IsNotNull(result.CourseId);
-            Assert.AreNotEqual("template", result.CourseId);
+            Assert.IsNotNull(result.Id);
+            Assert.AreNotEqual("template", result.Id);
         }
     }
 }

@@ -10,5 +10,11 @@ namespace Uceni_jazyku.User_database
     /// </summary>
     public interface IUserAccountRepository : IRepository<string, UserAccount>
     {
+        /// <summary>
+        /// Get user account by user's name
+        /// </summary>
+        /// <param name="username">username</param>
+        /// <returns>UserAccount</returns>
+        UserAccount GetByName(string username);
     }
 }

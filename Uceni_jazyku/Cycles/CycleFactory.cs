@@ -15,7 +15,7 @@ namespace Uceni_jazyku.Cycles
         {
             return new UserCycle()
             {
-                CycleID = GetGUID(),
+                Id = GetGUID(),
                 DateCreated = DateTime.Now,
                 Username = username,
                 CourseID = courseId,
@@ -28,7 +28,7 @@ namespace Uceni_jazyku.Cycles
         {
             return new IncompleteUserCycle(limit)
             { 
-                CycleID = GetGUID(), 
+                Id = GetGUID(), 
                 DateCreated = DateTime.Now, 
                 Username = username,
                 CourseID = courseId

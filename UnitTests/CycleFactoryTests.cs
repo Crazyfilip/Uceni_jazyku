@@ -30,7 +30,7 @@ namespace UnitTests
 
             // Verify
             Assert.IsNotNull(result);
-            Assert.IsNotNull(result.CycleID);
+            Assert.IsNotNull(result.Id);
             Assert.IsNotNull(result.DateCreated);
             Assert.AreEqual(UserCycleState.Active, result.State);
             Assert.AreEqual("test", result.Username);
@@ -46,7 +46,7 @@ namespace UnitTests
 
             // Verify
             Assert.IsNotNull(result);
-            Assert.IsNotNull(result.CycleID);
+            Assert.IsNotNull(result.Id);
             Assert.IsNotNull(result.DateCreated);
             Assert.AreEqual(UserCycleState.Inactive, result.State);
             Assert.AreEqual("test", result.Username);

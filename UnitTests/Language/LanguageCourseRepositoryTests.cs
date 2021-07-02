@@ -1,6 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using System.Collections.Generic;
 using System.IO;
+using Uceni_jazyku.Common;
 using Uceni_jazyku.Language;
 using Uceni_jazyku.Language.Impl;
 
@@ -10,40 +12,45 @@ namespace UnitTests.Language
     public class LanguageCourseRepositoryTests
     {
         LanguageCourseRepository languageCourseRepository;
-        readonly LanguageCourse languageCourseActive1_1 = new SimpleLanguageCourse() { Active = true, CourseId = "active_id1", Username = "test" };
-        readonly LanguageCourse languageCourseActive2_1 = new SimpleLanguageCourse() { Active = true, CourseId = "active_id2", Username = "tester" };
-        readonly LanguageCourse languageCourseInactive1_1 = new SimpleLanguageCourse() { Active = false, CourseId = "inactive_id3", Username = "test" };
-        readonly LanguageCourse languageCourseInactive1_2 = new SimpleLanguageCourse() { Active = false, CourseId = "inactive_id4", Username = "test" };
-        readonly LanguageCourse templateLanguageCourse = new TemplateLanguageCourse(new List<LanguageTopic>()) { CourseId = "template_id" };
-        readonly LanguageCourse testLanguageCourse = new SimpleLanguageCourse() { CourseId = "test" };
+        readonly LanguageCourse languageCourseActive1_1 = new SimpleLanguageCourse() { Active = true, Id = "active_id1", Username = "test" };
+        readonly LanguageCourse languageCourseActive2_1 = new SimpleLanguageCourse() { Active = true, Id = "active_id2", Username = "tester" };
+        readonly LanguageCourse languageCourseInactive1_1 = new SimpleLanguageCourse() { Active = false, Id = "inactive_id3", Username = "test" };
+        readonly LanguageCourse languageCourseInactive1_2 = new SimpleLanguageCourse() { Active = false, Id = "inactive_id4", Username = "test" };
+        readonly LanguageCourse templateLanguageCourse = new TemplateLanguageCourse(new List<LanguageTopic>()) { Id = "template_id" };
+        readonly LanguageCourse testLanguageCourse = new SimpleLanguageCourse() { Id = "test" };
         List<LanguageCourse> languageCourses;
+        Mock<Serializer<LanguageCourse>> serializer;
 
         [TestInitialize]
         public void Init()
         {
-            languageCourses = new List<LanguageCourse>() 
-            { languageCourseActive1_1, languageCourseActive2_1, 
-              languageCourseInactive1_1, languageCourseInactive1_2, 
-              templateLanguageCourse };
-
-            Directory.CreateDirectory("./courses/service");
-            languageCourseRepository = new LanguageCourseRepository(languageCourses);
+            serializer = new Mock<Serializer<LanguageCourse>>();
+            languageCourseRepository = new LanguageCourseRepository(serializer.Object);
         }
 
         [TestMethod]
         public void TestGetActiveCoursePositive()
         {
+            // Init
+            Mock<LanguageCourse> course = new();
+            course.SetupGet(x => x.Active).Returns(true);
+            course.SetupGet(x => x.Username).Returns("test");
+            List<LanguageCourse> courses = new() { course.Object };
+            serializer.Setup(x => x.Load()).Returns(courses);
+
             // Test
             LanguageCourse result = languageCourseRepository.GetActiveCourse("test");
 
             // Verify
-            Assert.AreEqual(languageCourseActive1_1, result);
-            Assert.AreNotEqual(languageCourseActive2_1, result);
+            Assert.AreEqual(course.Object, result);
         }
 
         [TestMethod]
         public void TestGetActiveCourseNegative()
         {
+            // Init
+            serializer.Setup(x => x.Load()).Returns(new List<LanguageCourse>());
+
             // Test
             LanguageCourse result = languageCourseRepository.GetActiveCourse("not_user");
 
@@ -54,40 +61,58 @@ namespace UnitTests.Language
         [TestMethod]
         public void TestGetInactiveLanguageCoursesPositive()
         {
+            // Init
+            Mock<LanguageCourse> course = new();
+            course.SetupGet(x => x.Active).Returns(false);
+            course.SetupGet(x => x.Username).Returns("test");
+            List<LanguageCourse> courses = new() { course.Object };
+            serializer.Setup(x => x.Load()).Returns(courses);
+
             // Test
             List<LanguageCourse> result = languageCourseRepository.GetInactiveLanguageCourses("test");
 
             // Verify
             Assert.IsNotNull(result);
-            Assert.IsTrue(result.Count == 2);
-            Assert.AreEqual(languageCourseInactive1_1, result[0]);
-            Assert.AreEqual(languageCourseInactive1_2, result[1]);
+            Assert.AreEqual(1, result.Count);
+            Assert.AreEqual(course.Object, result[0]);
         }
 
         [TestMethod]
         public void TestGetInactiveLanguageCoursesNegative()
         {
+            // Init
+            serializer.Setup(x => x.Load()).Returns(new List<LanguageCourse>());
+
             // Test
             List<LanguageCourse> result = languageCourseRepository.GetInactiveLanguageCourses("not_user");
 
             // Verify
             Assert.IsNotNull(result);
-            Assert.IsTrue(result.Count == 0);
+            Assert.AreEqual(0, result.Count);
         }
 
         [TestMethod]
         public void TestGetTemplatePositive()
         {
+            // Init
+            Mock<TemplateLanguageCourse> template = new();
+            template.SetupGet(x => x.Id).Returns("template_id");
+            List<LanguageCourse> courses = new List<LanguageCourse>() { template.Object };
+            serializer.Setup(x => x.Load()).Returns(courses);
+
             // Test
             TemplateLanguageCourse result = languageCourseRepository.GetTemplate("template_id");
 
             // Verify
-            Assert.AreEqual(templateLanguageCourse, result);
+            Assert.AreEqual(template.Object, result);
         }
 
         [TestMethod]
-        public void TestGetTemplateNegativeNullWhenNotFound()
+        public void TestGetTemplateNegative()
         {
+            // Init
+            serializer.Setup(x => x.Load()).Returns(new List<LanguageCourse>());
+
             // Test
             TemplateLanguageCourse result = languageCourseRepository.GetTemplate("no_template");
 
@@ -95,33 +120,11 @@ namespace UnitTests.Language
             Assert.IsNull(result);
         }
 
-        [TestMethod]
-        public void TestGetTemplateNegativeNullWhenIdExistsButNotTemplate()
-        {
-            // Test
-            TemplateLanguageCourse result = languageCourseRepository.GetTemplate("active_id1");
-
-            // Verify
-            Assert.IsNull(result);
-        }
-
-        [TestMethod]
-        public void TestInsertCoursePositive()
-        {
-            // Preverify
-            Assert.IsFalse(languageCourses.Contains(testLanguageCourse));
-
-            // Test
-            languageCourseRepository.Create(testLanguageCourse);
-
-            // Verify
-            Assert.IsTrue(languageCourses.Contains(testLanguageCourse));
-        }
-
         [TestCleanup]
-        public void CleanUp()
+        public void Finish()
         {
-            Directory.Delete("./courses", true);
+            serializer.Verify(x => x.Load(), Times.Once);
+            serializer.VerifyNoOtherCalls();
         }
     }
 }

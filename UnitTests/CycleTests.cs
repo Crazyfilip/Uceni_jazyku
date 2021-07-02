@@ -54,7 +54,7 @@ namespace UnitTests
             Assert.IsNotNull(cycle.UserProgramItems);
             Assert.AreEqual(0, cycle.UserProgramItems.Count);
             Assert.AreEqual(0, cycle.FinishedEvents);
-            Assert.IsNull(cycle.CycleID);
+            Assert.IsNull(cycle.Id);
             Assert.IsNull(cycle.Username);
         }
 

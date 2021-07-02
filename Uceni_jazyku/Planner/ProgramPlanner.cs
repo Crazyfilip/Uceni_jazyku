@@ -67,13 +67,14 @@ namespace Uceni_jazyku.Planner
         public void SetPlanner(LanguageCourse languageCourse, string username)
         {
             this.languageCourse = languageCourse;
-            plannerMemory = plannerRepository.Get(languageCourse.CourseId) ?? InitMemory(languageCourse.CourseId);
-            userModel = userModelRepository.Get(languageCourse.CourseId);
+            string courseId = languageCourse.Id;
+            plannerMemory = plannerRepository.GetByCourseId(courseId) ?? InitMemory(courseId);
+            userModel = userModelRepository.GetByCourseId(courseId);
         }
 
         private AbstractPlannerMemory InitMemory(string courseId)
         {
-            AbstractPlannerMemory result = new PlannerMemory() { CourseId = courseId, MemoryId = Guid.NewGuid().ToString() };
+            AbstractPlannerMemory result = new PlannerMemory() { CourseId = courseId, Id = Guid.NewGuid().ToString() };
             plannerRepository.Create(result);
             return result;
         }

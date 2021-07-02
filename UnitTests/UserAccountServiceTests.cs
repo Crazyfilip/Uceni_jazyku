@@ -62,7 +62,7 @@ namespace UnitTests
             repositoryMock.Setup(x => x.Get("test")).Returns((UserAccount)null);
             repositoryMock.Setup(x => x.Create(It.IsAny<UserAccount>())).Verifiable();
             Mock<LanguageCourse> languageCourse = new();
-            languageCourse.SetupGet(x => x.CourseId).Returns("course_id");
+            languageCourse.SetupGet(x => x.Id).Returns("course_id");
             languageCourseServiceMock.Setup(x => x.GetLanguageCourseInstanceFromTemplate("template-default", "test")).Returns(languageCourse.Object);
 
             // Test
@@ -109,7 +109,7 @@ namespace UnitTests
             Mock<UserCycle> cycleMock = new Mock<UserCycle>();
             Mock<LanguageCourse> courseMock = new Mock<LanguageCourse>();
 
-            repositoryMock.Setup(x => x.Get("test")).Returns(accountMock.Object);
+            repositoryMock.Setup(x => x.GetByName("test")).Returns(accountMock.Object);
             accountMock.SetupGet(x => x.salt).Returns("CcDMwpJNSEIIBxhizhYGBw==");
             accountMock.SetupGet(x => x.loginCredential).Returns("2RN00+i/w/sl/0AmqkWTUOpOtig=");
 
@@ -128,7 +128,7 @@ namespace UnitTests
             Assert.AreEqual(cycleMock.Object, result);
             Assert.IsTrue(File.Exists(path));
 
-            repositoryMock.Verify(x => x.Get("test"), Times.Once);
+            repositoryMock.Verify(x => x.GetByName("test"), Times.Once);
             accountMock.Verify(x => x.salt, Times.Once);
             accountMock.Verify(x => x.loginCredential, Times.Once);
             cycleServiceMock.Verify(x => x.GetNextCycle("test"), Times.Once);
@@ -149,7 +149,7 @@ namespace UnitTests
         public void TestLoginNegativeNotExistingAccount()
         {
             // Init
-            repositoryMock.Setup(x => x.Get("fail")).Returns((UserAccount)null);
+            repositoryMock.Setup(x => x.GetByName("fail")).Returns((UserAccount)null);
 
             // Test
             UserCycle result = accountService.Login("fail", "fail");
@@ -157,7 +157,7 @@ namespace UnitTests
             // Verify
             Assert.IsNull(result);
 
-            repositoryMock.Verify(x => x.Get("fail"), Times.Once);
+            repositoryMock.Verify(x => x.GetByName("fail"), Times.Once);
             log4netMock.Verify(x => x.Info("Login attempt of user fail"), Times.Once);
             log4netMock.Verify(x => x.Debug("No account with username: fail"), Times.Once);
             log4netMock.Verify(x => x.Debug("Login failed"), Times.Once);
@@ -171,7 +171,7 @@ namespace UnitTests
         public void TestLoginNegativeIncorrectCredentials()
         {
             // Init
-            repositoryMock.Setup(x => x.Get("test")).Returns(accountMock.Object);
+            repositoryMock.Setup(x => x.GetByName("test")).Returns(accountMock.Object);
             accountMock.SetupGet(x => x.salt).Returns(saltMock);
             accountMock.SetupGet(x => x.loginCredential).Returns("incorrect");
 
@@ -181,7 +181,7 @@ namespace UnitTests
             // Verify
             Assert.IsNull(result);
 
-            repositoryMock.Verify(x => x.Get("test"), Times.Once);
+            repositoryMock.Verify(x => x.GetByName("test"), Times.Once);
             accountMock.Verify(x => x.salt, Times.Once);
             accountMock.Verify(x => x.loginCredential, Times.Once);
             log4netMock.Verify(x => x.Info("Login attempt of user test"), Times.Once);

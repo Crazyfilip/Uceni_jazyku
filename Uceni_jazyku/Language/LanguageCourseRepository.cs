@@ -1,50 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
+using Uceni_jazyku.Common;
 using Uceni_jazyku.Language.Impl;
 
 namespace Uceni_jazyku.Language
 {
-    public class LanguageCourseRepository : ILanguageCourseRepository
+    public class LanguageCourseRepository : AbstractRepository<LanguageCourse>, ILanguageCourseRepository
     {
-        /// <summary>
-        /// Path to file where is stored collection of cycles
-        /// </summary>
-        private readonly string path = "./courses/service/database.xml";
-        private readonly List<LanguageCourse> languageCourses = new List<LanguageCourse>();
 
+        public LanguageCourseRepository() : this(null) {}
 
-        public LanguageCourseRepository()
+        public LanguageCourseRepository(Serializer<LanguageCourse> serializer)
         {
-            if (File.Exists(path))
-            {
-                var serializer = new DataContractSerializer(typeof(List<LanguageCourse>));
-                using XmlReader reader = XmlReader.Create(path);
-                languageCourses = (List<LanguageCourse>)serializer.ReadObject(reader);
-            }
-        }
-
-        private void Save()
-        {
-            var serializer = new DataContractSerializer(typeof(List<LanguageCourse>));
-            using XmlWriter writer = XmlWriter.Create(path);
-            serializer.WriteObject(writer, languageCourses ?? new List<LanguageCourse>());
-        }
-
-        public LanguageCourseRepository(List<LanguageCourse> languageCourses)
-        {
-            this.languageCourses = languageCourses;
+            this.serializer = serializer ?? new Serializer<LanguageCourse>() { filepath = "./courses/service/database.xml" };
         }
 
         /// <inheritdoc/>
         public LanguageCourse GetActiveCourse(string username)
         {
-            return languageCourses
+            data = serializer.Load();
+            return data
                 .Where(x => x.Username == username && x.Active)
                 .SingleOrDefault();
         }
@@ -52,7 +27,8 @@ namespace Uceni_jazyku.Language
         /// <inheritdoc/>
         public List<LanguageCourse> GetInactiveLanguageCourses(string username)
         {
-            return languageCourses
+            data = serializer.Load();
+            return data
                 .Where(x => x.Username == username && !x.Active)
                 .ToList();
         }
@@ -60,39 +36,11 @@ namespace Uceni_jazyku.Language
         /// <inheritdoc/>
         public TemplateLanguageCourse GetTemplate(string templateId)
         {
-            return languageCourses
-                .Where(x => x.CourseId == templateId && x is TemplateLanguageCourse)
+            data = serializer.Load();
+            return data
+                .Where(x => x.Id == templateId && x is TemplateLanguageCourse)
                 .Cast<TemplateLanguageCourse>()
                 .FirstOrDefault();
-        }
-
-        /// <inheritdoc/>
-        public void Create(LanguageCourse languageCourse)
-        {
-            languageCourses.Add(languageCourse);
-            Save();
-        }
-
-        /// <inheritdoc/>
-        public LanguageCourse Get(string courseId)
-        {
-            return languageCourses.Find(x => x.CourseId == courseId);
-        }
-
-        /// <inheritdoc/>
-        public void Update(LanguageCourse languageCourse)
-        {
-            int index = languageCourses.FindIndex(x => x.CourseId == languageCourse.CourseId);
-            if (index != -1)
-                languageCourses[index] = languageCourse;
-            Save();
-        }
-
-        /// <inheritdoc/>
-        public void Delete(LanguageCourse languageCourse)
-        {
-            languageCourses.Remove(languageCourse);
-            Save();
         }
     }
 }

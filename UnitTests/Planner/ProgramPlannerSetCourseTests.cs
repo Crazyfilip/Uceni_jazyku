@@ -27,16 +27,16 @@ namespace UnitTests.Planner
             // Init
             Mock<LanguageCourse> languageCourse = new();
             Mock<PlannerMemory> plannerMemory = new();
-            languageCourse.SetupGet(x => x.CourseId).Returns("course_id");
-            plannerRepository.Setup(x => x.Get("course_id")).Returns(plannerMemory.Object);
+            languageCourse.SetupGet(x => x.Id).Returns("course_id");
+            plannerRepository.Setup(x => x.GetByCourseId("course_id")).Returns(plannerMemory.Object);
 
             // Test
             programPlanner.SetPlanner(languageCourse.Object, "test");
 
             // Verify
-            languageCourse.Verify(x => x.CourseId, Times.Exactly(2));
-            plannerRepository.Verify(x => x.Get("course_id"), Times.Once);
-            userModelRepository.Verify(x => x.Get("course_id"), Times.Once);
+            languageCourse.Verify(x => x.Id, Times.Once);
+            plannerRepository.Verify(x => x.GetByCourseId("course_id"), Times.Once);
+            userModelRepository.Verify(x => x.GetByCourseId("course_id"), Times.Once);
 
             languageCourse.VerifyNoOtherCalls();
             plannerRepository.VerifyNoOtherCalls();
@@ -49,19 +49,19 @@ namespace UnitTests.Planner
         {
             // Init
             Mock<LanguageCourse> languageCourse = new();
-            languageCourse.SetupGet(x => x.CourseId).Returns("course_id");
-            plannerRepository.Setup(x => x.Get("course_id")).Returns((AbstractPlannerMemory)null);
+            languageCourse.SetupGet(x => x.Id).Returns("course_id");
+            plannerRepository.Setup(x => x.GetByCourseId("course_id")).Returns((AbstractPlannerMemory)null);
 
             // Test
             programPlanner.SetPlanner(languageCourse.Object, "test");
 
             // Verify
-            languageCourse.Verify(x => x.CourseId, Times.Exactly(3));
-            plannerRepository.Verify(x => x.Get("course_id"), Times.Once);
+            languageCourse.Verify(x => x.Id, Times.Once);
+            plannerRepository.Verify(x => x.GetByCourseId("course_id"), Times.Once);
             plannerRepository.Verify(
-                x => x.Create(It.Is<AbstractPlannerMemory>(x => x.CourseId == "course_id" && x.MemoryId != null)), 
+                x => x.Create(It.Is<AbstractPlannerMemory>(x => x.CourseId == "course_id" && x.Id != null)), 
                 Times.Once);
-            userModelRepository.Verify(x => x.Get("course_id"), Times.Once);
+            userModelRepository.Verify(x => x.GetByCourseId("course_id"), Times.Once);
 
             languageCourse.VerifyNoOtherCalls();
             plannerRepository.VerifyNoOtherCalls();

@@ -83,14 +83,14 @@ namespace Uceni_jazyku.Cycles
         public virtual UserCycle GetNextCycle(string username)
         {
             log.Info($"Getting cycle for user {username}");
-            UserCycle result = CycleRepository.GetActiveCycle(username, ActiveCourse.CourseId);
+            UserCycle result = CycleRepository.GetActiveCycle(username, ActiveCourse.Id);
             if (result != null) return result;
 
             log.Debug($"Looking if there is existing inactive cycle for user {username}");
-            result = CycleRepository.GetOldestUserInactiveCycle(username, ActiveCourse.CourseId);
+            result = CycleRepository.GetOldestUserInactiveCycle(username, ActiveCourse.Id);
             if (result != null)
             {
-                log.Debug($"Obtained {result.CycleID}");
+                log.Debug($"Obtained {result.Id}");
                  return Activate(result);
             }
             else
@@ -109,9 +109,9 @@ namespace Uceni_jazyku.Cycles
         {
             log.Info($"Creating new cycle for user {username}");
             List<UserProgramItem> program = ProgramPlanner.GetNextUserCycleProgram(username);
-            UserCycle newCycle = CycleFactory.CreateCycle(username, ActiveCourse.CourseId, program);
+            UserCycle newCycle = CycleFactory.CreateCycle(username, ActiveCourse.Id, program);
             CycleRepository.Create(newCycle);
-            log.Debug($"New cycle created with id {newCycle.CycleID}");
+            log.Debug($"New cycle created with id {newCycle.Id}");
             return newCycle;
         }
 
@@ -123,7 +123,7 @@ namespace Uceni_jazyku.Cycles
         /// <returns>updated cycle</returns>
         public UserCycle Activate(UserCycle cycle)
         {
-            log.Info($"Activating cycle {cycle.CycleID}");
+            log.Info($"Activating cycle {cycle.Id}");
             try
             {
                 cycle.Activate();
@@ -131,7 +131,7 @@ namespace Uceni_jazyku.Cycles
             }
             catch (IncorrectCycleStateException e)
             {
-                log.Warn($"Cycle {cycle.CycleID} wasn't activated", e);
+                log.Warn($"Cycle {cycle.Id} wasn't activated", e);
             }
             return cycle;
         }
@@ -143,7 +143,7 @@ namespace Uceni_jazyku.Cycles
         /// <returns>updated cycle</returns>
         public UserCycle Inactivate(UserCycle cycle)
         {
-            log.Info($"Inactivating cycle {cycle.CycleID}");
+            log.Info($"Inactivating cycle {cycle.Id}");
             try
             {
                 cycle.Inactivate();
@@ -151,7 +151,7 @@ namespace Uceni_jazyku.Cycles
             } 
             catch (IncorrectCycleStateException e)
             {
-                log.Warn($"Cycle {cycle.CycleID} wasn't inactivated", e);
+                log.Warn($"Cycle {cycle.Id} wasn't inactivated", e);
             }
             return cycle;
         }
@@ -162,7 +162,7 @@ namespace Uceni_jazyku.Cycles
         /// <param name="cycle">cycle to finish</param>
         public void Finish(UserCycle cycle)
         {
-            log.Info($"Finishing cycle {cycle.CycleID}");
+            log.Info($"Finishing cycle {cycle.Id}");
             try
             {
                 cycle.Finish();
@@ -170,11 +170,11 @@ namespace Uceni_jazyku.Cycles
             }
             catch (IncorrectCycleStateException e)
             {
-                log.Warn($"Cycle {cycle.CycleID} wasn't finished", e);
+                log.Warn($"Cycle {cycle.Id} wasn't finished", e);
             }
             catch (Exception e)
             {
-                log.Warn($"Cycle {cycle.CycleID} wasn't finished", e);
+                log.Warn($"Cycle {cycle.Id} wasn't finished", e);
             }
         }
 
@@ -225,11 +225,11 @@ namespace Uceni_jazyku.Cycles
         /// <param name="item">lesson to swap</param>
         public void SwapLesson(UserCycle cycle, UserProgramItem item)
         {
-            log.Info($"Swapping lesson {item.LessonRef.Lesson} to cycle {cycle.CycleID}"); // TODO UserProgramItem should have also some id
+            log.Info($"Swapping lesson {item.LessonRef.Lesson} to cycle {cycle.Id}"); // TODO UserProgramItem should have also some id
             UserProgramItem swappedItem = cycle.SwapLesson(item);
             CycleRepository.Update(cycle);
             IncompleteUserCycle incompleteCycle = GetIncompleteUserCycle(cycle.Username);
-            log.Info($"Placing swapped lesson {swappedItem.LessonRef.Lesson} to incomplete cycle {incompleteCycle.CycleID}");
+            log.Info($"Placing swapped lesson {swappedItem.LessonRef.Lesson} to incomplete cycle {incompleteCycle.Id}");
             incompleteCycle.AddLesson(swappedItem);
             CycleRepository.Update(incompleteCycle);
         }
@@ -245,7 +245,7 @@ namespace Uceni_jazyku.Cycles
             log.Info("Getting next planned lesson");
             UserProgramItem item = ProgramPlanner.GetNextLanguageLesson(username);
             IncompleteUserCycle incompleteCycle = GetIncompleteUserCycle(username);
-            log.Debug($"Placing lesson {item.LessonRef.Lesson} to cycle {incompleteCycle.CycleID}");
+            log.Debug($"Placing lesson {item.LessonRef.Lesson} to cycle {incompleteCycle.Id}");
             incompleteCycle.AddLesson(item);
             CycleRepository.Update(incompleteCycle);
             return item.LessonRef.Lesson;
@@ -269,11 +269,11 @@ namespace Uceni_jazyku.Cycles
         private IncompleteUserCycle GetIncompleteUserCycle(string username)
         {
             log.Debug($"Looking if there is incomplete user cycle for user {username}");
-            IncompleteUserCycle incompleteCycle = CycleRepository.GetUserIncompleteCycle(username, ActiveCourse.CourseId);
+            IncompleteUserCycle incompleteCycle = CycleRepository.GetUserIncompleteCycle(username, ActiveCourse.Id);
             if (incompleteCycle == null)
             {
                 log.Debug("No incomplete user cycle found creating new");
-                incompleteCycle = CycleFactory.CreateIncompleteCycle(username, ActiveCourse.CourseId, 0); // TODO set limit properly
+                incompleteCycle = CycleFactory.CreateIncompleteCycle(username, ActiveCourse.Id, 0); // TODO set limit properly
                 CycleRepository.Create(incompleteCycle);
             }
             return incompleteCycle;
@@ -287,7 +287,7 @@ namespace Uceni_jazyku.Cycles
         public List<UserProgramItem> GetPlannedUnfinishedLessons(string username)
         {
             log.Info($"Getting unfinished planned lessons for user {username}");
-            List<UserCycle> userCycles = CycleRepository.GetNotFinishedCycles(username, ActiveCourse.CourseId);
+            List<UserCycle> userCycles = CycleRepository.GetNotFinishedCycles(username, ActiveCourse.Id);
             List<UserProgramItem> result = new();
             userCycles
                 .ForEach(x => x.UserProgramItems

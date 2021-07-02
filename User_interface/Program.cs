@@ -61,7 +61,7 @@ namespace User_interface
             {
                 LanguageTopic topic1 = new LanguageTopic() { TopicId = "a-id", Description = "A", Lessons = new List<LanguageProgramItem> { new LanguageProgramItem("A1"), new LanguageProgramItem("A2") } };
                 LanguageTopic topic2 = new LanguageTopic() { TopicId = "b-id", Description = "B", Lessons = new List<LanguageProgramItem> { new LanguageProgramItem("B1"), new LanguageProgramItem("B2") } };
-                TemplateLanguageCourse template = new TemplateLanguageCourse(new List<LanguageTopic>() { topic1, topic2 }) { CourseId = "template-default" };
+                TemplateLanguageCourse template = new TemplateLanguageCourse(new List<LanguageTopic>() { topic1, topic2 }) { Id = "template-default" };
                 List<LanguageCourse> languageCourses = new List<LanguageCourse>() { template };
 
                 var serializer = new DataContractSerializer(typeof(List<LanguageCourse>));

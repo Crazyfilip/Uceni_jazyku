@@ -3,8 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
+using Uceni_jazyku.Common;
 using Uceni_jazyku.Cycles;
 using Uceni_jazyku.Cycles.UserCycles;
 
@@ -14,13 +14,7 @@ namespace UnitTests
     public class CycleRepositoryTests
     {
         ICycleRepository repository;
-        List<UserCycle> cycles;
-
-        UserCycle cycle;
-        UserCycle cyclePreUpdate, cyclePostUpdate;
-        UserCycle cycleInactive1, cycleInactive2;
-        UserCycle cycleFinished;
-        UserCycle cycleIncomplete;
+        Mock<Serializer<UserCycle>> serializer;
         static readonly Mock<ILog> log4netMock = new Mock<ILog>();
 
         [ClassInitialize]
@@ -33,92 +27,17 @@ namespace UnitTests
         [TestInitialize]
         public void Init()
         {
-            cycle = new UserCycle() { CycleID = "test" };
-            cyclePreUpdate = new UserCycle() { CycleID = "test_id" };
-            cyclePostUpdate = new UserCycle() { CycleID = "test_id", Username = "testUpdate" };
-            cycleInactive1 = new UserCycle() { CourseID = "test_course", Username = "test", DateCreated = DateTime.Now }.Inactivate();
-            cycleInactive2 = new UserCycle() { CourseID = "test_course", Username = "test", DateCreated = DateTime.Now.AddMinutes(1) }.Inactivate();
-            cycleFinished = new UserCycle() { CourseID = "test_course", Username = "test", DateCreated = DateTime.Now.AddMinutes(-1) }.Finish();
-            cycleIncomplete = new IncompleteUserCycle() { CourseID = "test_course", Username = "test", DateCreated = DateTime.Now.AddMinutes(2) };
-
-            cycles = new List<UserCycle>() { cyclePreUpdate, cycleInactive1, cycleInactive2, cycleIncomplete, cycleFinished };
-
-
-            Directory.CreateDirectory("./cycles/service");
-            repository = new CycleRepository(cycles);
-
+            serializer = new Mock<Serializer<UserCycle>>();
+            repository = new CycleRepository(serializer.Object);
             log4netMock.Reset();
-        }
-
-        [TestMethod]
-        public void TestPutCyclePositive()
-        {
-            // Preverify
-            Assert.IsFalse(cycles.Contains(cycle));
-
-            // Test
-            repository.Create(cycle);
-
-            // Verify
-            Assert.IsTrue(cycles.Contains(cycle));
-
-            log4netMock.Verify(x => x.Info("Adding cycle with ID test"), Times.Once);
-            log4netMock.Verify(x => x.Debug("Saving repository to file"), Times.Once);
-
-            log4netMock.VerifyNoOtherCalls();
-        }
-
-        [TestMethod]
-        public void TestUpdateCyclePositiveUpdating()
-        {
-            // Init
-            int numberOfCycles = cycles.Count;
-
-            // Preverify
-            Assert.IsTrue(cycles.Contains(cyclePreUpdate));
-            Assert.IsFalse(cycles.Contains(cyclePostUpdate));
-
-            // Test
-            repository.Update(cyclePostUpdate);
-
-            // Verify
-            Assert.IsFalse(cycles.Contains(cyclePreUpdate));
-            Assert.IsTrue(cycles.Contains(cyclePostUpdate));
-            Assert.AreEqual(numberOfCycles, cycles.Count);
-
-            log4netMock.Verify(x => x.Info("Updating cycle test_id"), Times.Once);
-            log4netMock.Verify(x => x.Debug("Cycle test_id updated"), Times.Once);
-            log4netMock.Verify(x => x.Debug("Saving repository to file"), Times.Once);
-
-            log4netMock.VerifyNoOtherCalls();
-        }
-
-        [TestMethod]
-        public void TestUpdateCyclePositiveAdding()
-        {
-            // Init
-            int numberOfCycles = cycles.Count;
-
-            // Preverify
-            Assert.IsFalse(cycles.Contains(cycle));
-
-            // Test
-            repository.Update(cycle);
-
-            // Verify
-            Assert.IsTrue(cycles.Contains(cycle));
-            Assert.AreEqual(numberOfCycles + 1, cycles.Count);
-
-            log4netMock.Verify(x => x.Info("Updating cycle test"), Times.Once);
-            log4netMock.Verify(x => x.Debug("Cycle test added"), Times.Once);
-            log4netMock.Verify(x => x.Debug("Saving repository to file"), Times.Once);
-
-            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
         public void TestGetOldestUserInactiveCycleNegative()
         {
+            // Init
+            serializer.Setup(x => x.Load()).Returns(new List<UserCycle>());
+
             // Test
             UserCycle result = repository.GetOldestUserInactiveCycle("testuser", "test_course");
 
@@ -127,27 +46,41 @@ namespace UnitTests
 
             log4netMock.Verify(x => x.Info("Getting oldest inactive cycle for user testuser"), Times.Once);
 
-            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
         public void TestGetOldestUserInactiveCyclePositive()
         {
+            // Init
+            Mock<UserCycle> cycle1 = new();
+            cycle1.SetupGet(x => x.CourseID).Returns("test_course");
+            cycle1.SetupGet(x => x.Username).Returns("test");
+            cycle1.SetupGet(x => x.State).Returns(UserCycleState.Inactive);
+            cycle1.Setup(x => x.DateCreated).Returns(DateTime.Now);
+            Mock<UserCycle> cycle2 = new();
+            cycle2.SetupGet(x => x.CourseID).Returns("test_course");
+            cycle2.SetupGet(x => x.Username).Returns("test");
+            cycle2.SetupGet(x => x.State).Returns(UserCycleState.Inactive);
+            cycle2.Setup(x => x.DateCreated).Returns(DateTime.Now.AddMinutes(5));
+            List<UserCycle> cycles = new List<UserCycle>() { cycle1.Object, cycle2.Object };
+            serializer.Setup(x => x.Load()).Returns(cycles);
+
             // Test
             UserCycle result = repository.GetOldestUserInactiveCycle("test", "test_course");
 
             // Verify
-            Assert.AreEqual(cycleInactive1, result);
-            Assert.AreNotEqual(cycleInactive2, result);
+            Assert.AreEqual(cycle1.Object, result);
+            Assert.AreNotEqual(cycle2.Object, result);
 
             log4netMock.Verify(x => x.Info("Getting oldest inactive cycle for user test"), Times.Once);
-
-            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
         public void TestGetUserIncompleteCycleNegative()
         {
+            // Init
+            serializer.Setup(x => x.Load()).Returns(new List<UserCycle>());
+
             //Test
             IncompleteUserCycle result = repository.GetUserIncompleteCycle("testuser", "test_course");
 
@@ -155,42 +88,60 @@ namespace UnitTests
             Assert.IsNull(result);
 
             log4netMock.Verify(x => x.Info("Getting incomplete cycle for user testuser"), Times.Once);
-
-            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
         public void TestGetUserIncompleteCycleExisting()
         {
+            // Init
+            Mock<IncompleteUserCycle> cycle = new();
+            cycle.SetupGet(x => x.CourseID).Returns("test_course");
+            cycle.SetupGet(x => x.Username).Returns("test");
+            List<UserCycle> cycles = new List<UserCycle>() { cycle.Object };
+            serializer.Setup(x => x.Load()).Returns(cycles);
+
             // Test
             IncompleteUserCycle result = repository.GetUserIncompleteCycle("test", "test_course");
 
             // Verify
-            Assert.AreEqual(cycleIncomplete, result);
+            Assert.AreEqual(cycle.Object, result);
 
             log4netMock.Verify(x => x.Info("Getting incomplete cycle for user test"), Times.Once);
-
-            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
         public void TestGetNotFinishedCyclesPositive()
         {
+            // Init
+            Mock<UserCycle> cycle1 = new();
+            cycle1.SetupGet(x => x.CourseID).Returns("test_course");
+            cycle1.SetupGet(x => x.Username).Returns("test");
+            cycle1.SetupGet(x => x.State).Returns(UserCycleState.Finished);
+            cycle1.Setup(x => x.DateCreated).Returns(DateTime.Now);
+            Mock<UserCycle> cycle2 = new();
+            cycle2.SetupGet(x => x.CourseID).Returns("test_course");
+            cycle2.SetupGet(x => x.Username).Returns("test");
+            cycle2.SetupGet(x => x.State).Returns(UserCycleState.Inactive);
+            cycle2.Setup(x => x.DateCreated).Returns(DateTime.Now.AddMinutes(5));
+            List<UserCycle> cycles = new List<UserCycle>() { cycle1.Object, cycle2.Object };
+            serializer.Setup(x => x.Load()).Returns(cycles);
+
             // Test
             List<UserCycle> result = repository.GetNotFinishedCycles("test", "test_course");
 
             // Verify
-            CollectionAssert.AreEqual(new List<UserCycle>() { cycleInactive1, cycleInactive2, cycleIncomplete }, result);
-            Assert.IsFalse(result.Contains(cycleFinished));
+            CollectionAssert.AreEqual(new List<UserCycle>() { cycle2.Object }, result);
+            CollectionAssert.DoesNotContain(result, cycle1.Object);
 
             log4netMock.Verify(x => x.Info("Getting cycles which are not in finished state for user test"), Times.Once);
-
-            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
         public void TestGetNotFinishedCyclesNegative()
         {
+            // Init
+            serializer.Setup(x => x.Load()).Returns(new List<UserCycle>());
+
             // Test
             List<UserCycle> result = repository.GetNotFinishedCycles("testtest", "test_course");
 
@@ -198,15 +149,15 @@ namespace UnitTests
             CollectionAssert.AreEqual(new List<UserCycle>(), result);
 
             log4netMock.Verify(x => x.Info("Getting cycles which are not in finished state for user testtest"), Times.Once);
-
-            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestCleanup]
-        public void CleanUp()
+        public void Finish()
         {
-            cycles = null;
-            Directory.Delete("./cycles", true);
+            serializer.Verify(x => x.Load(), Times.Once);
+
+            log4netMock.VerifyNoOtherCalls();
+            serializer.VerifyNoOtherCalls();
         }
     }
 }
