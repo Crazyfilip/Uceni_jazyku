@@ -68,6 +68,10 @@ namespace Uceni_jazyku.Language
             return course;
         }
 
+        /// <summary>
+        /// Get all available language courses which means collection of all templates.
+        /// </summary>
+        /// <returns>Available courses</returns>
         public virtual List<TemplateLanguageCourse> GetAvailableCourses()
         {
             return languageCourseRepository.GetAllTemplates();
