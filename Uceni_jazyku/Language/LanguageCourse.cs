@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+using Uceni_jazyku.Common;
 using Uceni_jazyku.Language.Impl;
 
 namespace Uceni_jazyku.Language
@@ -15,16 +13,16 @@ namespace Uceni_jazyku.Language
     [DataContract]
     [KnownType(typeof(TemplateLanguageCourse))]
     [KnownType(typeof(SimpleLanguageCourse))]
-    public abstract class LanguageCourse : ILanguageTopicSelectStrategy
+    public abstract class LanguageCourse : ILanguageTopicSelectStrategy, IId
     {
         [DataMember]
-        public virtual string CourseId { get; init; }
+        public virtual string Id { get; init; }
 
         [DataMember]
-        public string Username { get; init; }
+        public virtual string Username { get; init; }
 
         [DataMember]
-        public bool Active { get; set; }
+        public virtual bool Active { get; set; }
 
         [DataMember]
         public virtual ICollection<LanguageTopic> topics { get; protected set; }

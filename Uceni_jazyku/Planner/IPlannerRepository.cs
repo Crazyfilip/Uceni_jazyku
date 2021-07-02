@@ -7,5 +7,6 @@ namespace Uceni_jazyku.Planner
     /// </summary>
     public interface IPlannerRepository : IRepository<string, AbstractPlannerMemory>
     {
+        AbstractPlannerMemory GetByCourseId(string courseId);
     }
 }

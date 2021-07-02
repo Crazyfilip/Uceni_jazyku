@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Uceni_jazyku.Common;
 using Uceni_jazyku.Language;
 
 namespace Uceni_jazyku.Planner
@@ -16,13 +17,13 @@ namespace Uceni_jazyku.Planner
     /// </summary>
     [DataContract]
     [KnownType(typeof(PlannerMemory))]
-    public abstract class AbstractPlannerMemory
+    public abstract class AbstractPlannerMemory : IId
     {
         [DataMember]
-        public string CourseId { get; init; }
+        public virtual string CourseId { get; init; }
 
         [DataMember]
-        public string MemoryId { get; init; }
+        public string Id { get; init; }
 
         /// <summary>
         /// Get topic from memory from which will be picked next lesson

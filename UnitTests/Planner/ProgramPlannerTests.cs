@@ -28,14 +28,14 @@ namespace UnitTests.Planner
         public void Init()
         {
             languageCourse = new Mock<LanguageCourse>();
-            languageCourse.Setup(x => x.CourseId).Returns("course_id");
+            languageCourse.Setup(x => x.Id).Returns("course_id");
             plannerMemory = new Mock<AbstractPlannerMemory>();
             plannerRepository = new Mock<IPlannerRepository>();
-            plannerRepository.Setup(x => x.Get("course_id")).Returns(plannerMemory.Object);
+            plannerRepository.Setup(x => x.GetByCourseId("course_id")).Returns(plannerMemory.Object);
             userModel = new Mock<UserModel>();
             userModel.SetupGet(x => x.CycleTemplate).Returns(new List<LessonDescription>() { new LessonDescription() });
             userModelRepository = new Mock<IUserModelRepository>();
-            userModelRepository.Setup(x => x.Get("course_id")).Returns(userModel.Object);
+            userModelRepository.Setup(x => x.GetByCourseId("course_id")).Returns(userModel.Object);
             programPlanner = new ProgramPlanner(plannerRepository.Object, userModelRepository.Object);
             programPlanner.SetPlanner(languageCourse.Object, "test");
 

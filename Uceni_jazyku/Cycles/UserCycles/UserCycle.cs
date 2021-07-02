@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using Uceni_jazyku.Common;
 using Uceni_jazyku.Cycles.Program;
 using Uceni_jazyku.Cycles.UserCycles;
 
@@ -16,10 +17,10 @@ namespace Uceni_jazyku.Cycles
     [KnownType(typeof(UserCycle))]
     [KnownType(typeof(IncompleteUserCycle))]
     [DataContract]
-    public class UserCycle
+    public class UserCycle : IId
     {
         [DataMember]
-        public virtual string CycleID { get; init; }
+        public virtual string Id { get; init; }
 
         [DataMember]
         public virtual string CourseID { get; init; }
@@ -148,7 +149,7 @@ namespace Uceni_jazyku.Cycles
             if (this.GetType() != obj.GetType()) return false;
 
             UserCycle cycle = (UserCycle)obj;
-            bool result = (this.CycleID == cycle.CycleID)
+            bool result = (this.Id == cycle.Id)
                 && (this.FinishedEvents == cycle.FinishedEvents)
                 && (this.State == cycle.State)
                 && (this.Username == cycle.Username)
@@ -159,7 +160,7 @@ namespace Uceni_jazyku.Cycles
 
         public override int GetHashCode()
         {
-            return CycleID.GetHashCode()
+            return Id.GetHashCode()
                 + FinishedEvents.GetHashCode()
                 + State.GetHashCode()
                 + Username.GetHashCode()

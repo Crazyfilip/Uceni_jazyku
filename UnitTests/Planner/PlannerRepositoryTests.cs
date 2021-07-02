@@ -1,10 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+using Moq;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Uceni_jazyku.Common;
 using Uceni_jazyku.Planner;
 
 namespace UnitTests.Planner
@@ -15,79 +13,57 @@ namespace UnitTests.Planner
         PlannerRepository plannerRepository;
         List<AbstractPlannerMemory> plannerMemories;
         PlannerMemory memory;
+        Mock<Serializer<AbstractPlannerMemory>> serializer;
 
         [TestInitialize]
         public void Init()
         {
-            Directory.CreateDirectory("./planners");
-
-            memory = new PlannerMemory() { CourseId = "course_id", MemoryId = "memory_id"};
+            serializer = new Mock<Serializer<AbstractPlannerMemory>>();
+            memory = new PlannerMemory() { CourseId = "test"};
             plannerMemories = new List<AbstractPlannerMemory>() { memory };
-            plannerRepository = new PlannerRepository(plannerMemories);
+            plannerRepository = new PlannerRepository(serializer.Object);
         }
 
         [TestMethod]
-        public void TestGetMemoryPositive()
+        public void TestGetByCourseIdPositive()
         {
+            // Init
+            Mock<AbstractPlannerMemory> memory = new();
+            memory.SetupGet(x => x.CourseId).Returns("test");
+            List<AbstractPlannerMemory> plannerMemories = new() { memory.Object };
+            serializer.Setup(x => x.Load()).Returns(plannerMemories);
+
             // Test
-            AbstractPlannerMemory result = plannerRepository.Get("course_id");
+            AbstractPlannerMemory result = plannerRepository.GetByCourseId("test");
 
             // Verify
-            Assert.IsNotNull(result);
-            Assert.AreEqual(memory, result);
+            Assert.AreEqual(memory.Object, result);
+
+            memory.Verify(x => x.CourseId, Times.Once);
+            serializer.Verify(x => x.Load(), Times.Once);
+
+            memory.VerifyNoOtherCalls();
         }
+
         [TestMethod]
-        public void TestGetMemoryNegative()
+        public void TestGetByCourseIdNegative()
         {
+            // Init
+            serializer.Setup(x => x.Load()).Returns(new List<AbstractPlannerMemory>());
+
             // Test
-            AbstractPlannerMemory result = plannerRepository.Get("invalid");
+            AbstractPlannerMemory result = plannerRepository.GetByCourseId("test");
 
             // Verify
             Assert.IsNull(result);
-        }
 
-        [TestMethod]
-        public void TestInsertMemoryPositive()
-        {
-            // Init
-            AbstractPlannerMemory memoryAdd = new PlannerMemory() { CourseId = "course2_id" };
-
-            // Preverify
-            Assert.AreEqual(1, plannerMemories.Count);
-            Assert.IsFalse(plannerMemories.Contains(memoryAdd));
-
-            // Test
-            plannerRepository.Create(memoryAdd);
-
-            // Verify
-            Assert.AreEqual(2, plannerMemories.Count);
-            Assert.IsTrue(plannerMemories.Contains(memoryAdd));
-        }
-
-        [TestMethod]
-        public void TestUpdateMemoryPositive()
-        {
-            // Init
-            AbstractPlannerMemory memoryUpdate = new PlannerMemory() { MemoryId = "memory_id" };
-
-            // Preverify
-            Assert.AreEqual(1, plannerMemories.Count);
-            Assert.IsTrue(plannerMemories.Contains(memory));
-            Assert.IsFalse(plannerMemories.Contains(memoryUpdate));
-
-            // Test
-            plannerRepository.Update(memoryUpdate);
-
-            // Verify
-            Assert.AreEqual(1, plannerMemories.Count);
-            Assert.IsFalse(plannerMemories.Contains(memory));
-            Assert.IsTrue(plannerMemories.Contains(memoryUpdate));
+            serializer.Verify(x => x.Load(), Times.Once);
         }
 
         [TestCleanup]
-        public void CleanUp()
+        public void Finish()
         {
-            Directory.Delete("./planners", true);
+            serializer.VerifyNoOtherCalls();
         }
     }
 }

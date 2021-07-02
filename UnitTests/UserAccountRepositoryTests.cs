@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using Uceni_jazyku.Common;
 using Uceni_jazyku.User_database;
 
 namespace UnitTests
@@ -19,6 +20,7 @@ namespace UnitTests
         private UserAccount userAccount1;
         private UserAccount userAccount2;
         static readonly Mock<ILog> log4netMock = new Mock<ILog>();
+        Mock<Serializer<UserAccount>> serializer;
 
         [ClassInitialize]
         public static void ClassInit(TestContext testContext)
@@ -30,61 +32,52 @@ namespace UnitTests
         [TestInitialize]
         public void Init()
         {
-            Directory.CreateDirectory("./users");
-            userAccount1 = new UserAccount() { username = "test1", loginCredential = "test1", salt = "test1" };
-            userAccount2 = new UserAccount() { username = "test2", loginCredential = "test2", salt = "test2" };
-            accounts = new List<UserAccount>() { userAccount2 };
-            userAccountRepository = new UserAccountRepository(accounts);
+            serializer = new Mock<Serializer<UserAccount>>();
+            userAccountRepository = new UserAccountRepository(serializer.Object);
             log4netMock.Reset();
-        }
-
-        [TestMethod]
-        public void TestAddUserAccountPostive()
-        {
-            // Test
-            userAccountRepository.Create(userAccount1);
-
-            // Verify
-            Assert.IsTrue(accounts.Contains(userAccount1));
-
-            log4netMock.Verify(x => x.Info("Adding user account to repository"), Times.Once);
-            log4netMock.Verify(x => x.Debug("Saving repository to file"), Times.Once);
-
-            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
         public void TestGetUserAccountPositive()
         {
+            // Init
+            Mock<UserAccount> account = new();
+            account.SetupGet(x => x.username).Returns("test");
+            List<UserAccount> accounts = new() { account.Object };
+            serializer.Setup(x => x.Load()).Returns(accounts);
+
             // Test
-            UserAccount result = userAccountRepository.Get("test2");
+            UserAccount result = userAccountRepository.GetByName("test");
 
             // Verify
-            Assert.AreEqual(userAccount2, result);
+            Assert.AreEqual(account.Object, result);
 
-            log4netMock.Verify(x => x.Info("Looking for account with username: test2"), Times.Once);
+            log4netMock.Verify(x => x.Info("Looking for account with username: test"), Times.Once);
 
-            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
         public void TestGetUserAccountNegative()
         {
+            // Init
+            serializer.Setup(x => x.Load()).Returns(new List<UserAccount>());
+
             // Test
-            UserAccount result = userAccountRepository.Get("non_existent");
+            UserAccount result = userAccountRepository.GetByName("non_existent");
 
             // Verify
             Assert.IsNull(result);
 
             log4netMock.Verify(x => x.Info("Looking for account with username: non_existent"), Times.Once);
-
-            log4netMock.VerifyNoOtherCalls();
         }
 
         [TestCleanup]
         public void CleanUp()
         {
-            Directory.Delete("./users", true);
+            serializer.Verify(x => x.Load(), Times.Once);
+
+            serializer.VerifyNoOtherCalls();
+            log4netMock.VerifyNoOtherCalls();
         }
     }
 }

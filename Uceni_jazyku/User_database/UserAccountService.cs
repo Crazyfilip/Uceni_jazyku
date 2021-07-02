@@ -103,7 +103,7 @@ namespace Uceni_jazyku.User_database
         /// <returns>true when user exists</returns>
         private bool VerifyUser(string username, string password)
         {
-            UserAccount userAccount = userAccountRepository.Get(username);
+            UserAccount userAccount = userAccountRepository.GetByName(username);
             if (userAccount == null)
             {
                 log.Debug($"No account with username: {username}");
@@ -151,13 +151,13 @@ namespace Uceni_jazyku.User_database
             // TODO will be in serapate method as in UI course is setup in second step
             LanguageCourse course = languageCourseService.GetLanguageCourseInstanceFromTemplate("template-default", username);
             cycleService.SetActiveCourse(username, course);
-            CreateUserModel(username, course.CourseId);
+            CreateUserModel(username, course.Id);
             return true;
         }
 
         private void CreateUserModel(string username, string coursesId)
         {
-            UserModel userModel = new UserModel() { Username = username, CourseId = coursesId, ModelId = Guid.NewGuid().ToString() };
+            UserModel userModel = new UserModel() { Username = username, CourseId = coursesId, Id = Guid.NewGuid().ToString() };
             userModelRepository.Create(userModel);
         }
     }

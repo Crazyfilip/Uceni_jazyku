@@ -17,7 +17,7 @@ namespace Uceni_jazyku.Language.Impl
         // TODO načíst kurz podle CourseId
         public SimpleLanguageCourse(ICollection<LanguageTopic> topics)
         {
-            this.CourseId = System.Guid.NewGuid().ToString();
+            this.Id = System.Guid.NewGuid().ToString();
             this.topics = topics;
         }
 
