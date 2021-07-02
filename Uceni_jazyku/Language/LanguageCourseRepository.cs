@@ -12,7 +12,7 @@ namespace Uceni_jazyku.Language
 
         public LanguageCourseRepository(Serializer<LanguageCourse> serializer)
         {
-            this.serializer = serializer ?? new Serializer<LanguageCourse>() { filepath = "./courses/service/database.xml" };
+            this.serializer = serializer ?? new Serializer<LanguageCourse>() { Filepath = "./courses/service/database.xml" };
         }
 
         /// <inheritdoc/>

@@ -10,7 +10,7 @@ namespace Uceni_jazyku.User
 
         public UserModelRepository(Serializer<UserModel> serializer)
         {
-            this.serializer = serializer ?? new Serializer<UserModel>() { filepath = "./user-models/database.xml" };
+            this.serializer = serializer ?? new Serializer<UserModel>() { Filepath = "./user-models/database.xml" };
         }
 
         /// <inheritdoc/>

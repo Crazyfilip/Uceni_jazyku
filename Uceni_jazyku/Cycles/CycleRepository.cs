@@ -19,7 +19,7 @@ namespace Uceni_jazyku.Cycles
 
         public CycleRepository(Serializer<UserCycle> serializer)
         {
-            this.serializer = serializer ?? new Serializer<UserCycle>() { filepath = "./cycles/service/database.xml" };
+            this.serializer = serializer ?? new Serializer<UserCycle>() { Filepath = "./cycles/service/database.xml" };
         }
 
         /// <inheritdoc/>

@@ -10,7 +10,7 @@ namespace Uceni_jazyku.Planner
 
         public PlannerRepository(Serializer<AbstractPlannerMemory> serializer)
         {
-            this.serializer = serializer ?? new Serializer<AbstractPlannerMemory>() { filepath = "./planners/database.xml" };
+            this.serializer = serializer ?? new Serializer<AbstractPlannerMemory>() { Filepath = "./planners/database.xml" };
         }
 
         /// <inheritdoc/>

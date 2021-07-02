@@ -23,7 +23,7 @@ namespace Uceni_jazyku.User_database
         /// <param name="accounts">List of data</param>
         public UserAccountRepository(Serializer<UserAccount> serializer)
         {
-            this.serializer = serializer ?? new Serializer<UserAccount>() { filepath = "./users/accounts.xml" };
+            this.serializer = serializer ?? new Serializer<UserAccount>() { Filepath = "./users/accounts.xml" };
         }
 
         /// <inheritdoc/>
