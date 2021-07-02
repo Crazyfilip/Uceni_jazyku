@@ -25,6 +25,16 @@ namespace Uceni_jazyku.Language
         }
 
         /// <inheritdoc/>
+        public List<TemplateLanguageCourse> GetAllTemplates()
+        {
+            data = serializer.Load();
+            return data
+                .Where(x => x is TemplateLanguageCourse)
+                .Cast<TemplateLanguageCourse>()
+                .ToList();
+        }
+
+        /// <inheritdoc/>
         public List<LanguageCourse> GetInactiveLanguageCourses(string username)
         {
             data = serializer.Load();

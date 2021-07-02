@@ -147,18 +147,20 @@ namespace Uceni_jazyku.User_database
             userAccount.loginCredential = Convert.ToBase64String(pbkdf2.GetBytes(20));
             log.Debug("Registering user to repository");
             userAccountRepository.Create(userAccount);
-
-            // TODO will be in serapate method as in UI course is setup in second step
-            LanguageCourse course = languageCourseService.GetLanguageCourseInstanceFromTemplate("template-default", username);
-            cycleService.SetActiveCourse(username, course);
-            CreateUserModel(username, course.Id);
             return true;
         }
 
-        private void CreateUserModel(string username, string coursesId)
+        /// <summary>
+        /// Create instance of language course for user, user model for that course and prepare planner (via cycleService)
+        /// </summary>
+        /// <param name="username">username</param>
+        /// <param name="courseName">chosen language course</param>
+        public void SetUpAccount(string username, string courseName)
         {
-            UserModel userModel = new UserModel() { Username = username, CourseId = coursesId, Id = Guid.NewGuid().ToString() };
+            LanguageCourse course = languageCourseService.GetLanguageCourseInstanceFromTemplate(courseName, username);
+            UserModel userModel = new UserModel() { Username = username, CourseId = course.Id, Id = Guid.NewGuid().ToString() };
             userModelRepository.Create(userModel);
+            cycleService.SetActiveCourse(username, course);
         }
     }
 }
