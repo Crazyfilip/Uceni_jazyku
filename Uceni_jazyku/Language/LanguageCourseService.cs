@@ -1,4 +1,5 @@
-﻿using Uceni_jazyku.Language.Impl;
+﻿using System.Collections.Generic;
+using Uceni_jazyku.Language.Impl;
 
 namespace Uceni_jazyku.Language
 {
@@ -65,6 +66,15 @@ namespace Uceni_jazyku.Language
             LanguageCourse course = languageCourseFactory.GetLanguageCourse(template, username);
             languageCourseRepository.Create(course);
             return course;
+        }
+
+        /// <summary>
+        /// Get all available language courses which means collection of all templates.
+        /// </summary>
+        /// <returns>Available courses</returns>
+        public virtual List<TemplateLanguageCourse> GetAvailableCourses()
+        {
+            return languageCourseRepository.GetAllTemplates();
         }
     }
 }

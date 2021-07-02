@@ -29,5 +29,11 @@ namespace Uceni_jazyku.Language
         /// <param name="templateId">id of template</param>
         /// <returns>template course</returns>
         TemplateLanguageCourse GetTemplate(string templateId);
+
+        /// <summary>
+        /// Get all templates for language courses
+        /// </summary>
+        /// <returns>Collection of template courses</returns>
+        List<TemplateLanguageCourse> GetAllTemplates();
     }
 }

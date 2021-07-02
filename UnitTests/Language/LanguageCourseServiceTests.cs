@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System.Collections.Generic;
 using Uceni_jazyku.Language;
 using Uceni_jazyku.Language.Impl;
 
@@ -66,6 +67,24 @@ namespace UnitTests.Language
             languageCourseMock.VerifyNoOtherCalls();
             languageCourseRepositoryMock.VerifyNoOtherCalls();
             languageCourseFactoryMock.VerifyNoOtherCalls();
+        }
+
+        [TestMethod]
+        public void TestGetAvailableCoursesPositive()
+        {
+            // Init
+            List<TemplateLanguageCourse> templates = new();
+            languageCourseRepositoryMock.Setup(x => x.GetAllTemplates()).Returns(templates);
+
+            // Test
+            List<TemplateLanguageCourse> result = languageCourseService.GetAvailableCourses();
+
+            // Verify
+            CollectionAssert.AreEqual(templates, result);
+
+            languageCourseRepositoryMock.Verify(x => x.GetAllTemplates(), Times.Once);
+
+            languageCourseRepositoryMock.VerifyNoOtherCalls();
         }
 
         [TestCleanup]

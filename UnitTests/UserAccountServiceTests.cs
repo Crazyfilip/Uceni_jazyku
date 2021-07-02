@@ -260,6 +260,34 @@ namespace UnitTests
             Assert.IsFalse(File.Exists(path));
         }
 
+        [TestMethod]
+        public void TestSetUpAccount()
+        {
+            // Init
+            Mock<LanguageCourse> languageCourse = new();
+            languageCourse.SetupGet(x => x.Id).Returns("courseId");
+            languageCourseServiceMock.Setup(x => x.GetLanguageCourseInstanceFromTemplate("course", "test")).Returns(languageCourse.Object);
+
+            // Test
+            accountService.SetUpAccount("test", "course");
+
+            // Verify
+            languageCourse.Verify(x => x.Id, Times.Once);
+            userModelRepositoryMock.Verify(
+                x => x.Create(
+                    It.Is<UserModel>(
+                        x => x.Username == "test" 
+                        && x.CourseId == "courseId" 
+                        && x.Id != null)),
+                Times.Once);
+            cycleServiceMock.Verify(x => x.SetActiveCourse("test", languageCourse.Object), Times.Once);
+
+            languageCourse.VerifyNoOtherCalls();
+            languageCourseServiceMock.VerifyNoOtherCalls();
+            userModelRepositoryMock.VerifyNoOtherCalls();
+            cycleServiceMock.VerifyNoOtherCalls();
+        }
+
         [TestCleanup]
         public void CleanUp()
         {

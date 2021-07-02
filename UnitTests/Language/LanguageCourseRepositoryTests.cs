@@ -1,7 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Collections.Generic;
-using System.IO;
 using Uceni_jazyku.Common;
 using Uceni_jazyku.Language;
 using Uceni_jazyku.Language.Impl;
@@ -12,13 +11,6 @@ namespace UnitTests.Language
     public class LanguageCourseRepositoryTests
     {
         LanguageCourseRepository languageCourseRepository;
-        readonly LanguageCourse languageCourseActive1_1 = new SimpleLanguageCourse() { Active = true, Id = "active_id1", Username = "test" };
-        readonly LanguageCourse languageCourseActive2_1 = new SimpleLanguageCourse() { Active = true, Id = "active_id2", Username = "tester" };
-        readonly LanguageCourse languageCourseInactive1_1 = new SimpleLanguageCourse() { Active = false, Id = "inactive_id3", Username = "test" };
-        readonly LanguageCourse languageCourseInactive1_2 = new SimpleLanguageCourse() { Active = false, Id = "inactive_id4", Username = "test" };
-        readonly LanguageCourse templateLanguageCourse = new TemplateLanguageCourse(new List<LanguageTopic>()) { Id = "template_id" };
-        readonly LanguageCourse testLanguageCourse = new SimpleLanguageCourse() { Id = "test" };
-        List<LanguageCourse> languageCourses;
         Mock<Serializer<LanguageCourse>> serializer;
 
         [TestInitialize]
@@ -118,6 +110,34 @@ namespace UnitTests.Language
 
             // Verify
             Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void TestGetAllTemplatesPositive()
+        {
+            // Init
+            Mock<TemplateLanguageCourse> template = new();
+            List<LanguageCourse> templates = new List<LanguageCourse>() { template.Object };
+            serializer.Setup(x => x.Load()).Returns(templates);
+
+            // Test
+            List<TemplateLanguageCourse> result = languageCourseRepository.GetAllTemplates();
+
+            // Verify
+            CollectionAssert.AreEqual(new List<TemplateLanguageCourse>() { template.Object }, result);
+        }
+
+        [TestMethod]
+        public void TestGetAllTemplatesNegative()
+        {
+            // Init
+            serializer.Setup(x => x.Load()).Returns(new List<LanguageCourse>());
+
+            // Test
+            List<TemplateLanguageCourse> result = languageCourseRepository.GetAllTemplates();
+
+            // Verify
+            CollectionAssert.AreEqual(new List<LanguageCourse>(), result);
         }
 
         [TestCleanup]
