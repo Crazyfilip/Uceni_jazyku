@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using LanguageLearning.Language.Impl;
+﻿using LanguageLearning.Language.Impl;
+using System.Collections.Generic;
 
 namespace LanguageLearning.Language
 {
@@ -13,7 +13,7 @@ namespace LanguageLearning.Language
 
         private static LanguageCourseService instance;
 
-        public LanguageCourseService() : this(null, null) { } 
+        public LanguageCourseService() : this(null, null) { }
 
         private LanguageCourseService(ILanguageCourseRepository languageCourseRepository, ILanguageCourseFactory languageCourseFactory)
         {
@@ -43,7 +43,7 @@ namespace LanguageLearning.Language
         {
             instance = null;
         }
-        
+
         /// <summary>
         /// Get user's active course
         /// </summary>

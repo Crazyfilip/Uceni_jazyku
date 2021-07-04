@@ -1,14 +1,14 @@
-﻿using System;
+﻿using LanguageLearning.User;
+using System;
 using System.Windows.Forms;
-using LanguageLearning.User_database;
 
 namespace User_interface
 {
     public partial class NewAccount1 : Form
     {
-        UserAccountService userAccountService;
+        UserService userAccountService;
 
-        public NewAccount1(UserAccountService userAccountService)
+        public NewAccount1(UserService userAccountService)
         {
             InitializeComponent();
             this.userAccountService = userAccountService;

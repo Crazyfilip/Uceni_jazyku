@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using LanguageLearning.Common;
+﻿using LanguageLearning.Common;
 using LanguageLearning.Language.Impl;
+using System.Collections.Generic;
 
 namespace LanguageLearning.Language
 {

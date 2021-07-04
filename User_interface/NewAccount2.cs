@@ -1,14 +1,14 @@
-﻿using System;
+﻿using LanguageLearning.Language;
+using LanguageLearning.User;
+using System;
 using System.Windows.Forms;
-using LanguageLearning.Language;
-using LanguageLearning.User_database;
 
 namespace User_interface
 {
     public partial class NewAccount2 : Form
     {
         LanguageCourseService languageCourseService = new LanguageCourseService();
-        UserAccountService userAccountService = new UserAccountService();
+        UserService userAccountService = new UserService();
 
         public string username { get; set; }
 

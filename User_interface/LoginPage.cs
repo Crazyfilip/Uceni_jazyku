@@ -1,18 +1,18 @@
-﻿using System;
+﻿using LanguageLearning.Cycle.Model;
+using LanguageLearning.User;
+using System;
 using System.Windows.Forms;
-using LanguageLearning.User_database;
-using LanguageLearning.Cycles;
 
 namespace User_interface
 {
     public partial class LoginPage : Form
     {
-        UserAccountService userAccountService;
+        UserService userAccountService;
 
         public LoginPage()
         {
             InitializeComponent();
-            userAccountService = new UserAccountService();
+            userAccountService = new UserService();
         }
 
         private void languageSetting_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

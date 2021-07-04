@@ -1,17 +1,17 @@
-﻿using System;
-using System.Windows.Forms;
-using LanguageLearning.Cycles;
-using System.IO;
-using log4net;
-using System.Reflection;
-using log4net.Config;
-using LanguageLearning.Language.Impl;
+﻿using LanguageLearning.Cycle;
 using LanguageLearning.Language;
+using LanguageLearning.Language.Impl;
+using LanguageLearning.Language.Topic;
+using LanguageLearning.User;
+using log4net;
+using log4net.Config;
+using System;
 using System.Collections.Generic;
-using LanguageLearning.Cycles.Program;
+using System.IO;
+using System.Reflection;
 using System.Runtime.Serialization;
+using System.Windows.Forms;
 using System.Xml;
-using LanguageLearning.User_database;
 
 namespace User_interface
 {
@@ -29,7 +29,7 @@ namespace User_interface
             PrepareApp();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            UserAccountService userAccountService = new UserAccountService();
+            UserService userAccountService = new UserService();
             if (userAccountService.IsAnyoneLogged())
             {
                 string username = userAccountService.GetLoggedUser();

@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using LanguageLearning.Cycles.Program;
+﻿using LanguageLearning.Cycle.Model;
 using LanguageLearning.Language;
+using System.Collections.Generic;
 
 namespace LanguageLearning.Planner
 {
@@ -14,14 +14,14 @@ namespace LanguageLearning.Planner
         /// </summary>
         /// <param name="username">username</param>
         /// <returns>List of lessons (program)</returns>
-        List<UserProgramItem> GetNextUserCycleProgram(string username);
+        List<UserCycleItem> GetNextUserCycleProgram(string username);
 
         /// <summary>
         /// Get following lesson for user
         /// </summary>
         /// <param name="username">username</param>
         /// <returns>Lesson</returns>
-        UserProgramItem GetNextLanguageLesson(string username);
+        UserCycleItem GetNextLanguageLesson(string username);
 
         /// <summary>
         /// Get following lesson from language topic chosen by user
@@ -29,7 +29,7 @@ namespace LanguageLearning.Planner
         /// <param name="username">username</param>
         /// <param name="topicId">language topic id</param>
         /// <returns></returns>
-        UserProgramItem GetNextLanguageLesson(string username, string topicId);
+        UserCycleItem GetNextLanguageLesson(string username, string topicId);
 
         /// <summary>
         /// Set up planner fom given language course and user

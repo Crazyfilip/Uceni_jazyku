@@ -1,8 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using LanguageLearning.Language.Impl;
+using LanguageLearning.Language.Topic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Collections.Generic;
-using LanguageLearning.Language;
-using LanguageLearning.Language.Impl;
 
 namespace UnitTests.Language.Impl
 {
@@ -23,7 +23,7 @@ namespace UnitTests.Language.Impl
             languageTopic2.SetupGet(x => x.Picked).Returns(false);
             languageTopic3 = new Mock<LanguageTopic>();
             languageTopic3.SetupGet(x => x.Picked).Returns(false);
-            simpleLanguageCourse = new SimpleLanguageCourse(new List<LanguageTopic>() {languageTopic1.Object, languageTopic2.Object, languageTopic3.Object});
+            simpleLanguageCourse = new SimpleLanguageCourse(new List<LanguageTopic>() { languageTopic1.Object, languageTopic2.Object, languageTopic3.Object });
         }
 
         [TestMethod]

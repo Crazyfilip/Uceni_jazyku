@@ -1,6 +1,6 @@
-﻿using System.Runtime.Serialization;
-using LanguageLearning.Common;
-using LanguageLearning.Language;
+﻿using LanguageLearning.Common;
+using LanguageLearning.Language.Topic;
+using System.Runtime.Serialization;
 
 namespace LanguageLearning.Planner
 {

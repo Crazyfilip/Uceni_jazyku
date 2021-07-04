@@ -1,8 +1,9 @@
-﻿using log4net;
+﻿using LanguageLearning.Cycle;
+using LanguageLearning.Cycle.Model;
+using LanguageLearning.User;
+using log4net;
 using System;
 using System.Windows.Forms;
-using LanguageLearning.Cycles;
-using LanguageLearning.User_database;
 
 namespace User_interface
 {
@@ -12,7 +13,7 @@ namespace User_interface
         private string username;
         private UserCycle userCycle;
         private readonly CycleService cycleService = CycleService.GetInstance();
-        
+
         public WelcomePage()
         {
             InitializeComponent();
@@ -40,7 +41,7 @@ namespace User_interface
 
         private void linkDifferentUser_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            UserAccountService userAccountService = new UserAccountService();
+            UserService userAccountService = new UserService();
             userAccountService.Logout();
             new LoginPage().Show();
             Hide();

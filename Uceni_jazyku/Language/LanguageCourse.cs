@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using LanguageLearning.Common;
+using LanguageLearning.Language.Impl;
+using LanguageLearning.Language.Topic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using LanguageLearning.Common;
-using LanguageLearning.Language.Impl;
 
 namespace LanguageLearning.Language
 {

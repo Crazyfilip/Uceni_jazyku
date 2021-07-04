@@ -1,6 +1,6 @@
-﻿using System;
+﻿using LanguageLearning.Cycle;
+using System;
 using System.Windows.Forms;
-using LanguageLearning.Cycles;
 
 namespace User_interface
 {

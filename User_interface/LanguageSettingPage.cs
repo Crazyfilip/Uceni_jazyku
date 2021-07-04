@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace User_interface
@@ -32,7 +25,7 @@ namespace User_interface
             public Panel DrawLanguage()
             {
                 // Image
-          
+
                 imageLanguageFlag = new PictureBox();
                 imageLanguageFlag.Image = Properties.Resources.cz_flag;
                 imageLanguageFlag.Location = new System.Drawing.Point(0, 0);
@@ -54,7 +47,7 @@ namespace User_interface
 
                 labelUserLang = new Label();
                 labelUserLang.Text = users_language;
-                labelUserLang.Location = new System.Drawing.Point(110, same_lang ? 40 : 60 );
+                labelUserLang.Location = new System.Drawing.Point(110, same_lang ? 40 : 60);
                 labelUserLang.Name = "labelUserLang";
                 labelUserLang.Size = new System.Drawing.Size(140, 40);
 
