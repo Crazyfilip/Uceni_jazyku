@@ -4,9 +4,9 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Uceni_jazyku.Common;
-using Uceni_jazyku.Cycles;
-using Uceni_jazyku.Cycles.UserCycles;
+using LanguageLearning.Common;
+using LanguageLearning.Cycles;
+using LanguageLearning.Cycles.UserCycles;
 
 namespace UnitTests
 {

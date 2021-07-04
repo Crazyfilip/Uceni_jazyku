@@ -1,15 +1,11 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Uceni_jazyku.Cycles.Program;
-using Uceni_jazyku.Cycles.Template;
-using Uceni_jazyku.Language;
-using Uceni_jazyku.Planner;
-using Uceni_jazyku.User;
+using LanguageLearning.Cycles.Program;
+using LanguageLearning.Cycles.Template;
+using LanguageLearning.Language;
+using LanguageLearning.Planner;
+using LanguageLearning.User;
 
 namespace UnitTests.Planner
 {

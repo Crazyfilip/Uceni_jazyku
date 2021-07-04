@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Text;
+﻿using System.Runtime.Serialization;
 
-namespace Uceni_jazyku.Cycles.Program
+namespace LanguageLearning.Cycles.Program
 {
     /// <summary>
     /// Abstract class for program of cycle

@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Windows.Forms;
-using Uceni_jazyku.Cycles;
+using LanguageLearning.Cycles;
 using System.IO;
 using log4net;
 using System.Reflection;
 using log4net.Config;
-using Uceni_jazyku.Language.Impl;
-using Uceni_jazyku.Language;
+using LanguageLearning.Language.Impl;
+using LanguageLearning.Language;
 using System.Collections.Generic;
-using Uceni_jazyku.Cycles.Program;
+using LanguageLearning.Cycles.Program;
 using System.Runtime.Serialization;
 using System.Xml;
-using Uceni_jazyku.User_database;
+using LanguageLearning.User_database;
 
 namespace User_interface
 {

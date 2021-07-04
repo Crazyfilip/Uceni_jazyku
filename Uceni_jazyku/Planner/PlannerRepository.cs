@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using Uceni_jazyku.Common;
+﻿using LanguageLearning.Common;
 
-namespace Uceni_jazyku.Planner
+namespace LanguageLearning.Planner
 {
     /// <inheritdoc/>
     public class PlannerRepository : AbstractRepository<AbstractPlannerMemory>, IPlannerRepository

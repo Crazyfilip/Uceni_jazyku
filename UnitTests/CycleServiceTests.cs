@@ -1,15 +1,15 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
-using Uceni_jazyku.Cycles;
-using Uceni_jazyku.Cycles.Program;
-using Uceni_jazyku.Cycles.UserCycles;
+using LanguageLearning.Cycles;
+using LanguageLearning.Cycles.Program;
+using LanguageLearning.Cycles.UserCycles;
 using System.Collections.Generic;
 using Moq;
 using log4net;
 using System.Reflection;
-using Uceni_jazyku.Planner;
-using Uceni_jazyku.Language;
+using LanguageLearning.Planner;
+using LanguageLearning.Language;
 
 namespace UnitTests
 {

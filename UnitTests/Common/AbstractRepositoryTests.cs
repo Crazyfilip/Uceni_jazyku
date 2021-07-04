@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Collections.Generic;
-using Uceni_jazyku.Common;
+using LanguageLearning.Common;
 
 namespace UnitTests.Common
 {

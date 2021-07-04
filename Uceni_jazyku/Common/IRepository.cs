@@ -1,4 +1,4 @@
-﻿namespace Uceni_jazyku.Common
+﻿namespace LanguageLearning.Common
 {
     /// <summary>
     /// Interface for abstraction of data layer

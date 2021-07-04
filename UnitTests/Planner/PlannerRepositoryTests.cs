@@ -1,9 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Collections.Generic;
-using System.IO;
-using Uceni_jazyku.Common;
-using Uceni_jazyku.Planner;
+using LanguageLearning.Common;
+using LanguageLearning.Planner;
 
 namespace UnitTests.Planner
 {

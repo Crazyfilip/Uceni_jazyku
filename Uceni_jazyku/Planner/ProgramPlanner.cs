@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Uceni_jazyku.Cycles.Program;
-using Uceni_jazyku.Language;
-using Uceni_jazyku.User;
+using LanguageLearning.Cycles.Program;
+using LanguageLearning.Language;
+using LanguageLearning.User;
 
-namespace Uceni_jazyku.Planner
+namespace LanguageLearning.Planner
 {
     /// <inheritdoc/>
     public class ProgramPlanner : IProgramPlanner

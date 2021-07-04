@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Uceni_jazyku.Cycles.Program
+namespace LanguageLearning.Cycles.Program
 {
     /// <summary>
     /// Class representing unit of language cycle's program

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Uceni_jazyku.Common;
-using Uceni_jazyku.Cycles.Template;
+using LanguageLearning.Common;
+using LanguageLearning.Cycles.Template;
 
-namespace Uceni_jazyku.User
+namespace LanguageLearning.User
 {
     public class UserModel : IId
     {

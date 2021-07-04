@@ -1,10 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using Uceni_jazyku.Cycles;
-using Uceni_jazyku.Cycles.Program;
-using Uceni_jazyku.Cycles.UserCycles;
+using LanguageLearning.Cycles;
+using LanguageLearning.Cycles.Program;
+using LanguageLearning.Cycles.UserCycles;
 
 namespace UnitTests
 {

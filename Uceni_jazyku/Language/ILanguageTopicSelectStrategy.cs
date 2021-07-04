@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Uceni_jazyku.Language
+namespace LanguageLearning.Language
 {
     /// <summary>
     /// Interface for operations helping linearize language course.

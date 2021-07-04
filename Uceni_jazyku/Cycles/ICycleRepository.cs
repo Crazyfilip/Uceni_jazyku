@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Uceni_jazyku.Common;
-using Uceni_jazyku.Cycles.UserCycles;
+﻿using System.Collections.Generic;
+using LanguageLearning.Common;
+using LanguageLearning.Cycles.UserCycles;
 
-namespace Uceni_jazyku.Cycles
+namespace LanguageLearning.Cycles
 {
     /// <summary>
     /// Interface of operations with repository of cycles

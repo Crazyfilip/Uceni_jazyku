@@ -1,6 +1,6 @@
-﻿using Uceni_jazyku.Common;
+﻿using LanguageLearning.Common;
 
-namespace Uceni_jazyku.User
+namespace LanguageLearning.User
 {
     /// <summary>
     /// Repository for user models

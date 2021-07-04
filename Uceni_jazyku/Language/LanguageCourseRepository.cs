@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Uceni_jazyku.Common;
-using Uceni_jazyku.Language.Impl;
+using LanguageLearning.Common;
+using LanguageLearning.Language.Impl;
 
-namespace Uceni_jazyku.Language
+namespace LanguageLearning.Language
 {
     public class LanguageCourseRepository : AbstractRepository<LanguageCourse>, ILanguageCourseRepository
     {

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using Uceni_jazyku.Language;
+using LanguageLearning.Language;
 
-namespace Uceni_jazyku.Planner
+namespace LanguageLearning.Planner
 {
     /// <inheritdoc/>
     /// <summary>

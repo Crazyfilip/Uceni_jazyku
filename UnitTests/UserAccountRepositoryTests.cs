@@ -1,13 +1,10 @@
 ﻿using log4net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
-using System.Text;
-using Uceni_jazyku.Common;
-using Uceni_jazyku.User_database;
+using LanguageLearning.Common;
+using LanguageLearning.User_database;
 
 namespace UnitTests
 {

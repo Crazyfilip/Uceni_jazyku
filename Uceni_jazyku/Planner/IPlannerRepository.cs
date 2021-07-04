@@ -1,6 +1,6 @@
-﻿using Uceni_jazyku.Common;
+﻿using LanguageLearning.Common;
 
-namespace Uceni_jazyku.Planner
+namespace LanguageLearning.Planner
 {
     /// <summary>
     /// Repository for program planner memories

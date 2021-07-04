@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace Uceni_jazyku.Language.Impl
+namespace LanguageLearning.Language.Impl
 {
     /// <summary>
     /// Template of language course.

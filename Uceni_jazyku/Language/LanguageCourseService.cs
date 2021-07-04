@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Uceni_jazyku.Language.Impl;
+using LanguageLearning.Language.Impl;
 
-namespace Uceni_jazyku.Language
+namespace LanguageLearning.Language
 {
     /// <summary>
     /// Service class for managing language courses

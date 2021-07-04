@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Uceni_jazyku.Cycles.Program;
+using LanguageLearning.Cycles.Program;
 
-namespace Uceni_jazyku.Language
+namespace LanguageLearning.Language
 {
     /// <summary>
     /// Class representing topic of group of lessons

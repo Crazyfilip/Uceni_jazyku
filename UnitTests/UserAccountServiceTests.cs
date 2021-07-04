@@ -5,10 +5,10 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
-using Uceni_jazyku.Cycles;
-using Uceni_jazyku.Language;
-using Uceni_jazyku.User;
-using Uceni_jazyku.User_database;
+using LanguageLearning.Cycles;
+using LanguageLearning.Language;
+using LanguageLearning.User;
+using LanguageLearning.User_database;
 
 namespace UnitTests
 {

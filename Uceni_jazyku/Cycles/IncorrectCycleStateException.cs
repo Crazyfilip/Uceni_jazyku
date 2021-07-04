@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Uceni_jazyku.Cycles
+namespace LanguageLearning.Cycles
 {
     /// <summary>
     /// Exception for case when trying to change state of cycle to incorrect one

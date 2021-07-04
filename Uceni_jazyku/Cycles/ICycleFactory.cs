@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Uceni_jazyku.Cycles.Program;
-using Uceni_jazyku.Cycles.UserCycles;
+using LanguageLearning.Cycles.Program;
+using LanguageLearning.Cycles.UserCycles;
 
-namespace Uceni_jazyku.Cycles
+namespace LanguageLearning.Cycles
 {
     /// <summary>
     /// Interface for operations of creation of user cycles

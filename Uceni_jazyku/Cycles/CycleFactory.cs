@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using Uceni_jazyku.Cycles.Program;
-using Uceni_jazyku.Cycles.UserCycles;
+using LanguageLearning.Cycles.Program;
+using LanguageLearning.Cycles.UserCycles;
 
-namespace Uceni_jazyku.Cycles
+namespace LanguageLearning.Cycles
 {
     /// <inheritdoc/>
     /// CycleID is generated using System.Guid

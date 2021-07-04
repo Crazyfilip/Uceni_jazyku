@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using Uceni_jazyku.Common;
-using Uceni_jazyku.Cycles.Program;
-using Uceni_jazyku.Cycles.UserCycles;
+using LanguageLearning.Common;
+using LanguageLearning.Cycles.Program;
+using LanguageLearning.Cycles.UserCycles;
 
-namespace Uceni_jazyku.Cycles
+namespace LanguageLearning.Cycles
 {
     /// <summary>
     /// Representation of the user's cycles

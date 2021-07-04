@@ -1,4 +1,4 @@
-﻿namespace Uceni_jazyku.Cycles.UserCycles
+﻿namespace LanguageLearning.Cycles.UserCycles
 {
     /// <summary>
     /// Enum of possible states for user cycle

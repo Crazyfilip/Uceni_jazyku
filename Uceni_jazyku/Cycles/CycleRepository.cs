@@ -1,10 +1,10 @@
 ﻿using log4net;
 using System.Collections.Generic;
 using System.Linq;
-using Uceni_jazyku.Common;
-using Uceni_jazyku.Cycles.UserCycles;
+using LanguageLearning.Common;
+using LanguageLearning.Cycles.UserCycles;
 
-namespace Uceni_jazyku.Cycles
+namespace LanguageLearning.Cycles
 {
     /// <inheritdoc/>
     /// <summary>

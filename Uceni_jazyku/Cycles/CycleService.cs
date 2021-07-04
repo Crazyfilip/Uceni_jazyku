@@ -1,12 +1,12 @@
 ﻿using log4net;
 using System;
 using System.Collections.Generic;
-using Uceni_jazyku.Cycles.Program;
-using Uceni_jazyku.Cycles.UserCycles;
-using Uceni_jazyku.Language;
-using Uceni_jazyku.Planner;
+using LanguageLearning.Cycles.Program;
+using LanguageLearning.Cycles.UserCycles;
+using LanguageLearning.Language;
+using LanguageLearning.Planner;
 
-namespace Uceni_jazyku.Cycles
+namespace LanguageLearning.Cycles
 {
     /// <summary>
     /// Cycle service is class for managing cycles.

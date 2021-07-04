@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Uceni_jazyku.Language.Impl;
+using LanguageLearning.Language.Impl;
 
-namespace Uceni_jazyku.Language
+namespace LanguageLearning.Language
 {
     /// <inheritdoc/>>
     /// Factory create instances of type SingleLanguageCourse

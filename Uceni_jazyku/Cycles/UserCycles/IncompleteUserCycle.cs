@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
-using Uceni_jazyku.Cycles.Program;
+using LanguageLearning.Cycles.Program;
 
-namespace Uceni_jazyku.Cycles.UserCycles
+namespace LanguageLearning.Cycles.UserCycles
 {
     /// <summary>
     /// Incomplete user cycle

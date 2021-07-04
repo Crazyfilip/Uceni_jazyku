@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
-using Uceni_jazyku.Cycles;
 using System.Runtime.Serialization;
 using System.Xml;
-using Uceni_jazyku.Language;
-using Uceni_jazyku.Language.Impl;
-using Uceni_jazyku.Cycles.Program;
+using LanguageLearning.Language;
+using LanguageLearning.Language.Impl;
+using LanguageLearning.Cycles.Program;
 
-namespace Uceni_jazyku
+namespace LanguageLearning
 {
     class Program
     {

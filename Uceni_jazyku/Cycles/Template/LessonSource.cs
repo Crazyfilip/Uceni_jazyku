@@ -1,4 +1,4 @@
-﻿namespace Uceni_jazyku.Cycles.Template
+﻿namespace LanguageLearning.Cycles.Template
 {
     /// <summary>
     /// Enum capturing possible sources where planner can pick lesson for user cycle

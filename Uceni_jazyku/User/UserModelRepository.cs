@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using Uceni_jazyku.Common;
+﻿using LanguageLearning.Common;
 
-namespace Uceni_jazyku.User
+namespace LanguageLearning.User
 {
     /// <inheritdoc/>
     public class UserModelRepository : AbstractRepository<UserModel>, IUserModelRepository

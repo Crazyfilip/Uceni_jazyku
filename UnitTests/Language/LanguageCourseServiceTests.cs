@@ -1,8 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Collections.Generic;
-using Uceni_jazyku.Language;
-using Uceni_jazyku.Language.Impl;
+using LanguageLearning.Language;
+using LanguageLearning.Language.Impl;
 
 namespace UnitTests.Language
 {

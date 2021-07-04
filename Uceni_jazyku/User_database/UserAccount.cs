@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Uceni_jazyku.Common;
+﻿using LanguageLearning.Common;
 
-namespace Uceni_jazyku.User_database
+namespace LanguageLearning.User_database
 {
     /// <summary>
     /// user account class

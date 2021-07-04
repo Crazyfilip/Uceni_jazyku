@@ -1,12 +1,12 @@
-﻿using Uceni_jazyku.Cycles;
+﻿using LanguageLearning.Cycles;
 using System;
 using System.Security.Cryptography;
 using log4net;
-using Uceni_jazyku.Language;
-using Uceni_jazyku.User;
+using LanguageLearning.Language;
+using LanguageLearning.User;
 using System.IO;
 
-namespace Uceni_jazyku.User_database
+namespace LanguageLearning.User_database
 {
 
     /// <summary>

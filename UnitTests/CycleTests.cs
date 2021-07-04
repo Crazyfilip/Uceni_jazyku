@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Uceni_jazyku.Cycles;
-using Uceni_jazyku.Cycles.Program;
-using Uceni_jazyku.Cycles.UserCycles;
-using Uceni_jazyku.Language;
+using LanguageLearning.Cycles;
+using LanguageLearning.Cycles.Program;
+using LanguageLearning.Cycles.UserCycles;
+using LanguageLearning.Language;
 
 namespace UnitTests
 {

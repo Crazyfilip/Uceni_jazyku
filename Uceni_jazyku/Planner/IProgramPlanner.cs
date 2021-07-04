@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Uceni_jazyku.Cycles.Program;
-using Uceni_jazyku.Language;
+﻿using System.Collections.Generic;
+using LanguageLearning.Cycles.Program;
+using LanguageLearning.Language;
 
-namespace Uceni_jazyku.Planner
+namespace LanguageLearning.Planner
 {
     /// <summary>
     /// Interface for operations of planning programs for user cycles

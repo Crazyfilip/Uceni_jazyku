@@ -1,8 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Uceni_jazyku.Language;
-using Uceni_jazyku.Planner;
-using Uceni_jazyku.User;
+using LanguageLearning.Language;
+using LanguageLearning.Planner;
+using LanguageLearning.User;
 
 namespace UnitTests.Planner
 {
