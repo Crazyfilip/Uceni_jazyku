@@ -1,4 +1,5 @@
-﻿using LanguageLearning.Cycle.Impl;
+﻿using LanguageLearning.Cycle.Exception;
+using LanguageLearning.Cycle.Impl;
 using LanguageLearning.Cycle.Model;
 using LanguageLearning.Language;
 using LanguageLearning.Planner;
@@ -174,7 +175,7 @@ namespace LanguageLearning.Cycle
             {
                 log.Warn($"Cycle {cycle.Id} wasn't finished", e);
             }
-            catch (Exception e)
+            catch (NotFinishedCycleException e)
             {
                 log.Warn($"Cycle {cycle.Id} wasn't finished", e);
             }

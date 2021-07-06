@@ -13,10 +13,7 @@ namespace UnitTests.User.Account.Impl
     [TestClass]
     public class UserAccountRepositoryTests
     {
-        private List<UserAccount> accounts;
         private UserAccountRepository userAccountRepository;
-        private UserAccount userAccount1;
-        private UserAccount userAccount2;
         static readonly Mock<ILog> log4netMock = new Mock<ILog>();
         Mock<Serializer<UserAccount>> serializer;
 

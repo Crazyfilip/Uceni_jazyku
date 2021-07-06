@@ -1,4 +1,5 @@
 ﻿using LanguageLearning.Cycle;
+using LanguageLearning.Cycle.Exception;
 using LanguageLearning.Cycle.Model;
 using LanguageLearning.Language.Topic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -174,7 +175,7 @@ namespace UnitTests.Cycle.Model
             cycleMock.SetupGet(x => x.UserProgramItems).Returns(listMock);
 
             // Test & Verify
-            Exception exception = Assert.ThrowsException<Exception>(() => cycleMock.Object.Finish());
+            NotFinishedCycleException exception = Assert.ThrowsException<NotFinishedCycleException>(() => cycleMock.Object.Finish());
             Assert.AreEqual("Cycle doesn't have finished all lesson so can't be finished", exception.Message);
 
             cycleMock.Verify(x => x.Finish(), Times.Once);

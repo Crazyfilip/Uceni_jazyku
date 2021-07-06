@@ -1,11 +1,9 @@
-﻿using System;
-
-namespace LanguageLearning.Cycle
+﻿namespace LanguageLearning.Cycle.Exception
 {
     /// <summary>
     /// Exception for case when trying to change state of cycle to incorrect one
     /// </summary>
-    public class IncorrectCycleStateException : Exception
+    public class IncorrectCycleStateException : System.Exception
     {
         public IncorrectCycleStateException() { }
 

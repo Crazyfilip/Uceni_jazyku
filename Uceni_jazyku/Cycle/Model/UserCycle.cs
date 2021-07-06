@@ -1,4 +1,5 @@
 ﻿using LanguageLearning.Common;
+using LanguageLearning.Cycle.Exception;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -111,7 +112,7 @@ namespace LanguageLearning.Cycle.Model
                     return this;
                 }
                 else
-                    throw new Exception("Cycle doesn't have finished all lesson so can't be finished"); // TODO replace with more suitable exception type
+                    throw new NotFinishedCycleException("Cycle doesn't have finished all lesson so can't be finished"); // TODO replace with more suitable exception type
             }
             else
                 throw new IncorrectCycleStateException("Cycle with state " + State + " cannot be finished");
