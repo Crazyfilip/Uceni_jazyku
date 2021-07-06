@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using Uceni_jazyku.Common;
-using Uceni_jazyku.Language.Impl;
+﻿using LanguageLearning.Common;
+using LanguageLearning.Language.Impl;
+using System.Collections.Generic;
 
-namespace Uceni_jazyku.Language
+namespace LanguageLearning.Language
 {
     /// <summary>
     /// Repository for language courses

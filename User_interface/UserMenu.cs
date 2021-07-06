@@ -1,7 +1,8 @@
-﻿using System;
+﻿using LanguageLearning.Cycle;
+using LanguageLearning.Cycle.Model;
+using LanguageLearning.User;
+using System;
 using System.Windows.Forms;
-using Uceni_jazyku.Cycles;
-using Uceni_jazyku.User_database;
 
 namespace User_interface
 {
@@ -22,7 +23,7 @@ namespace User_interface
 
         private void buttonLogout_Click(object sender, EventArgs e)
         {
-            UserAccountService userAccountService = new UserAccountService();
+            UserService userAccountService = new UserService();
             userAccountService.Logout();
             new LoginPage().Show();
             Close();

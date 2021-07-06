@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "User_interface", "User_inte
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{2813A7CA-1B81-4D1E-B051-A4A8E2A0A095}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uceni_jazyku", "Uceni_jazyku\Uceni_jazyku.csproj", "{DC32911D-1D08-4101-B2F6-49EB165C9E0E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LanguageLearning", "Uceni_jazyku\LanguageLearning.csproj", "{DC32911D-1D08-4101-B2F6-49EB165C9E0E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D5BDC13F-C380-49AA-918A-0AF17E0ACD7F}"
 	ProjectSection(SolutionItems) = preProject

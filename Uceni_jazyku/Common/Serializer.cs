@@ -1,10 +1,9 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;
 
-namespace Uceni_jazyku.Common
+namespace LanguageLearning.Common
 {
     /// <summary>
     /// Common implementation of data serialization used in repository objects.

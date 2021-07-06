@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using Uceni_jazyku.Language.Impl;
+﻿using LanguageLearning.Language.Impl;
+using System.Collections.Generic;
 
-namespace Uceni_jazyku.Language
+namespace LanguageLearning.Language
 {
     /// <summary>
     /// Service class for managing language courses
@@ -13,7 +13,7 @@ namespace Uceni_jazyku.Language
 
         private static LanguageCourseService instance;
 
-        public LanguageCourseService() : this(null, null) { } 
+        public LanguageCourseService() : this(null, null) { }
 
         private LanguageCourseService(ILanguageCourseRepository languageCourseRepository, ILanguageCourseFactory languageCourseFactory)
         {
@@ -43,7 +43,7 @@ namespace Uceni_jazyku.Language
         {
             instance = null;
         }
-        
+
         /// <summary>
         /// Get user's active course
         /// </summary>

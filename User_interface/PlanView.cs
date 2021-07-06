@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
+﻿using LanguageLearning.Cycle;
+using System;
 using System.Windows.Forms;
-using Uceni_jazyku.Cycles;
 
 namespace User_interface
 {

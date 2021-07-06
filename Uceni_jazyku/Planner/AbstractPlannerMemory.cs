@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using LanguageLearning.Common;
+using LanguageLearning.Language.Topic;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using Uceni_jazyku.Common;
-using Uceni_jazyku.Language;
 
-namespace Uceni_jazyku.Planner
+namespace LanguageLearning.Planner
 {
     /// <summary>
     /// Abstract representation of planner memory.

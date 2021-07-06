@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using LanguageLearning.Common;
+using LanguageLearning.Language.Impl;
+using LanguageLearning.Language.Topic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using Uceni_jazyku.Common;
-using Uceni_jazyku.Language.Impl;
 
-namespace Uceni_jazyku.Language
+namespace LanguageLearning.Language
 {
     /// <summary>
     /// Abstract form of language course

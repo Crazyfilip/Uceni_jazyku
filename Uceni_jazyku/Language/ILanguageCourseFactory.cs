@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using Uceni_jazyku.Language.Impl;
+﻿using LanguageLearning.Language.Impl;
+using System.Collections.Generic;
 
-namespace Uceni_jazyku.Language
+namespace LanguageLearning.Language
 {
     /// <summary>
     /// Factory of language courses from templates.

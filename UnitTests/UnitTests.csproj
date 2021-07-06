@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Uceni_jazyku\Uceni_jazyku.csproj" />
+    <ProjectReference Include="..\Uceni_jazyku\LanguageLearning.csproj" />
   </ItemGroup>
 
 </Project>

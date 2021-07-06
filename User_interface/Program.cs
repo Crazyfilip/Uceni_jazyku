@@ -1,17 +1,17 @@
-﻿using System;
-using System.Windows.Forms;
-using Uceni_jazyku.Cycles;
-using System.IO;
+﻿using LanguageLearning.Cycle;
+using LanguageLearning.Language;
+using LanguageLearning.Language.Impl;
+using LanguageLearning.Language.Topic;
+using LanguageLearning.User;
 using log4net;
-using System.Reflection;
 using log4net.Config;
-using Uceni_jazyku.Language.Impl;
-using Uceni_jazyku.Language;
+using System;
 using System.Collections.Generic;
-using Uceni_jazyku.Cycles.Program;
+using System.IO;
+using System.Reflection;
 using System.Runtime.Serialization;
+using System.Windows.Forms;
 using System.Xml;
-using Uceni_jazyku.User_database;
 
 namespace User_interface
 {
@@ -29,7 +29,7 @@ namespace User_interface
             PrepareApp();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            UserAccountService userAccountService = new UserAccountService();
+            UserService userAccountService = new UserService();
             if (userAccountService.IsAnyoneLogged())
             {
                 string username = userAccountService.GetLoggedUser();

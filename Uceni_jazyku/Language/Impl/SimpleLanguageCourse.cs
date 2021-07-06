@@ -1,10 +1,8 @@
-﻿using System;
+﻿using LanguageLearning.Language.Topic;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Uceni_jazyku.Language.Impl
+namespace LanguageLearning.Language.Impl
 {
     /// <summary>
     /// Simple implementation of language course.
